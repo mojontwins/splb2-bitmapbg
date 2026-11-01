@@ -40,7 +40,7 @@ This section covers only what the game does with it.
 
 ```
 $5B00-$5BFF  msg_attrs (printer buffer)              256
-$5E88-~$D336 binary (org 24200): code, data, splib2, display list (3K)
+$5E88-~$D243 binary (org 24200): code, data, splib2, display list (3K)
    ...-$D5C0 stack (grows down; max depth measured ~110 bytes)
 $D62F-$D7FF  splib2 block memory: 31 blocks x 15 (3 sprites x 10)
 $D800-$EFFF  SHADOW: background bitmap, screen layout     6144
@@ -105,6 +105,12 @@ sprites in the ice caves stay well within the frame budget.
 
 The original moved in 8 px steps. This port moves pixel by pixel:
 
+* **Speeds are constants** at the top of `src/lhikoj.c`: `MUNDO_HORZ_SPEED`,
+  `MUNDO_VERT_SPEED` (overworld, must divide 8), `INTRO_WALK_SPEED` (must
+  divide 104), and `PLATAFORMAS_HORZ_SPEED`, `PLATAFORMAS_VERT_SPEED`,
+  `PLATAFORMAS_JUMP_HEIGHT` (ice caves, must divide 16). Overworld speeds of
+  2 and 4 have been played through in the emulator.
+
 * **Overworld**: 2 px per frame, 16×16 collision box against the hardness map
   (value 1 = wall, as in `gpIsHard`). Added **corner sliding**: if you are
   blocked but less than half a cell off a free row or column, you get nudged
@@ -145,10 +151,12 @@ the intro, **Y/N** after dying in a cave.
 4. **sccz80 (1.10) miscompiles indexing a cast constant.** It compiles
    `((unsigned char *) 0xF101)[i]` as `*(0xF101)` and ignores `i`. Use a
    pointer variable instead.
-5. **Global scratch variables are shared.** For speed the code uses globals
-   (`gp`, `gp2`, `gi`…). A caller must not keep one live across a call to
-   `put_char`, `print_char`, `set_attr` or `spr_put`. Two bugs
-   during the port were exactly this.
+5. **No local variables.** sccz80 1.10 handles locals badly, so every
+   function uses shared global helpers (`gx gy gi gj gk gc gt ga gb gd ge gf`,
+   `gw gw2`, `gp gp2 gp3 gp4`). The comment block after their declaration in
+   `lhikoj.c` lists which function clobbers which. A caller must not keep one
+   live across a call that clobbers it; two bugs during the port were
+   exactly this.
 6. Drawing on the real screen while sprites are visible leaves sprite pixels
    in the bitmap. Always `sp_BgShow()` first if you are going to call
    `sp_BgCapture()`.

@@ -65,17 +65,54 @@ extern void isr (void);
 	ret
 #endasm
 
-// Movimiento
+// Movimiento (píxeles por frame, a 25 fps)
+//
+// Mundo (vista cenital). Las posiciones de entrada a cada pantalla son
+// múltiplos de 8, así que estas velocidades tienen que dividir a 8
+// (1, 2, 4 u 8) para que el prota pueda alinearse con los pasillos. El
+// "corner sliding" empuja en el otro eje con la velocidad de ese eje, así
+// cada coordenada se queda siempre en su rejilla.
+
+#define MUNDO_HORZ_SPEED       2
+#define MUNDO_VERT_SPEED       2
+#define MUNDO_MAX_X            240  // 256 - 16
+#define MUNDO_MAX_Y            176  // 192 - 16
+#define MUNDO_ANIM_SHIFT       2    // el frame de andar cambia cada 2^n frames moviéndose
+
+// Intro: el prota entra andando desde x = 240 hasta x = 136 (104 px), así que
+// esta velocidad tiene que dividir a 104 (1, 2, 4 u 8).
+
+#define INTRO_WALK_SPEED       2
+
+// Plataformas (cuevas de hielo). Los tiles son de 16x16 y los topes son 0/80
+// (arriba) y 96/176 (abajo): las velocidades tienen que dividir a 16.
 
 #define PLATAFORMAS_HORZ_SPEED 4
 #define PLATAFORMAS_VERT_SPEED 4
+#define PLATAFORMAS_JUMP_HEIGHT 48  // 3 tiles, como el original
+#define PLATAFORMAS_MAX_X      240
 
 /* scratch globals (sccz80 is more pichita tiesa with globals than locals) */
 unsigned char gx, gy, gi, gj, gk, gc, gt;
+unsigned char ga, gb, gd, ge, gf;
 unsigned int  gw, gw2;
-unsigned char *gp, *gp2;
+unsigned char *gp, *gp2, *gp3, *gp4;
 
-/* emb�z of parameters... more globals */
+/* Quién machaca qué (para no pisarse al reutilizar):
+     put_char ........... gp, gp2, gi          print_char ..... gp, gp2, gi, gc
+     print_at ........... gt + print_char      print_centered . gk + print_at
+     clear_box .......... gx, gy + print_char  scroll_msg ..... gx, gy + todo lo de texto
+     spr_put / set_attr . gp                   read_keys ...... gc
+     msg_save/restore ... gw, gp               clear_screen ... gj
+     intro .............. gw, gp, gj, gc + llamadas
+     pl_free ............ gx, gy, gf, gi, gc, gp
+     player_move ........ gj, gt, gk + pl_free + spr_put
+     ice_draw_tile ...... gp3 + put_char       ice_level_draw . gx, gy, gt, gk, gp4 + ice_draw_tile
+     ice_player_move .... gx, gy               ice_game ....... gj, gf + todo lo anterior
+     game ............... ga, gb, gd, ge, gp3, gp4 (gp3/gp4 sólo se leen antes de
+                          llamar a algo que los machaque: ver los break)        */
+
+/* emb�z of parameters... more globals */
 unsigned int  cp_src, cp_dst, cp_len;
 
 /* ------------------------------------------------------------------ */
@@ -130,7 +167,7 @@ void wait_frames (unsigned char n) {
 	isrc = 0;
 }
 
-/* La rutina de RND m�s tonta que se te ocurra es mejor que esta */
+/* La rutina de RND más tonta que se te ocurra es mejor que esta */
 unsigned char rnd_seed = 77;
 unsigned char rnd (void) {
 	rnd_seed = (rnd_seed * 5) + 17;
@@ -191,7 +228,7 @@ void cls_screen (unsigned char attr) {
 /* middle third save / restore (screen layout makes this a single copy) */
 unsigned char msg_buffer [2048];
 /* 256 bytes: lives in the 48K printer buffer */
-/* z88dk1.10 se hace la picha un l�o con acceso por �ndice a puntero, as� que usa punteros y ya. */
+/* z88dk1.10 se hace la picha un lío con acceso por índice a puntero, así que usa punteros y ya. */
 unsigned char *msg_attrs = 23296;
 
 void msg_save (void) {
@@ -357,7 +394,7 @@ unsigned char ob_dirty;
 unsigned char step_frame [] = {0, 1, 2, 1};
 
 unsigned char player_frame (void) {
-	return SPR_PLAYER + pl_dir * 3 + step_frame [(pl_anim >> 2) & 3];
+	return SPR_PLAYER + pl_dir * 3 + step_frame [(pl_anim >> MUNDO_ANIM_SHIFT) & 3];
 }
 
 /* Fade a blanco por Eusebio el mono serio */
@@ -407,7 +444,7 @@ void display_extra (unsigned char n) {
 	ob_dirty = 1;
 }
 
-// Esto cubre el tercio de enmedio, por eso lo salvamos en 2K por ah�
+// Esto cubre el tercio de enmedio, por eso lo salvamos en 2K por ahí
 void scroll_msg (unsigned char *t1, unsigned char *t2, unsigned char *t3) {
 	spr_hide_all ();
 	sp_UpdateNow ();
@@ -428,7 +465,7 @@ void scroll_msg (unsigned char *t1, unsigned char *t2, unsigned char *t3) {
 /* Intro / cutscenes                                                  */
 /* ------------------------------------------------------------------ */
 
-// Esto scrollea el primer tercio, c�digo por Eustaquio el mono... no se me ocurre rima
+// Esto scrollea el primer tercio, código por Eustaquio el mono... no se me ocurre rima
 void scroll_sky (void) {
 	#asm
 		ld  hl, 16384
@@ -643,7 +680,7 @@ void intro (unsigned char n) {
 
 		// El prota entra en escena
 		if (st == 0 && ct2 > 16 && spr_on [0]) {
-			px -= 2; pl_anim ++;
+			px -= INTRO_WALK_SPEED; pl_anim ++;
 			spr_put (0, player_frame (), px, py);
 			if (px == 136) { st = 1; ct2 = 0; ct = 0; pl_anim = 0; spr_put (0, player_frame (), px, py); }
 		}
@@ -686,35 +723,34 @@ unsigned char *ice_map = 0xF101;
 unsigned char *ice_levels [] = { ice_level_0, ice_level_1, ice_level_2, ice_level_3 };
 
 void ice_draw_tile (unsigned char x, unsigned char y, unsigned char attr, unsigned char n) {
-	unsigned char *tp;
-	tp = ice_tiles + (n << 2);
+	/* gp3: put_char machaca gp y gp2 */
+	gp3 = ice_tiles + (n << 2);
 	x <<= 1; y <<= 1;
-	put_char (x, y, attr, tp [0]);
-	put_char (x + 1, y, attr, tp [1]);
-	put_char (x, y + 1, attr, tp [2]);
-	put_char (x + 1, y + 1, attr, tp [3]);
+	put_char (x, y, attr, gp3 [0]);
+	put_char (x + 1, y, attr, gp3 [1]);
+	put_char (x, y + 1, attr, gp3 [2]);
+	put_char (x + 1, y + 1, attr, gp3 [3]);
 }
 
 void ice_level_draw (unsigned char n) {
-	unsigned char x, y, t, c;
-	unsigned char *lp;
-	lp = ice_levels [n];
-	x = y = c = 0;
-	while (y < 12) {
-		if (c == 0) {
-			t = *lp >> 5; c = *lp & 31; if (c == 0) c = 32;
-			lp ++;
+	/* gx, gy = tile, gt = tipo, gk = cuenta RLE, gp4 = puntero a los datos */
+	gp4 = ice_levels [n];
+	gx = gy = gk = 0;
+	while (gy < 12) {
+		if (gk == 0) {
+			gt = *gp4 >> 5; gk = *gp4 & 31; if (gk == 0) gk = 32;
+			gp4 ++;
 		} else {
-			c --;
-			if (y < 6) ice_draw_tile (x, y, 56, t); else ice_draw_tile (x, y, 41, t + 5);
-			ice_map [x + (y << 4)] = t;
-			x ++; if (x == 16) { x = 0; y ++; }
+			gk --;
+			if (gy < 6) ice_draw_tile (gx, gy, 56, gt); else ice_draw_tile (gx, gy, 41, gt + 5);
+			ice_map [gx + (gy << 4)] = gt;
+			gx ++; if (gx == 16) { gx = 0; gy ++; }
 		}
 	}
 }
 
-unsigned char ice_tile (unsigned char px, unsigned char py) {
-	return ice_map [(px >> 4) + ((py >> 4) << 4)];
+unsigned char ice_tile (unsigned char x, unsigned char y) {
+	return ice_map [(x >> 4) + ((y >> 4) << 4)];
 }
 
 /* is a 16x16 box at (x,y) free of solid ice tiles (>= 2)? */
@@ -739,25 +775,25 @@ unsigned char ix [2], iy [2], ijump [2], iground [2];
 unsigned char i_facing, i_anim;
 
 void ice_player_move (unsigned char p) {
-	unsigned char ymin, ymax;
-	if (p == 0) { ymin = 0; ymax = 80; } else { ymin = 96; ymax = 176; }
+	/* gx = ymin, gy = ymax */
+	if (p == 0) { gx = 0; gy = 80; } else { gx = 96; gy = 176; }
 
 	/* horizontal */
-	if (k_left && ix [p] > 0 && ice_free (ix [p] - PLATAFORMAS_HORZ_SPEED, iy [p])) ix [p] -= PLATAFORMAS_HORZ_SPEED;
-	if (k_right && ix [p] < 240 && ice_free (ix [p] + PLATAFORMAS_HORZ_SPEED, iy [p])) ix [p] += PLATAFORMAS_HORZ_SPEED;
+	if (k_left && ix [p] >= PLATAFORMAS_HORZ_SPEED && ice_free (ix [p] - PLATAFORMAS_HORZ_SPEED, iy [p])) ix [p] -= PLATAFORMAS_HORZ_SPEED;
+	if (k_right && ix [p] <= PLATAFORMAS_MAX_X - PLATAFORMAS_HORZ_SPEED && ice_free (ix [p] + PLATAFORMAS_HORZ_SPEED, iy [p])) ix [p] += PLATAFORMAS_HORZ_SPEED;
 
-	/* vertical: "down" is +4 for the top guy and -4 for the bottom guy */
-	if (p == 0) iground [p] = (iy [p] == ymax || !ice_free (ix [p], iy [p] + PLATAFORMAS_VERT_SPEED));
-	else iground [p] = (iy [p] == ymin || !ice_free (ix [p], iy [p] - PLATAFORMAS_VERT_SPEED));
+	/* vertical: "down" is + for the top guy and - for the bottom guy */
+	if (p == 0) iground [p] = (iy [p] == gy || !ice_free (ix [p], iy [p] + PLATAFORMAS_VERT_SPEED));
+	else iground [p] = (iy [p] == gx || !ice_free (ix [p], iy [p] - PLATAFORMAS_VERT_SPEED));
 
 	if (ijump [p]) {
-		if (p == 0) { if (iy [p] > ymin && ice_free (ix [p], iy [p] - PLATAFORMAS_VERT_SPEED)) iy [p] -= PLATAFORMAS_VERT_SPEED; else ijump [p] = 1; }
-		else { if (iy [p] < ymax && ice_free (ix [p], iy [p] + PLATAFORMAS_VERT_SPEED)) iy [p] += PLATAFORMAS_VERT_SPEED; else ijump [p] = 1; }
+		if (p == 0) { if (iy [p] > gx && ice_free (ix [p], iy [p] - PLATAFORMAS_VERT_SPEED)) iy [p] -= PLATAFORMAS_VERT_SPEED; else ijump [p] = 1; }
+		else { if (iy [p] < gy && ice_free (ix [p], iy [p] + PLATAFORMAS_VERT_SPEED)) iy [p] += PLATAFORMAS_VERT_SPEED; else ijump [p] = 1; }
 		ijump [p] --;
 	} else if (!iground [p]) {
 		if (p == 0) iy [p] += PLATAFORMAS_VERT_SPEED; else iy [p] -= PLATAFORMAS_VERT_SPEED;
 	} else if (k_fire) {
-		ijump [p] = 12;     /* 12 x 4 = 48 pixels, 3 tiles */
+		ijump [p] = PLATAFORMAS_JUMP_HEIGHT / PLATAFORMAS_VERT_SPEED;   /* frames subiendo */
 	}
 }
 
@@ -768,15 +804,16 @@ unsigned char ice_on_exit (unsigned char p) {
 }
 
 void ice_game (unsigned char which) {
-	unsigned char repeat, finished;
+	/* gj = repeat (1 otra vez, 2 salir), gf = finished: nada de lo que se
+	   llama aquí dentro toca gj ni gf */
 	spr_hide (0);
-	repeat = 1;
-	while (repeat == 1) {
+	gj = 1;
+	while (gj == 1) {
 		ice_level_draw (which);
 		ix [0] = ix [1] = 0; iy [0] = 0; iy [1] = 176;
 		ijump [0] = ijump [1] = 0; i_facing = 0; i_anim = 0;
-		finished = 0;
-		while (!finished) {
+		gf = 0;
+		while (!gf) {
 			read_keys ();
 			if (k_left) { i_facing = 2; i_anim ++; }
 			if (k_right) { i_facing = 0; i_anim ++; }
@@ -797,15 +834,15 @@ void ice_game (unsigned char which) {
 					scroll_msg ("CONGRATULATIONS!", "BUT THE OBONABILOBO HERE", "WAS ALREADY TAKEN...");
 				}
 				wait_key ();
-				finished = 1; repeat = 2;
+				gf = 1; gj = 2;
 			} else if (ice_kills (ix [0], iy [0]) || ice_kills (ix [1], iy [1])) {
 				scroll_msg ("OUCH!", " ", "TRY AGAIN Y/N?");
-				repeat = 0;
-				while (repeat == 0) {
-					if (!(inport (0xDFFE) & 0x10)) repeat = 1;   /* Y */
-					if (!(inport (0x7FFE) & 0x08)) repeat = 2;   /* N */
+				gj = 0;
+				while (gj == 0) {
+					if (!(inport (0xDFFE) & 0x10)) gj = 1;   /* Y */
+					if (!(inport (0x7FFE) & 0x08)) gj = 2;   /* N */
 				}
-				finished = 1;
+				gf = 1;
 			}
 		}
 	}
@@ -819,44 +856,44 @@ void ice_game (unsigned char which) {
 
 /* is the 16x16 box at (x,y) on walkable cells? (hardness 1 = wall) */
 unsigned char pl_free (unsigned char x, unsigned char y) {
-	unsigned char c0, c1, r0, r1, r, c;
-	c0 = x >> 3; c1 = (x + 15) >> 3; r0 = y >> 3; r1 = (y + 15) >> 3;
-	for (r = r0; r <= r1; r ++) {
-		gp = dlist + 1 + (r << 7) + (c0 << 2);
-		for (c = c0; c <= c1; c ++) { if (*gp == 1) return 0; gp += 4; }
+	/* gx = c0, gy = c1, gi = fila, gf = última fila, gc = columna */
+	gx = x >> 3; gy = (x + 15) >> 3; gf = (y + 15) >> 3;
+	for (gi = y >> 3; gi <= gf; gi ++) {
+		gp = dlist + 1 + (gi << 7) + (gx << 2);
+		for (gc = gx; gc <= gy; gc ++) { if (*gp == 1) return 0; gp += 4; }
 	}
 	return 1;
 }
 
 void player_move (void) {
-	unsigned char moved, nx2, ny2, t;
+	/* gj = se ha movido, gt = nueva x / nueva y, gk = fila/columna alineada */
 	read_keys ();
-	moved = 0;
+	gj = 0;
 
 	if (k_left || k_right) {
-		if (k_left) { pl_dir = 3; nx2 = px - 2; } else { pl_dir = 2; nx2 = px + 2; }
-		moved = 1;
-		if ((k_left && px > 0) || (k_right && px < 240)) {
-			if (pl_free (nx2, py)) px = nx2;
+		if (k_left) { pl_dir = 3; gt = px - MUNDO_HORZ_SPEED; } else { pl_dir = 2; gt = px + MUNDO_HORZ_SPEED; }
+		gj = 1;
+		if ((k_left && px >= MUNDO_HORZ_SPEED) || (k_right && px <= MUNDO_MAX_X - MUNDO_HORZ_SPEED)) {
+			if (pl_free (gt, py)) px = gt;
 			else if (py & 7) {
 				/* corner sliding: nudge towards the nearest row */
-				t = ((py & 7) < 4) ? (py & 0xF8) : ((py | 7) + 1);
-				if (pl_free (nx2, t)) py += (t < py) ? -2 : 2;
+				gk = ((py & 7) < 4) ? (py & 0xF8) : ((py | 7) + 1);
+				if (pl_free (gt, gk)) { if (gk < py) py -= MUNDO_VERT_SPEED; else py += MUNDO_VERT_SPEED; }
 			}
 		}
 	}
 	if (k_up || k_down) {
-		if (k_up) { pl_dir = 1; ny2 = py - 2; } else { pl_dir = 0; ny2 = py + 2; }
-		moved = 1;
-		if ((k_up && py > 0) || (k_down && py < 176)) {
-			if (pl_free (px, ny2)) py = ny2;
+		if (k_up) { pl_dir = 1; gt = py - MUNDO_VERT_SPEED; } else { pl_dir = 0; gt = py + MUNDO_VERT_SPEED; }
+		gj = 1;
+		if ((k_up && py >= MUNDO_VERT_SPEED) || (k_down && py <= MUNDO_MAX_Y - MUNDO_VERT_SPEED)) {
+			if (pl_free (px, gt)) py = gt;
 			else if (px & 7) {
-				t = ((px & 7) < 4) ? (px & 0xF8) : ((px | 7) + 1);
-				if (pl_free (t, ny2)) px += (t < px) ? -2 : 2;
+				gk = ((px & 7) < 4) ? (px & 0xF8) : ((px | 7) + 1);
+				if (pl_free (gk, gt)) { if (gk < px) px -= MUNDO_HORZ_SPEED; else px += MUNDO_HORZ_SPEED; }
 			}
 		}
 	}
-	if (moved) pl_anim ++;
+	if (gj) pl_anim ++;
 	spr_put (0, player_frame (), px, py);
 }
 
@@ -881,11 +918,12 @@ void init_world (unsigned char n) {
 }
 
 void game (void) {
-	unsigned char i, j, cx8, cy8, k, newscr;
-	unsigned char *c, *h;
-
+	/* ga = i, gb/gd = posición del prota en caracteres, ge = k / newscr,
+	   gp3 = conexión actual, gp4 = hotspot actual. gp3 y gp4 los machacan
+	   ice_game / display_screen, pero sólo se leen antes de esas llamadas
+	   (después siempre hay un break). */
 	npant = 0;
-	for (i = 0; i < 4; i ++) obonabilobos [i] = 0;
+	for (ga = 0; ga < 4; ga ++) obonabilobos [ga] = 0;
 	flag_caves = 99;
 	pl_obs = 0;
 
@@ -901,17 +939,17 @@ void game (void) {
 
 		if (ob_dirty) show_ob ();
 
-		cx8 = (px + 4) >> 3; cy8 = (py + 4) >> 3;
-		c = connections + npant * 28;
-		h = hotspots + npant * 24;
-		for (i = 0; i < 4; i ++) {
+		gb = (px + 4) >> 3; gd = (py + 4) >> 3;
+		gp3 = connections + npant * 28;
+		gp4 = hotspots + npant * 24;
+		for (ga = 0; ga < 4; ga ++) {
 			/* connections: X1, Y1, X2, Y2, screen, X, Y */
-			if ((c [2] | c [3]) && cx8 >= c [0] && cx8 <= c [2] && cy8 >= c [1] && cy8 <= c [3]) {
-				newscr = (npant != c [4]);
-				npant = c [4];
-				if (c [5] != 255) px = c [5] << 3;
-				if (c [6] != 255) py = c [6] << 3;
-				if (newscr) {
+			if ((gp3 [2] | gp3 [3]) && gb >= gp3 [0] && gb <= gp3 [2] && gd >= gp3 [1] && gd <= gp3 [3]) {
+				ge = (npant != gp3 [4]);
+				npant = gp3 [4];
+				if (gp3 [5] != 255) px = gp3 [5] << 3;
+				if (gp3 [6] != 255) py = gp3 [6] << 3;
+				if (ge) {
 					spr_hide (0);
 					display_screen (npant);
 					display_extra (npant);
@@ -919,13 +957,13 @@ void game (void) {
 				}
 				break;
 			}
-			c += 7;
+			gp3 += 7;
 
 			/* hotspots: X1, Y1, X2, Y2, type, aux */
-			if (h [4] && cx8 >= h [0] && cx8 <= h [2] && cy8 >= h [1] && cy8 <= h [3]) {
-				if (h [4] == 1) {
+			if (gp4 [4] && gb >= gp4 [0] && gb <= gp4 [2] && gd >= gp4 [1] && gd <= gp4 [3]) {
+				if (gp4 [4] == 1) {
 					if (flag_caves == 1) {
-						ice_game (h [5]);
+						ice_game (gp4 [5]);
 						display_screen (npant);
 						display_extra (npant);
 					} else {
@@ -935,8 +973,8 @@ void game (void) {
 						msg_restore ();
 					}
 					py += 8;
-				} else if (h [4] == 2) {
-					k = 0;
+				} else if (gp4 [4] == 2) {
+					ge = 0;
 					msg_save ();
 					if (flag_caves != 1) {
 						flag_caves = 1;
@@ -944,7 +982,7 @@ void game (void) {
 					} else if (pl_obs < 4) {
 						scroll_msg ("LE VIELHO SAYS", "'I ALREADY TOLD YOU", "WHAT TO DO'");
 					} else {
-						k = 1;
+						ge = 1;
 						scroll_msg ("LE VIELHO SAYS", "'OH! MY OBONABILOBOS", "THANK YOU'");
 						wait_key ();
 						scroll_msg ("LE VIELHO SAYS", "'I HAVE A PRESENT:", "THE KILLING SPELL!'");
@@ -955,7 +993,7 @@ void game (void) {
 						intro (1);
 						init_world (4);
 					}
-					if (k == 0) {
+					if (ge == 0) {
 						wait_key ();
 						msg_restore ();
 						px = 168;
@@ -965,7 +1003,7 @@ void game (void) {
 				spr_put (0, player_frame (), px, py);
 				break;
 			}
-			h += 6;
+			gp4 += 6;
 		}
 	}
 }
