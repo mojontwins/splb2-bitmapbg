@@ -14,7 +14,7 @@
  *   23296 - 23551   msg_attrs (printer buffer)
  *   24200 - ~$D400  this binary (code + splib2 + data + display list)
  *   ...   - $D5C0   stack (a few hundred bytes; the flood fill runs on a
- *                   temporary stack inside SHADOW, see do_fill)
+ *                   temporary stack inside SHADOW, see sp_VecConfig in main)
  *   $D600 - $D7FF   splib2 block memory for sprite structs (NUMBLOCKS * 15)
  *   $D800 - $EFFF   SHADOW: background bitmap, screen layout
  *   $F000 - $F100   IM2 vector table
@@ -28,8 +28,6 @@
 #include <spritepack.h>
 
 #asm
-	DEFC SHADOW_TOP = $F000
-	LIB SPGetScrnAddr
 	XREF SPDisplayList
 #endasm
 
@@ -41,7 +39,7 @@
 #include "assets.h"
 
 /* ------------------------------------------------------------------ */
-/* splib2 glue                                                         */
+/* las cosicas de splib2 de siempre, ya las conoces                   */
 /* ------------------------------------------------------------------ */
 
 void *my_malloc (uint bytes) { return sp_BlockAlloc (0); }
@@ -57,8 +55,7 @@ unsigned char spr_on [3];
 
 unsigned char isrc;
 
-/* ISR hook. splib2's generic ISR uses the two bytes *before* a hook as the
-   hook list link, so it must be preceded by two spare bytes. */
+// ISR - necesitas dos bytes libres antes.
 extern void isr (void);
 #asm
 	defw 0
@@ -68,18 +65,21 @@ extern void isr (void);
 	ret
 #endasm
 
-/* scratch globals (sccz80 is much happier with globals than locals) */
+// Movimiento
+
+#define PLATAFORMAS_HORZ_SPEED 4
+#define PLATAFORMAS_VERT_SPEED 4
+
+/* scratch globals (sccz80 is more pichita tiesa with globals than locals) */
 unsigned char gx, gy, gi, gj, gk, gc, gt;
 unsigned int  gw, gw2;
 unsigned char *gp, *gp2;
 
-/* asm helper parameters */
+/* embéz of parameters... more globals */
 unsigned int  cp_src, cp_dst, cp_len;
-unsigned char cx, cy, nx, ny;          /* vector pen / target          */
-unsigned char vd_dx, vd_dy, vd_xi, vd_yi;
 
 /* ------------------------------------------------------------------ */
-/* Low level helpers                                                   */
+/* KOSAS                                                              */
 /* ------------------------------------------------------------------ */
 
 void copy_mem (void) {
@@ -130,13 +130,14 @@ void wait_frames (unsigned char n) {
 	isrc = 0;
 }
 
+/* La rutina de RND más tonta que se te ocurra es mejor que esta */
 unsigned char rnd_seed = 77;
 unsigned char rnd (void) {
 	rnd_seed = (rnd_seed * 5) + 17;
 	return rnd_seed;
 }
 
-/* keys: QAOP + SPACE, as in the original */
+/* keys: QAOP + SPACE, como en the original */
 unsigned char k_left, k_right, k_up, k_down, k_fire;
 
 void read_keys (void) {
@@ -190,7 +191,7 @@ void cls_screen (unsigned char attr) {
 /* middle third save / restore (screen layout makes this a single copy) */
 unsigned char msg_buffer [2048];
 /* 256 bytes: lives in the 48K printer buffer */
-/* (sccz80 1.10 miscompiles ((T*)const)[i], so use pointer variables) */
+/* z88dk1.10 se hace la picha un lío con acceso por índice a puntero, así que usa punteros y ya. */
 unsigned char *msg_attrs = 23296;
 
 void msg_save (void) {
@@ -274,200 +275,18 @@ void clear_box (unsigned char x, unsigned char y, unsigned char w, unsigned char
 }
 
 /* ------------------------------------------------------------------ */
-/* Vector screens (Suvleir 3.0 format)                                 */
+/* Vector screens (Suvleir 4 SVL, drawn by splib2's SPVecDraw)         */
 /* ------------------------------------------------------------------ */
 
 /* The hardness map lives in the display list's tile byte (byte 1 of each
-   4-byte cell), which BITMAPBG leaves unused. */
+   4-byte cell), which BITMAPBG leaves unused: sp_VecDraw (..., dlist + 1, 4)
+   decodes it straight there. */
 unsigned char *dlist;
 
-#asm
-; plot pixel (cx, cy) on the real screen
-.vd_plot
-		ld  a, (_cy)
-		cp  192
-		ret nc
-		ld  h, a
-		ld  a, (_cx)
-		ld  l, a
-		ld  a, h
-		call SPGetScrnAddr
-		ld  a, (de)
-		or  b
-		ld  (de), a
-		ret
-#endasm
 
-void vec_plot (void) {
-	#asm
-		call vd_plot
-	#endasm
-}
-
-/* Line from (cx,cy) to (nx,ny), same Bresenham decisions as ZX Basic's DRAW */
-void vec_draw (void) {
-	#asm
-		ld  a, (_nx)
-		ld  hl, _cx
-		sub (hl)
-		ld  c, 1
-		jr  nc, vd1
-		neg
-		ld  c, 255
-	.vd1
-		ld  (_vd_dx), a
-		ld  a, c
-		ld  (_vd_xi), a
-
-		ld  a, (_ny)
-		ld  hl, _cy
-		sub (hl)
-		ld  c, 1
-		jr  nc, vd2
-		neg
-		ld  c, 255
-	.vd2
-		ld  (_vd_dy), a
-		ld  a, c
-		ld  (_vd_yi), a
-
-		ld  a, (_vd_dx)
-		ld  b, a
-		ld  a, (_vd_dy)
-		cp  b
-		jr  c, vd_xmajor               ; dy < dx
-
-	; ---- dy >= dx
-		ld  a, (_vd_dy)
-		srl a
-		ld  l, a
-		ld  h, 0                       ; hl = error = dy / 2
-	.vdy_loop
-		ld  a, (_cy)
-		ld  b, a
-		ld  a, (_ny)
-		cp  b
-		ret z
-		ld  a, (_vd_dx)
-		ld  e, a
-		ld  d, 0
-		or  a
-		sbc hl, de                     ; error -= dx
-		bit 7, h
-		jr  z, vdy_nox
-		ld  a, (_vd_dy)
-		ld  e, a
-		add hl, de                     ; error += dy
-		ld  a, (_vd_xi)
-		ld  b, a
-		ld  a, (_cx)
-		add a, b
-		ld  (_cx), a
-	.vdy_nox
-		ld  a, (_vd_yi)
-		ld  b, a
-		ld  a, (_cy)
-		add a, b
-		ld  (_cy), a
-		push hl
-		call vd_plot
-		pop hl
-		jr  vdy_loop
-
-	; ---- dx > dy
-	.vd_xmajor
-		ld  a, (_vd_dx)
-		srl a
-		ld  l, a
-		ld  h, 0                       ; hl = error = dx / 2
-	.vdx_loop
-		ld  a, (_cx)
-		ld  b, a
-		ld  a, (_nx)
-		cp  b
-		ret z
-		ld  a, (_vd_dy)
-		ld  e, a
-		ld  d, 0
-		or  a
-		sbc hl, de                     ; error -= dy
-		bit 7, h
-		jr  z, vdx_noy
-		ld  a, (_vd_dx)
-		ld  e, a
-		add hl, de                     ; error += dx
-		ld  a, (_vd_yi)
-		ld  b, a
-		ld  a, (_cy)
-		add a, b
-		ld  (_cy), a
-	.vdx_noy
-		ld  a, (_vd_xi)
-		ld  b, a
-		ld  a, (_cx)
-		add a, b
-		ld  (_cx), a
-		push hl
-		call vd_plot
-		pop hl
-		jr  vdx_loop
-	#endasm
-}
-
-/* Patterned flood fill. SPPFill keeps its queue on the stack (3 bytes per
-   entry), so we run it on a temporary stack at the top of the SHADOW buffer:
-   whenever we draw vectors, the shadow is about to be recaptured anyway. */
-unsigned char fill_x, fill_y;
-unsigned int fill_pat;
-
-void do_fill (void) {
-	#asm
-		LIB SPPFill
-		ld  (fill_sp + 1), sp
-		ld  sp, SHADOW_TOP
-		push ix
-		ld  a, (_fill_y)
-		ld  h, a
-		ld  a, (_fill_x)
-		ld  l, a
-		ld  de, (_fill_pat)
-		ld  bc, 1000                   ; queue depth: 3030 bytes, plenty
-		call SPPFill
-		pop ix
-	.fill_sp
-		ld  sp, 0
-	#endasm
-}
-
-/* Draws a vector screen on the REAL screen and (optionally) decodes its
-   hardness layer. */
-void vec_parse (unsigned char *bin, unsigned char decode_hard) {
-	gw = bin [0] + (bin [1] << 8);
-	gp = bin + gw - 2;                     /* end of drawing commands */
-	bin += 2;
-	while (bin < gp) {
-		gc = *bin ++;
-		if (gc < 192) {
-			nx = *bin ++; ny = gc;
-			vec_draw ();
-		} else if (gc == 192) {
-			cx = *bin ++; cy = *bin ++;
-			vec_plot ();
-		} else if (gc == 193) {
-			gx = *bin ++; gy = *bin ++; gt = *bin ++;
-			fill_x = gx; fill_y = gy; fill_pat = fill_patterns + (gt << 3);
-			do_fill ();
-		}
-	}
-	if (decode_hard) {
-		/* un-RLE: 2 bits value, 6 bits count (0 == 256) */
-		gk = 0; gp2 = dlist + 1;
-		for (gw = 0; gw < 768; gw ++) {
-			if (gk == 0) { gc = *bin ++; gk = gc & 63; gt = gc >> 6; }
-			*gp2 = gt; gp2 += 4;
-			gk --;
-		}
-	}
+/* Esto pinta los archivos de Suvleir 4 en pantalla y opcionalmente pone las durezas. */
+void vec_parse (unsigned char *svl, unsigned char decode_hard) {
+	sp_VecDraw (svl, decode_hard ? dlist + 1 : 0, 4);
 }
 
 unsigned char *screens [] = {
@@ -541,7 +360,7 @@ unsigned char player_frame (void) {
 	return SPR_PLAYER + pl_dir * 3 + step_frame [(pl_anim >> 2) & 3];
 }
 
-/* attribute fade to white (fadeWhite), on real attrs */
+/* Fade a blanco por Eusebio el mono serio */
 void fade_white (void) {
 	#asm
 		halt
@@ -588,7 +407,7 @@ void display_extra (unsigned char n) {
 	ob_dirty = 1;
 }
 
-/* The Suvleir message box over the middle of the screen */
+// Esto cubre el tercio de enmedio, por eso lo salvamos en 2K por ahí
 void scroll_msg (unsigned char *t1, unsigned char *t2, unsigned char *t3) {
 	spr_hide_all ();
 	sp_UpdateNow ();
@@ -606,10 +425,10 @@ void scroll_msg (unsigned char *t1, unsigned char *t2, unsigned char *t3) {
 }
 
 /* ------------------------------------------------------------------ */
-/* Intro / cutscenes                                                   */
+/* Intro / cutscenes                                                  */
 /* ------------------------------------------------------------------ */
 
-/* scroll the top third (sky) 8 pixels left, on the real screen */
+// Esto scrollea el primer tercio, código por Eustaquio el mono... no se me ocurre rima
 void scroll_sky (void) {
 	#asm
 		ld  hl, 16384
@@ -629,6 +448,7 @@ void scroll_sky (void) {
 	#endasm
 }
 
+// aplib
 void sky_depack (void) {
 	#asm
 		ld  hl, _sky_apl
@@ -821,7 +641,7 @@ void intro (unsigned char n) {
 		put_char (12, 18, 56, 32 + (flipflop << 2));
 		put_char (13, 18, 56, 33 + (flipflop << 2));
 
-		/* walking in (pixel by pixel) */
+		// El prota entra en escena
 		if (st == 0 && ct2 > 16 && spr_on [0]) {
 			px -= 2; pl_anim ++;
 			spr_put (0, player_frame (), px, py);
@@ -857,11 +677,11 @@ void intro (unsigned char n) {
 }
 
 /* ------------------------------------------------------------------ */
-/* Ice caves (mirror platform puzzle)                                  */
+/* Ice caves (fase de plataformas espejadas)                          */
 /* ------------------------------------------------------------------ */
 
-/* 16 x 12 tiles of 16x16 pixels; lives in the free gap between the IM2
-   table and the ISR ($F101-$F1F0) */
+// El mapa de cada pantalla lo vamos a poner en el cacho libre de splib2 que hay
+// entre la tabla de IM2 y la rutina de ISR, que cabe...
 unsigned char *ice_map = 0xF101;
 unsigned char *ice_levels [] = { ice_level_0, ice_level_1, ice_level_2, ice_level_3 };
 
@@ -923,21 +743,21 @@ void ice_player_move (unsigned char p) {
 	if (p == 0) { ymin = 0; ymax = 80; } else { ymin = 96; ymax = 176; }
 
 	/* horizontal */
-	if (k_left && ix [p] > 0 && ice_free (ix [p] - 2, iy [p])) ix [p] -= 2;
-	if (k_right && ix [p] < 240 && ice_free (ix [p] + 2, iy [p])) ix [p] += 2;
+	if (k_left && ix [p] > 0 && ice_free (ix [p] - PLATAFORMAS_HORZ_SPEED, iy [p])) ix [p] -= PLATAFORMAS_HORZ_SPEED;
+	if (k_right && ix [p] < 240 && ice_free (ix [p] + PLATAFORMAS_HORZ_SPEED, iy [p])) ix [p] += PLATAFORMAS_HORZ_SPEED;
 
 	/* vertical: "down" is +4 for the top guy and -4 for the bottom guy */
-	if (p == 0) iground [p] = (iy [p] == ymax || !ice_free (ix [p], iy [p] + 4));
-	else iground [p] = (iy [p] == ymin || !ice_free (ix [p], iy [p] - 4));
+	if (p == 0) iground [p] = (iy [p] == ymax || !ice_free (ix [p], iy [p] + PLATAFORMAS_VERT_SPEED));
+	else iground [p] = (iy [p] == ymin || !ice_free (ix [p], iy [p] - PLATAFORMAS_VERT_SPEED));
 
 	if (ijump [p]) {
-		if (p == 0) { if (iy [p] > ymin && ice_free (ix [p], iy [p] - 4)) iy [p] -= 4; else ijump [p] = 1; }
-		else { if (iy [p] < ymax && ice_free (ix [p], iy [p] + 4)) iy [p] += 4; else ijump [p] = 1; }
+		if (p == 0) { if (iy [p] > ymin && ice_free (ix [p], iy [p] - PLATAFORMAS_VERT_SPEED)) iy [p] -= PLATAFORMAS_VERT_SPEED; else ijump [p] = 1; }
+		else { if (iy [p] < ymax && ice_free (ix [p], iy [p] + PLATAFORMAS_VERT_SPEED)) iy [p] += PLATAFORMAS_VERT_SPEED; else ijump [p] = 1; }
 		ijump [p] --;
 	} else if (!iground [p]) {
-		if (p == 0) iy [p] += 4; else iy [p] -= 4;
+		if (p == 0) iy [p] += PLATAFORMAS_VERT_SPEED; else iy [p] -= PLATAFORMAS_VERT_SPEED;
 	} else if (k_fire) {
-		ijump [p] = 12;     /* 12 x 4 = 48 pixels, 3 tiles, as the original */
+		ijump [p] = 12;     /* 12 x 4 = 48 pixels, 3 tiles */
 	}
 }
 
@@ -994,7 +814,7 @@ void ice_game (unsigned char which) {
 }
 
 /* ------------------------------------------------------------------ */
-/* Overworld                                                           */
+/* El mundo de Lhikoj es genital                                      */
 /* ------------------------------------------------------------------ */
 
 /* is the 16x16 box at (x,y) on walkable cells? (hardness 1 = wall) */
@@ -1167,6 +987,8 @@ main () {
 
 	sp_Initialize (56, 0);
 	dlist = sp_CompDListAddr (0, 0);
+	/* built-in Suvleir patterns; fills on a 3K stack at the top of the shadow */
+	sp_VecConfig (0, (void *) (SHADOW + 6144), 1000);
 	sp_Border (BLACK);
 
 	spr_create (0, 1);

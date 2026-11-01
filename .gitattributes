@@ -7,3 +7,4 @@
 *.png binary
 *.scr binary
 *.bas -text
+*.svl binary

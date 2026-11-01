@@ -31,7 +31,8 @@ This section covers only what the game does with it.
 | Put a char/tile or text into the background | Write straight into the shadow (`cell_addr()`, which is the same as `sp_BgAddr()`), set the attribute in display-list byte 0, then invalidate the cell (`put_char`, `print_at`). |
 | Save/restore the message area | The shadow uses screen layout, so the middle third is one contiguous 2K block: a single `ldir`. Its 256 display-list attributes are saved alongside. |
 | Effects outside sprite areas | The intro sky scroll works directly on the real screen's top third. Nothing invalidates it, so splib2 never overwrites it. |
-| Collision map | Stored in the display list's **tile byte** (`dlist[cell*4+1]`). BITMAPBG doesn't use that byte, so this saves 768 bytes. |
+| Collision map | Stored in the display list's **tile byte** (`dlist[cell*4+1]`). BITMAPBG doesn't use that byte, so this saves 768 bytes. `sp_VecDraw(screen, dlist + 1, 4)` decodes it there directly. |
+| Vector screens | `gfx/*.svl`, made with Suvleir 4 (`tools/suvleir4`) and drawn by `sp_VecDraw`. `sp_VecConfig(0, SP_BGSHADOW + 6144, 1000)` runs the fills on a 3K stack at the top of the shadow screen. The original `draw.exe` files are in `orig/legacy-screens/`; they were converted with `suvleir4 -convert`. |
 
 ---
 
@@ -39,7 +40,7 @@ This section covers only what the game does with it.
 
 ```
 $5B00-$5BFF  msg_attrs (printer buffer)              256
-$5E88-~$D3F9 binary (org 24200): code, data, splib2, display list (3K)
+$5E88-~$D336 binary (org 24200): code, data, splib2, display list (3K)
    ...-$D5C0 stack (grows down; max depth measured ~110 bytes)
 $D62F-$D7FF  splib2 block memory: 31 blocks x 15 (3 sprites x 10)
 $D800-$EFFF  SHADOW: background bitmap, screen layout     6144
@@ -58,11 +59,12 @@ Everything above is fixed by splib2 or by this map.
 
 * **Flood fill on a borrowed stack.** `SPPFill` keeps its queue on the stack
   (3·depth+30 bytes; the ZX Basic port used depth 300, about 930 bytes).
-  `do_fill()` switches `SP` to the top of the shadow (`$F000`) for the call.
+  `sp_VecConfig()` makes `SPVecDraw` switch `SP` to the top of the shadow
+  (`$F000`) during fills.
   The shadow is always recaptured after drawing vectors, so this costs
   nothing, and the fill gets depth 1000 (about 3 KB) for free.
 * **Hardness map in the display list tile byte.** `dlist[cell*4+1]`, decoded
-  straight there by `vec_parse()`.
+  straight there by `sp_VecDraw(screen, dlist + 1, 4)`.
 * **No blank third sprite column per frame.** A 16 px wide sprite needs 3
   columns so it can shift 0–7 px. The third column's char structs point at
   `SPNullSprPtr`, which `SPMoveSprAbs` never animates, so each frame stores
@@ -145,7 +147,7 @@ the intro, **Y/N** after dying in a cave.
    pointer variable instead.
 5. **Global scratch variables are shared.** For speed the code uses globals
    (`gp`, `gp2`, `gi`…). A caller must not keep one live across a call to
-   `put_char`, `print_char`, `set_attr`, `spr_put` or `vec_parse`. Two bugs
+   `put_char`, `print_char`, `set_attr` or `spr_put`. Two bugs
    during the port were exactly this.
 6. Drawing on the real screen while sprites are visible leaves sprite pixels
    in the bitmap. Always `sp_BgShow()` first if you are going to call
@@ -169,7 +171,7 @@ The example links against `../../splib2f.lib` and includes
 installing into z88dk.
 
 The build runs `tools_conv.py` (Python 3). It reads the original `.bas` files
-in `orig/` and the `.bin` screens in `gfx/` and writes `src/assets.h`. It then
+in `orig/` and the `.svl` screens in `gfx/` and writes `src/assets.h`. It then
 runs:
 
 ```
@@ -201,7 +203,8 @@ A stack canary showed a maximum stack depth of about 110 bytes.
 src/lhikoj.c            the game (C + inline asm)
 src/assets.h            generated data (do not edit)
 tools_conv.py           asset converter (sprites+masks, charset, vectors, ice levels, tables)
-gfx/*.bin               original Suvleir screens + aPLib sky
+gfx/*.svl               vector screens (Suvleir 4); gfx/c-scrollablesky.bin is the aPLib sky
+orig/legacy-screens/    the original draw.exe (Suvleir 3) screens
 orig/*.bas              original ZX Basic sources the converter reads
 build.sh / make.bat     build scripts
 lhikoj.tap              ready to run (prebuilt)

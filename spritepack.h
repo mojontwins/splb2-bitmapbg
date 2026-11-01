@@ -483,6 +483,14 @@ extern void __LIB__  sp_UpdateNow(void);
 extern void __LIB__  sp_BgCapture(void);           /* screen -> shadow + dlist attrs, all dirty */
 extern void __LIB__  sp_BgShow(void);              /* shadow + dlist attrs -> screen            */
 extern void __LIB__ *sp_BgAddr(uchar row, uchar col); /* shadow address of a cell's top line    */
+
+/* Suvleir 4 vector screens (SVL) - see vector/SPVecDraw.asm                 */
+/* draws on the real screen; hardness (if not NULL) gets 768 cells, 'stride'  */
+/* bytes apart (1 = plain array, 4 = display list tile byte at dlist+1)       */
+extern void __LIB__  sp_VecDraw(void *svl, uchar *hardness, uchar stride);
+/* patterns: 8 bytes each, NULL = built-in set; fillstack: SP for SPPFill    */
+/* (NULL = current stack); filldepth: SPPFill queue entries (default 300)     */
+extern void __LIB__  sp_VecConfig(void *patterns, void *fillstack, uint filldepth);
 extern void __LIB__ *sp_CompDListAddr(uchar row, uchar col);
 extern void __LIB__ *sp_CompDirtyAddr(uchar row, uchar col, uchar *mask);
 

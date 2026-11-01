@@ -86,4 +86,8 @@ cd updater
 del *.o
 cd ..
 
+cd vector
+del *.o
+cd ..
+
 :end

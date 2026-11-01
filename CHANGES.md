@@ -16,7 +16,12 @@
 * `build.sh`: Unix equivalent of `Makefile.bat`.
 * Text sources normalised to LF line endings (`.bat` files stay CRLF, see
   `.gitattributes`).
-* `example/lhikoj`: a complete game using the library.
+* `vector/SPVecDraw.asm` with C wrappers `sp_VecDraw` and `sp_VecConfig`:
+  draws Suvleir 4 (SVL) vector screens and decodes their hardness maps.
+* `tools/suvleir4`: a portable vector screen editor written in C, replacing
+  `draw.exe`, plus the SVL format specification.
+* `example/lhikoj`: a complete game using the library. Its screens are SVL
+  files drawn with `sp_VecDraw`.
 
 ## Earlier Mojon Twins changes (inherited)
 

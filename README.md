@@ -29,6 +29,10 @@ clipping.
   option in `SPconfig.def`, and three helpers (`sp_BgCapture`, `sp_BgShow`,
   `sp_BgAddr`).
 * With `BITMAPBG = 0` it builds the original tile-based library.
+* **Vector screens**: `sp_VecDraw` draws Suvleir 4 (SVL) screens (lines,
+  patterned fills and a hardness map) made with the bundled editor,
+  [`tools/suvleir4`](tools/suvleir4). It runs on Windows and Linux, and on
+  macOS through XQuartz.
 * There is a complete game in [`example/lhikoj`](example/lhikoj): vector
   backgrounds, pixel-by-pixel masked sprites, 25 fps.
 
@@ -36,6 +40,8 @@ clipping.
 
 * [`docs/BITMAPBG.md`](docs/BITMAPBG.md): how it works, memory layout, and how
   to get bitmaps into the buffer (with code). **Start here.**
+* [`docs/VECTOR.md`](docs/VECTOR.md): vector screens with `sp_VecDraw`, and
+  [`tools/suvleir4/README.md`](tools/suvleir4/README.md) for the editor.
 * [`docs/TOOLCHAIN.md`](docs/TOOLCHAIN.md): the exact z88dk version used, and
   how to build it on modern systems.
 * [`docs/SP22-original-readme.txt`](docs/SP22-original-readme.txt): Alvin
@@ -115,6 +121,8 @@ main() {
 | `void sp_BgShow(void)` | `SPBgShow` | Background → real screen. Copies the bitmap and attributes. The screen then shows the background with no sprites, which is the clean state for drawing over it before another `sp_BgCapture()`. |
 | `void *sp_BgAddr(uchar row, uchar col)` | `SPBgAddr` (A=row, C=col → HL) | Shadow address of the top pixel line of a cell. The other 7 lines are at +256 each. |
 | `SP_BGSHADOW` | `BGSHADOW*256` | Base address of the shadow. |
+| `void sp_VecDraw(void *svl, uchar *hard, uchar stride)` | `SPVecDraw` (HL, DE, A) | Draws an SVL vector screen on the real screen. Optionally decodes its hardness map, with `stride` bytes between cells (4 = straight into the display list's free tile byte). |
+| `void sp_VecConfig(void *pats, void *fillstack, uint depth)` | `SPVecPatterns`, `SPVecFillSP`, `SPVecFillDepth` | Fill pattern table (NULL = built-in), the stack the fill runs on (NULL = current), and the fill queue depth. |
 
 Everything else is standard splib2. Functions that only deal with tile
 *graphics* (`sp_TileArray`, `sp_PrintAt*`'s tile number, `SPTileArray`) still
@@ -128,6 +136,8 @@ work, but they no longer affect what is drawn. See
 ```
 SPconfig.def, sp.lst, Makefile.bat, build.sh, spritepack.h   library config / build
 bitmapbg/          new: SPBgCapture, SPBgShow, SPBgAddr
+vector/            new: SPVecDraw (Suvleir 4 vector screens)
+tools/suvleir4/    the vector screen editor (C, Win32/X11)
 updater/           SPUpdateNow.asm (BITMAPBG patch) and the rest of the updater
 cwrapper/          C wrappers (now including sp_BgCapture/Show/Addr)
 ...                all other Sprite Pack 2.2 modules, unchanged

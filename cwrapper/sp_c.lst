@@ -107,3 +107,5 @@ sp_WaitForNoKey.c
 sp_BgAddr.c
 sp_BgCapture.c
 sp_BgShow.c
+sp_VecConfig.c
+sp_VecDraw.c

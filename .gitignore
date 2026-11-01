@@ -10,3 +10,4 @@ example/*/src/zcc_opt.def
 sp_unix.lst
 /splib2f.lib
 example/*/src/*.bin
+tools/suvleir4/tests/out_*

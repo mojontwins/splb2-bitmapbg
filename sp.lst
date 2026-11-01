@@ -233,3 +233,6 @@ bitmapbg\SPBgShow
 cwrapper\sp_BgAddr
 cwrapper\sp_BgCapture
 cwrapper\sp_BgShow
+vector\SPVecDraw
+cwrapper\sp_VecConfig
+cwrapper\sp_VecDraw
