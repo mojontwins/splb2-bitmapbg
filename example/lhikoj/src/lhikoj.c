@@ -91,6 +91,9 @@ extern void isr (void);
 #define PLATAFORMAS_VERT_SPEED 4
 #define PLATAFORMAS_JUMP_HEIGHT 48  // 3 tiles, como el original
 #define PLATAFORMAS_MAX_X      240
+#define PLATAFORMAS_EXIT_SLACK 8    // margen (+-px desde el centro del sprite) para
+                                    // contar que se pisa la salida; 8 = basta con
+                                    // pisarla con cualquier trozo del sprite (max 8)
 
 /* scratch globals (sccz80 is more pichita tiesa with globals than locals) */
 unsigned char gx, gy, gi, gj, gk, gc, gt;
@@ -797,10 +800,19 @@ void ice_player_move (unsigned char p) {
 	}
 }
 
+/* exit if the guy is standing (on the ground) and the tile under his feet
+   (above his head for the upside-down one) is EXIT anywhere within
+   +-PLATAFORMAS_EXIT_SLACK pixels of his centre: no exact alignment needed */
+unsigned char ice_exit_under (unsigned char x, unsigned char y) {
+	if (ice_tile (x + 8 - PLATAFORMAS_EXIT_SLACK, y) == 4) return 1;
+	if (ice_tile (x + 7 + PLATAFORMAS_EXIT_SLACK, y) == 4) return 1;
+	return 0;
+}
+
 unsigned char ice_on_exit (unsigned char p) {
 	if (!iground [p]) return 0;
-	if (p == 0) return (ice_tile (ix [p] + 8, iy [p] + 16) == 4);
-	return (ice_tile (ix [p] + 8, iy [p] - 1) == 4);
+	if (p == 0) return ice_exit_under (ix [p], iy [p] + 16);
+	return ice_exit_under (ix [p], iy [p] - 1);
 }
 
 void ice_game (unsigned char which) {

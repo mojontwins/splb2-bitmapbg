@@ -40,7 +40,7 @@ This section covers only what the game does with it.
 
 ```
 $5B00-$5BFF  msg_attrs (printer buffer)              256
-$5E88-~$D243 binary (org 24200): code, data, splib2, display list (3K)
+$5E88-~$D275 binary (org 24200): code, data, splib2, display list (3K)
    ...-$D5C0 stack (grows down; max depth measured ~110 bytes)
 $D62F-$D7FF  splib2 block memory: 31 blocks x 15 (3 sprites x 10)
 $D800-$EFFF  SHADOW: background bitmap, screen layout     6144
@@ -108,7 +108,7 @@ The original moved in 8 px steps. This port moves pixel by pixel:
 * **Speeds are constants** at the top of `src/lhikoj.c`: `MUNDO_HORZ_SPEED`,
   `MUNDO_VERT_SPEED` (overworld, must divide 8), `INTRO_WALK_SPEED` (must
   divide 104), and `PLATAFORMAS_HORZ_SPEED`, `PLATAFORMAS_VERT_SPEED`,
-  `PLATAFORMAS_JUMP_HEIGHT` (ice caves, must divide 16). Overworld speeds of
+  `PLATAFORMAS_JUMP_HEIGHT`, `PLATAFORMAS_EXIT_SLACK` (ice caves; speeds must divide 16). Overworld speeds of
   2 and 4 have been played through in the emulator.
 
 * **Overworld**: 2 px per frame, 16×16 collision box against the hardness map
@@ -119,8 +119,10 @@ The original moved in 8 px steps. This port moves pixel by pixel:
   tables, which are copied verbatim from `lhikoj.bas`.
 * **Ice caves**: horizontal 2 px/frame, vertical 4 px/frame. A jump lasts
   12 frames × 4 px = 48 px (3 tiles, as in the original). The bottom twin
-  mirrors gravity. **Exit** needs both twins on the ground with the tile below
-  (top twin) or above (bottom twin) their centre being EXIT. **Death** is when
+  mirrors gravity. **Exit** needs both twins on the ground, standing on (or,
+  for the bottom twin, hanging from) an EXIT tile with any part of the
+  sprite: the tile is checked ±`PLATAFORMAS_EXIT_SLACK` (8) pixels around
+  the centre, so no exact alignment is needed. **Death** is when
   the inner 10×10 of either twin touches a spike tile.
 * **Messages**: sprites are hidden while a message box is up, and the box's
   attributes are reset to black-on-white. The ZX Basic version cleared them
