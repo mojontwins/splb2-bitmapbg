@@ -56,7 +56,7 @@
  * ------------------------------------------------------------------------
  * MEMORY MAP (48K, splib2t.lib = tile mode)
  * ------------------------------------------------------------------------
- *   $5E88 - ~$B1xx  this binary (org 24200): code, splib2, assets, the
+ *   $5E88 - ~$B4xx  this binary (org 24200): code, splib2, assets, the
  *                   display list (3K) and splib2's tile table (512 bytes).
  *                   It may grow up to $D7FF.
  *   $D800 - $DA75   splib2 block memory: NUMBLOCKS (42) blocks x 15 bytes
@@ -105,6 +105,11 @@
 #define FIX_SPEED          (8 / TICK_FRAMES)
 
 #define HAMMER_STRENGTH    2       /* taken off a platform / enemy per blow */
+#define START_LIVES        3       /* lives at the start of a game          */
+#define TOUCH_DIST         12      /* an enemy closer than this (px, in both */
+                                   /* axes) to the player kills him         */
+#define POP_TICKS          4       /* length of an enemy's death "pop"      */
+#define DEATH_FRAMES       30      /* the player's death animation          */
 #define LEVEL_CLEAR_DELAY  75      /* frames between the last death and the */
                                    /* next level                            */
 
@@ -121,6 +126,11 @@
 #define G_STAIRS           128     /* stairs down from this floor           */
 
 #define BLANK_TILE         NTILES  /* an extra all-zero tile                */
+
+/* HUD text: tiles TEXT_TILE.. are the ROM font's characters 32..95
+   (space, digits, capitals), so HUD_TEXT ("A") = TEXT_TILE + 'A' - 32 */
+#define TEXT_TILE          128
+#define HUD_ATTR           0x46    /* BRIGHT yellow on black                */
 
 /* ------------------------------------------------------------------ */
 /* splib2 housekeeping (as in every splib2 program)                   */
@@ -164,6 +174,9 @@ unsigned char blank_gfx [8];       /* graphic of BLANK_TILE (all zero)      */
 /*   move_player ........... pbx pby pcx pcy + the above                */
 /*   enemy_random_state .... gj                                        */
 /*   move_enemies .......... ei ebx eby eb + enemy_random_state, put_* */
+/*   check_touch ........... ei                                        */
+/*   hud_draw .............. cx cy ct sp_s gv                          */
+/*   player_dies ........... gi + hud/beep/start_level                 */
 /*   game / main ........... gi                                        */
 /* ------------------------------------------------------------------ */
 
@@ -176,7 +189,6 @@ unsigned char s0, s1, s2, s3;      /* put_block_shadow: per-char offsets    */
 
 unsigned char s_n, s_f, s_x, s_y;  /* spr_put: sprite, frame, x, y (pixels) */
 
-unsigned char level;               /* current level number                  */
 unsigned char *lv;                 /* its 43 bytes (see levels.txt / conv)  */
 
 /* Work buffers in the RAM freed by not using BITMAPBG. Plain pointers to
@@ -346,6 +358,36 @@ void put_big (void) {
 }
 
 /* ------------------------------------------------------------------ */
+/* HUD: row 1, in the ROM font (see TEXT_TILE). "LIVES n" on the left,  */
+/* "LEVEL n" on the right. Redrawn by start_level.                      */
+/* ------------------------------------------------------------------ */
+
+unsigned char *sp_s;               /* string being printed                  */
+
+/* zero-terminated string sp_s at (cx, cy) */
+void print_str (void) {
+	while (*sp_s) {
+		sp_PrintAtInv (cy, cx, HUD_ATTR, TEXT_TILE - 32 + *sp_s ++);
+		++ cx;
+	}
+}
+
+/* number gv (0..99) at (cx, cy) */
+void print_num (void) {
+	if (gv >= 10) { sp_PrintAtInv (cy, cx, HUD_ATTR, TEXT_TILE - 32 + '0' + gv / 10); ++ cx; }
+	sp_PrintAtInv (cy, cx, HUD_ATTR, TEXT_TILE - 32 + '0' + gv % 10); ++ cx;
+}
+
+unsigned char lives;               /* declared here for the HUD             */
+unsigned char level;               /* current level number                  */
+
+void hud_draw (void) {
+	cy = 1;
+	cx = 2;  sp_s = "LIVES "; print_str (); gv = lives; print_num ();
+	cx = 22; sp_s = "LEVEL "; print_str (); gv = level + 1; print_num ();
+}
+
+/* ------------------------------------------------------------------ */
 /* DRAWING A LEVEL (drawHammerinLevel). The screen is:                 */
 /*   - a frame (columns 0-1 and 30-31),                               */
 /*   - a background strip at the top (rows 3-6),                      */
@@ -466,6 +508,12 @@ void spr_put (void) {
 	gp = sprite_frames + frame_offsets [s_f];
 	sp_MoveSprAbs (spr [s_n], &clip_full, gp - spr_cur [s_n], s_y >> 3, s_x >> 3, s_x & 7, s_y & 7);
 	spr_cur [s_n] = gp;
+}
+
+/* sprite s_n out of sight: moved outside the clip rectangle (column 34).
+   The next spr_put brings it back.                                    */
+void spr_hide (void) {
+	sp_MoveSprAbs (spr [s_n], &clip_full, 0, 0, 34, 0, 0);
 }
 
 /* address of splib2's empty graphic (for the third column, below) */
@@ -648,13 +696,15 @@ void move_player (void) {
 /*                                                                     */
 /* States: 0 idle (decides)  1 left  2 right  3 up  4 down             */
 /*         5 falling (hammered through a hole)                         */
-/*         6 fixing a hole   7 exploding   8 dead (tombstone)          */
+/*         6 fixing a hole   7 "pop" (dying)   8 dead (hidden)         */
 /*                                                                     */
 /* They walk to the next grid point and decide again. When idle on a   */
 /* hole they climb into it and fix it (the grid shows G_FIXING). If the */
 /* player hammers them down to 0 life meanwhile, they fall through to  */
-/* the floor below with half their life; falling onto the spikes kills */
-/* them.                                                               */
+/* the floor below. Landing on solid floor (or the spikes) kills them  */
+/* with a pop. Landing on another open hole, they survive with half    */
+/* their life and start fixing that one.                               */
+/* Touching the player (states 0-4) costs him a life: see check_touch. */
 /* ------------------------------------------------------------------ */
 
 unsigned char en_x [3], en_y [3];          /* pixels                        */
@@ -675,8 +725,8 @@ unsigned char dead_count, clear_timer;
 
 /* frames: enemy AI type n uses row n+1 of sprites.png */
 #define F_FIX        6             /* fixing (instead of hammering)         */
-#define F_BOOM       56            /* +1: second explosion frame            */
-#define F_TOMB       58
+#define F_BOOM       56            /* the "pop"; +1: its second frame       */
+#define F_TOMB       58            /* (unused now: free for your ideas)     */
 
 void init_enemies (void) {
 	for (ei = 0; ei < 3; ++ ei) {
@@ -810,12 +860,13 @@ void move_enemies (void) {
 		eby = (en_y [ei] - TOP_Y) >> 5;
 		eb = (en_ai [ei] + 1) << 3;           /* first frame of its row     */
 
-		/* reached the spikes: explode */
+		/* on the spikes (bottom floor): pop */
 		if (eby > 3 && en_state [ei] < 7) {
 			en_state [ei] = 7; en_step [ei] = 0; en_timer [ei] = 0;
 		}
 
-		/* hammered to death while fixing: fall, come back weaker */
+		/* hammered to 0 while fixing: fall. Its life is halved now in
+		   case it lands on another hole and survives (see state 5)     */
 		if (en_life [ei] == 0) {
 			en_state [ei] = 5; en_dest [ei] = en_y [ei] + 16;
 			en_life [ei] = en_last_life [ei] >> 1;
@@ -848,7 +899,20 @@ void move_enemies (void) {
 		} else if (gv == 5) {
 			en_y [ei] += ENEMY_FALL_SPEED;
 			en_frame [ei] = eb + en_facing [ei];
-			if (en_y [ei] == en_dest [ei]) en_state [ei] = 0;
+			if (en_y [ei] == en_dest [ei]) {
+				/* landed on the floor below. On an open hole: it gets
+				   straight to fixing it (no idle frame in between, or the
+				   player falling right behind could bump into it).
+				   Anything else: pop.                                    */
+				eby = (en_y [ei] - TOP_Y) >> 5;
+				if (eby < 4 && GRID (eby, ebx) == G_HOLE) {
+					en_state [ei] = 6; en_step [ei] = 0; en_timer [ei] = 0;
+					GRID (eby, ebx) = G_FIXING;
+				} else {
+					en_state [ei] = 7; en_step [ei] = 0; en_timer [ei] = 0;
+					beep (B (24));
+				}
+			}
 		} else if (gv == 6) {
 			/* fixing: 2 ticks climbing down into the hole, en_fix ticks
 			   of work, 2 ticks climbing out, then the piece is back     */
@@ -872,16 +936,16 @@ void move_enemies (void) {
 				++ en_step [ei];
 			}
 		} else if (gv == 7) {
-			/* 8 ticks of explosion, then the tombstone */
-			if (en_step [ei] < 8) en_frame [ei] = F_BOOM + (en_step [ei] & 1);
-			else en_frame [ei] = F_TOMB;
-			if (enemy_tick () && ++ en_step [ei] == 9) {
+			/* pop: POP_TICKS ticks alternating the two frames, then gone */
+			en_frame [ei] = F_BOOM + (en_step [ei] & 1);
+			if (enemy_tick () && ++ en_step [ei] == POP_TICKS) {
 				en_state [ei] = 8; en_chasing [ei] = 0;
 			}
-		} else if (gv == 8) ++ dead_count;
+		}
 
-		s_n = ei; s_f = en_frame [ei]; s_x = en_x [ei]; s_y = en_y [ei];
-		spr_put ();
+		s_n = ei;
+		if (en_state [ei] == 8) { ++ dead_count; spr_hide (); }
+		else { s_f = en_frame [ei]; s_x = en_x [ei]; s_y = en_y [ei]; spr_put (); }
 	}
 }
 
@@ -891,13 +955,44 @@ void move_enemies (void) {
 
 void start_level (void) {
 	draw_level ();
+	hud_draw ();
 	init_enemies ();
 	init_player ();
 	isrc = 0;
 }
 
+/* does an enemy touch the player? Only walking/climbing/idle enemies
+   (states 0-4) hurt: falling, fixing and popping ones don't (the one
+   fixing the hole under your feet is what you're hammering).          */
+unsigned char check_touch (void) {
+	for (ei = 0; ei < 3; ++ ei) {
+		if (en_state [ei] > 4) continue;
+		if (en_x [ei] + TOUCH_DIST > pl_x && pl_x + TOUCH_DIST > en_x [ei] &&
+		    en_y [ei] + TOUCH_DIST > pl_y && pl_y + TOUCH_DIST > en_y [ei]) return 1;
+	}
+	return 0;
+}
+
+/* the player was caught: pop animation, lose a life, restart the level
+   (or the whole game, from level 1, when there are no lives left)     */
+void player_dies (void) {
+	for (gi = 0; gi < DEATH_FRAMES; ++ gi) {
+		s_n = 3; s_f = F_BOOM + ((gi >> 2) & 1); s_x = pl_x; s_y = pl_y; spr_put ();
+		sp_UpdateNow ();
+		if ((gi & 3) == 0) beep (B (20) - (gi >> 1));    /* falling tones */
+		wait_frame ();
+	}
+	if (-- lives == 0) {
+		for (gi = 24; gi; gi -= 3) beep (B (gi));         /* game over */
+		lives = START_LIVES;
+		level = 0;
+	}
+	start_level ();
+}
+
 void game (void) {
 	level = 0;
+	lives = START_LIVES;
 	start_level ();
 	while (1) {
 		read_keys ();
@@ -909,6 +1004,8 @@ void game (void) {
 
 		sp_UpdateNow ();
 		wait_frame ();
+
+		if (check_touch ()) { player_dies (); continue; }
 
 		/* all three dead: next level (after a little pause and a tune) */
 		if (dead_count == 3 && ++ clear_timer == LEVEL_CLEAR_DELAY) {
@@ -941,6 +1038,8 @@ main () {
 	/* tile set: tile n draws tiles + 8n (gfx/tiles.png) */
 	for (gi = 0; gi < NTILES; ++ gi) sp_TileArray (gi, tiles + (gi << 3));
 	sp_TileArray (BLANK_TILE, blank_gfx);
+	/* HUD text: the ROM font (characters 32-95 from $3D00) */
+	for (gi = 0; gi < 64; ++ gi) sp_TileArray (TEXT_TILE + gi, (void *) (0x3D00 + (gi << 3)));
 
 	sp_Initialize (7, BLANK_TILE);
 	sp_Border (BLACK);

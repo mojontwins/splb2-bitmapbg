@@ -26,18 +26,26 @@ only counts when it is the only one pressed in its keyboard half-row.
 Four floors joined by stairs, and three enemies with different AIs.
 Hammer the floor you're standing on: each blow cracks it a bit more, and
 then it breaks and you fall to the floor below. An enemy that finds a hole
-climbs in and fixes it. Hammer it while it's working: each blow costs it
-life and a bit of progress. At zero it falls through to the floor below,
-coming back with half its life. Enemies that fall onto the spikes at the
-bottom explode and leave a tombstone. When all three are gone the next
-level starts.
+climbs in and fixes it. Stand on it and hammer it while it's working: each
+blow costs it life and a bit of progress. At zero it falls through to the
+floor below:
 
-This port completes the original's single level with that last rule
-(when all three enemies are dead, the next level in `levels.txt` starts),
-and adds **H** to restart. Everything else is the prototype as it was. As
-in the original, enemies don't hurt Eleuterio yet: the player's life gauge
-existed but was never used. That's the obvious next thing to write
-(see §5).
+* landing on floor (or on the spikes at the bottom), it **dies with a
+  "pop"** and disappears;
+* landing on **another open hole**, it survives with half its life and
+  starts fixing that hole straight away.
+
+If an enemy **touches you**, you lose a life and the level starts again
+from scratch. Enemies that are falling, fixing or popping don't hurt.
+With no lives left, the game starts again from level 1 with
+`START_LIVES` (3). Lives and level are shown at the top. When all three
+enemies are gone, the next level in `levels.txt` starts (after the last
+one, the first one again).
+
+The original prototype stopped short of this: there was one level, the
+player's life gauge was declared but unused, knocked-down enemies always
+came back with half their life, and only the spikes killed them (leaving
+a tombstone). The rules above finish it. **H** restarts the level.
 
 ## 2. Building
 
@@ -59,7 +67,7 @@ Three plain files hold the game's data. Edit them and run the build again;
 | File | What | Format |
 |---|---|---|
 | `levels.txt` | The levels | One block per level: four `floor` lines (stairs pattern such as `..##..#`, then the damage of the 6 breakable pieces, 0–12), three `enemy` lines (`ai=` `fix=` `life=` `speed=`) and a `tiles` line (which platform, background and frame tile sets). The file explains every field at the top. Add as many levels as fit. |
-| `gfx/sprites.png` | Every sprite frame | 128×128 pixels, 8×8 frames of 16×16. Frame = row × 8 + column. Row 0 is Eleuterio, rows 1–4 the four enemy AI types, row 7 the explosion and tombstone; rows 5–6 are free, and empty frames take no memory. **White** = ink, **black** = see-through, **red** = solid paper (the mask). A frame with no red gets an automatic mask. |
+| `gfx/sprites.png` | Every sprite frame | 128×128 pixels, 8×8 frames of 16×16. Frame = row × 8 + column. Row 0 is Eleuterio, rows 1–4 the four enemy AI types, row 7 the "pop" (2 frames) and an unused tombstone; rows 5–6 are free, and empty frames take no memory. **White** = ink, **black** = see-through, **red** = solid paper (the mask). A frame with no red gets an automatic mask. |
 | `gfx/tiles.png` | The 96 background tiles | 128×48 pixels, 16×6 tiles, **in Spectrum colours**. Two colours per tile, both normal or both BRIGHT; the higher palette index becomes INK, the lower PAPER. A one-colour tile is PAPER with INK 7. The converter stops with a message (tile number, column, row) if a tile breaks these rules. |
 
 ![sprites](shots/sprites-x4.png)
@@ -125,7 +133,7 @@ splib2's block memory have to live below `$D800`. That leaves the program
 less room (Lhikoj and CJMC3 must end below about `$D4C0`). Here:
 
 ```
-$5E88 - $B17F  binary: code, splib2, assets (may grow up to $D7FF)
+$5E88 - $B520  binary: code, splib2, assets (may grow up to $D7FF)
 $D800 - $DA75  splib2 block memory (42 blocks x 15: 4 sprites + ISR hook)
 $DA76 - $DAD6  game buffers: big tiles (32 bytes) and level grid (65 bytes)
 $DAD7 - $EDFF  FREE: about 4.9K, FREE_RAM .. FREE_RAM_END in the source
@@ -186,11 +194,14 @@ cheapest to most involved:
   they're on. To bring colours back, re-enable the commented
   `coloursprite` code in `../../updater/SPUpdateNow.asm` and set each
   sprite char's `colour`. A chasing enemy could then flash again.
-* **Next level** and **H to restart**, described in §1.
-* **To do**, for whoever continues: enemies hurting Eleuterio (the life
-  gauge `plLife` was declared but unused), a HUD, more levels in
-  `levels.txt`, enemy AI types 4–5 (only described in `orig/design.txt`),
-  a title screen, sound beyond the BEEP clicks.
+* **Finished game rules** (lives, deaths, pop, next level, HUD), described
+  in §1. The tombstone frame (58) is no longer used; it's still in the
+  sheet.
+* **HUD text** uses the ROM font: tiles `TEXT_TILE` (128) onwards point at
+  the ROM's characters, so no font is stored.
+* **To do**, for whoever continues: more levels in `levels.txt`, enemy AI
+  types 4–5 (only described in `orig/design.txt`), a title screen, a score,
+  sound beyond the BEEP clicks.
 
 ## 6. Files
 

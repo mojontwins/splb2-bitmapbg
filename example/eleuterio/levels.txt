@@ -26,8 +26,9 @@
 ;                3 = hound: always after you
 ;         fix    ticks (of 4 frames) it spends fixing a hole
 ;         life   hammer points (each blow takes HAMMER_STRENGTH); when it
-;                reaches 0 the enemy falls through the hole it was fixing,
-;                and comes back with half the life
+;                reaches 0 the enemy falls through the hole it was fixing:
+;                it pops (dies) on the floor below, unless it lands on
+;                another open hole, which it starts fixing with half life
 ;         speed  1 = 2 px per frame, 0 = 1 px per frame
 ;         Enemies start on the top floor at columns 0, 3 and 6.
 ;
