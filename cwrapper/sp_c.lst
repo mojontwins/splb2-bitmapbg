@@ -109,3 +109,6 @@ sp_BgCapture.c
 sp_BgShow.c
 sp_VecConfig.c
 sp_VecDraw.c
+sp_BgAttrFill.c
+sp_BgPutTile.c
+sp_ZX0.c

@@ -26,15 +26,20 @@ clipping.
 ```
 
 * The library change is small: two blocks in `updater/SPUpdateNow.asm`, the
-  option in `SPconfig.def`, and three helpers (`sp_BgCapture`, `sp_BgShow`,
-  `sp_BgAddr`).
+  option in `SPconfig.def`, and a few helpers (`sp_BgCapture`, `sp_BgShow`,
+  `sp_BgAddr`, and for painting straight into the shadow `sp_BgPutTile`,
+  `sp_BgAttrFill`, `sp_BgThird` and the `sp_ZX0` depacker).
 * With `BITMAPBG = 0` it builds the original tile-based library.
 * **Vector screens**: `sp_VecDraw` draws Suvleir 4 (SVL) screens (lines,
   patterned fills and a hardness map) made with the bundled editor,
   [`tools/suvleir4`](tools/suvleir4). It runs on Windows and Linux, and on
   macOS through XQuartz.
-* There is a complete game in [`example/lhikoj`](example/lhikoj): vector
-  backgrounds, pixel-by-pixel masked sprites, 25 fps.
+* Two complete games:
+  * [`example/lhikoj`](example/lhikoj): vector backgrounds, pixel-by-pixel
+    masked sprites, 25 fps.
+  * [`example/cjmc3`](example/cjmc3): ZX0-packed bitmap thirds plus tiles,
+    all painted straight into the shadow (no screen capture), pixel-by-pixel
+    platform action at 25 fps.
 
 **Documentation:**
 
@@ -106,6 +111,10 @@ main() {
 
     draw_my_background();      /* anything that draws on the real screen */
     sp_BgCapture();            /* screen -> shadow + attrs, everything dirty */
+    /* ...or paint the shadow directly, without touching the screen:      */
+    /*   sp_ZX0(packed_third, sp_BgThird(1));                             */
+    /*   sp_BgAttrFill(INK_CYAN | PAPER_BLACK);                           */
+    /*   sp_BgPutTile(row, col, attr, tile_gfx);                          */
 
     /* create sprites as usual, then each frame: */
     /*   sp_MoveSprAbs(spr, &clip, anim, y>>3, x>>3, x&7, y&7); */
@@ -120,7 +129,11 @@ main() {
 | `void sp_BgCapture(void)` | `SPBgCapture` | Real screen → background. Copies the 6144-byte bitmap into the shadow, copies the attributes into display-list byte 0, and marks every cell dirty. The screen must not contain sprite pixels at that point. |
 | `void sp_BgShow(void)` | `SPBgShow` | Background → real screen. Copies the bitmap and attributes. The screen then shows the background with no sprites, which is the clean state for drawing over it before another `sp_BgCapture()`. |
 | `void *sp_BgAddr(uchar row, uchar col)` | `SPBgAddr` (A=row, C=col → HL) | Shadow address of the top pixel line of a cell. The other 7 lines are at +256 each. |
+| `void sp_BgPutTile(uchar row, uchar col, uchar attr, void *gfx)` | `SPBgPutTile` (A=row, C=col, B=attr, DE=gfx) | 8×8 tile straight into the shadow, plus the cell's attribute; marks the cell dirty. |
+| `void sp_BgAttrFill(uchar attr)` | `SPBgAttrFill` (A) | Every cell's attribute = `attr`; everything dirty. |
+| `void sp_ZX0(void *src, void *dst)` | `SPZX0Depack` (HL, DE) | ZX0 depacker (Einar Saukas): e.g. a packed third straight into `sp_BgThird(n)`. |
 | `SP_BGSHADOW` | `BGSHADOW*256` | Base address of the shadow. |
+| `sp_BgThird(n)` | `BGSHADOW*256 + n*2048` | Address of screen third `n` in the shadow. |
 | `void sp_VecDraw(void *svl, uchar *hard, uchar stride)` | `SPVecDraw` (HL, DE, A) | Draws an SVL vector screen on the real screen. Optionally decodes its hardness map, with `stride` bytes between cells (4 = straight into the display list's free tile byte). |
 | `void sp_VecConfig(void *pats, void *fillstack, uint depth)` | `SPVecPatterns`, `SPVecFillSP`, `SPVecFillDepth` | Fill pattern table (NULL = built-in), the stack the fill runs on (NULL = current), and the fill queue depth. |
 
@@ -135,15 +148,17 @@ work, but they no longer affect what is drawn. See
 
 ```
 SPconfig.def, sp.lst, Makefile.bat, build.sh, spritepack.h   library config / build
-bitmapbg/          new: SPBgCapture, SPBgShow, SPBgAddr
+bitmapbg/          new: SPBgCapture, SPBgShow, SPBgAddr, SPBgPutTile,
+                   SPBgAttrFill, SPZX0Depack
 vector/            new: SPVecDraw (Suvleir 4 vector screens)
 tools/suvleir4/    the vector screen editor (C, Win32/X11)
 updater/           SPUpdateNow.asm (BITMAPBG patch) and the rest of the updater
-cwrapper/          C wrappers (now including sp_BgCapture/Show/Addr)
+cwrapper/          C wrappers (now including sp_Bg*, sp_ZX0, sp_Vec*)
 ...                all other Sprite Pack 2.2 modules, unchanged
 prebuilt/          splib2f.lib built with the default SPconfig.def
 docs/              documentation
-example/lhikoj/    complete game using the library
+example/lhikoj/    complete game using the library (vector screens)
+example/cjmc3/     complete game using the library (packed thirds + tiles)
 ```
 
 ## Credits and licence
@@ -154,3 +169,6 @@ acknowledgement in your projects."* The same applies to this fork. See
 [`NOTICE.md`](NOTICE.md).
 
 Fork maintenance, `FLASHASFG` and `BITMAPBG`: The Mojon Twins.
+
+The ZX0 depacker (`bitmapbg/SPZX0Depack.asm`) is by Einar Saukas and
+introspec, BSD 3-Clause licence; see [`NOTICE.md`](NOTICE.md).

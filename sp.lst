@@ -236,3 +236,9 @@ cwrapper\sp_BgShow
 vector\SPVecDraw
 cwrapper\sp_VecConfig
 cwrapper\sp_VecDraw
+bitmapbg\SPBgAttrFill
+bitmapbg\SPBgPutTile
+cwrapper\sp_BgAttrFill
+cwrapper\sp_BgPutTile
+bitmapbg\SPZX0Depack
+cwrapper\sp_ZX0

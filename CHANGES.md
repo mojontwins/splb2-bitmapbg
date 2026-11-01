@@ -22,6 +22,13 @@
   `draw.exe`, plus the SVL format specification.
 * `example/lhikoj`: a complete game using the library. Its screens are SVL
   files drawn with `sp_VecDraw`.
+* Painting straight into the shadow, without drawing on the screen and
+  capturing it: `SPBgPutTile` / `sp_BgPutTile` (8×8 tile + attribute + dirty
+  bit), `SPBgAttrFill` / `sp_BgAttrFill` (all attributes + everything
+  dirty), the `sp_BgThird(n)` macro, and `SPZX0Depack` / `sp_ZX0`, Einar
+  Saukas' ZX0 "turbo" depacker (BSD 3-Clause).
+* `example/cjmc3`: a second complete game, built only with those helpers:
+  ZX0-packed screen thirds and tile layouts painted into the shadow.
 
 ## Earlier Mojon Twins changes (inherited)
 

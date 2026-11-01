@@ -483,6 +483,11 @@ extern void __LIB__  sp_UpdateNow(void);
 extern void __LIB__  sp_BgCapture(void);           /* screen -> shadow + dlist attrs, all dirty */
 extern void __LIB__  sp_BgShow(void);              /* shadow + dlist attrs -> screen            */
 extern void __LIB__ *sp_BgAddr(uchar row, uchar col); /* shadow address of a cell's top line    */
+extern void __LIB__  sp_BgPutTile(uchar row, uchar col, uchar attr, void *gfx); /* tile -> shadow, attr, dirty */
+extern void __LIB__  sp_BgAttrFill(uchar attr);    /* every cell's attribute = attr, all dirty  */
+extern void __LIB__  sp_ZX0(void *src, void *dst);  /* ZX0 depacker (e.g. into sp_BgThird(n))   */
+/* address of screen third n (0..2) inside the shadow: depack straight there */
+#define sp_BgThird(n)     ((void *) (SP_BGSHADOW + (n) * 2048))
 
 /* Suvleir 4 vector screens (SVL) - see vector/SPVecDraw.asm                 */
 /* draws on the real screen; hardness (if not NULL) gets 768 cells, 'stride'  */

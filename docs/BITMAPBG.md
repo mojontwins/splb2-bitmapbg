@@ -160,11 +160,45 @@ SPDirtyChars = $FF...  (all managed cells dirty)
 Between `sp_BgShow()` and `sp_UpdateNow()` the sprites are not on screen.
 That is usually 2–4 frames: fine for screen changes and pop-up messages.
 
-### 5.2 Write directly into the shadow
+### 5.2 Paint straight into the shadow (no capture)
 
 The shadow behaves exactly like the display file at a different address, so
 anything that writes screen data with a configurable base works on it
 directly: a depacker targeting `SP_BGSHADOW`, a char printer, a tile blitter.
+Nothing is drawn on the real screen, nothing has to be captured, and the
+sprites never leave the screen. The library has helpers for the usual case,
+a background built from **packed pictures plus 8×8 tiles**:
+
+| C | asm | What it does |
+|---|---|---|
+| `sp_BgThird(n)` | `BGSHADOW*256 + n*2048` | Macro: address of screen third `n` (rows `8n`–`8n+7`) in the shadow. Each third is one contiguous 2 KB block. |
+| `void sp_ZX0(void *src, void *dst)` | `SPZX0Depack` (HL=src, DE=dst) | [ZX0](https://github.com/einar-saukas/ZX0) depacker (Einar Saukas' "turbo" version, 126 bytes). Depack a third straight into `sp_BgThird(n)`, a full bitmap into `SP_BGSHADOW`, or anything else anywhere. |
+| `void sp_BgAttrFill(uchar attr)` | `SPBgAttrFill` (A) | Every cell's attribute (display-list byte 0) = `attr`, and every cell dirty. Use it after replacing the whole bitmap. |
+| `void sp_BgPutTile(uchar row, uchar col, uchar attr, void *gfx)` | `SPBgPutTile` (A=row, C=col, B=attr, DE=gfx) | Copies 8 bytes into the cell in the shadow, sets the cell's attribute and marks it dirty. Platforms, scenery, HUD digits, animated tiles. |
+
+A new room from three packed thirds plus a tile layout:
+
+```c
+sp_ZX0(top_third,    sp_BgThird(0));
+sp_ZX0(middle_third, sp_BgThird(1));
+sp_ZX0(bottom_third, sp_BgThird(2));
+sp_BgAttrFill(INK_CYAN | PAPER_BLACK);            /* + everything dirty      */
+for (each tile in the room's layout)
+    sp_BgPutTile(row, col, attr, tileset + tile * 8);
+sp_UpdateNow();                                   /* sprites drawn on top    */
+```
+
+`sp_BgPutTile` is also the way to change single cells while sprites are
+live (an animated torch, a counter): the sprites in that cell are recomposed
+on top at the next update. The CJMC3 example (`example/cjmc3`) builds all its
+screens, its HUD and its animations this way.
+
+ZX0 data is made with the `zx0` command-line tool, forwards (no `-b`):
+`zx0 picture.bin picture.zx0`. For a third, `picture.bin` is the 2048 bytes
+of that third in display-file order (e.g. bytes 2048–4095 of a `.scr` for
+the middle one). The depacker is self-modifying, which is fine in RAM.
+
+By hand, without the helpers:
 
 ```c
 /* put an 8x8 graphic in cell (row, col) of the background */
@@ -180,13 +214,14 @@ sp_Invalidate(&r, &clip_fullscreen);               /* redraw it next update */
 To depack a whole `.scr` (6912 bytes):
 
 ```c
-depack(scr_data, (void *) SP_BGSHADOW);            /* bitmap part lands in the shadow  */
+sp_ZX0(scr_data, (void *) SP_BGSHADOW);            /* bitmap part lands in the shadow  */
 /* the attribute part (at SP_BGSHADOW + 6144, 768 bytes) is then copied
    into byte 0 of each display-list cell, then call sp_Invalidate on all */
 ```
 
 Watch out: in the default layout, `SP_BGSHADOW + 6144` is the IM2 table. If
-the data includes attributes, depack to the real screen and use
+the data includes attributes, pack the bitmap (6144 bytes) and the
+attributes separately, or depack to the real screen and use
 `sp_BgCapture()` instead, or move the shadow.
 
 ### 5.3 Saving and restoring parts of the background
@@ -206,8 +241,8 @@ copy, plus the 256 attribute bytes from the display list (every 4th byte from
 
 ## 6. Changing the background while sprites are live
 
-* **Small changes** (a tile, a char, a counter): write into the shadow
-  (§5.2) and invalidate those cells. The sprites in them are recomposed on
+* **Small changes** (a tile, a char, a counter): `sp_BgPutTile`, or write
+  into the shadow yourself and invalidate those cells (§5.2). The sprites in them are recomposed on
   top at the next `sp_UpdateNow()`. You never touch the screen.
 * **Big changes** (new room, overlays drawn with screen routines):
   `sp_BgShow()` → draw on screen → `sp_BgCapture()`. If the sprites would get
