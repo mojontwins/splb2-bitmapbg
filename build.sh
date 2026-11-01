@@ -8,21 +8,36 @@
 #   ./build.sh tiles    splib2t.lib: the same configuration but BITMAPBG = 0,
 #                       i.e. classic tile backgrounds. Nothing uses the
 #                       shadow screen, so its 6K are free for your program.
-#                       (Built in a temporary copy; SPconfig.def is untouched.)
+#   ./build.sh variant NAME SYMBOL=VALUE...
+#                       NAME.lib built with those DEFCs of SPconfig.def
+#                       changed, e.g. a different memory layout:
+#                         ./build.sh variant splib2hi BGSHADOW=\$C8 \
+#                             SProtatetbl=\$E000 IM2TABLE=\$E000
+#   (variants are built in a temporary copy; SPconfig.def is untouched)
 set -e
 cd "$(dirname "$0")"
 
 if [ "$1" = "tiles" ]; then
+  exec "$0" variant splib2t BITMAPBG=0
+fi
+
+if [ "$1" = "variant" ]; then
+  name=$2; shift 2
+  [ -n "$name" ] || { echo "usage: $0 variant NAME SYMBOL=VALUE..."; exit 1; }
   tmp=$(mktemp -d)
   trap 'rm -rf "$tmp"' EXIT
   # copy the library sources only (not examples, tools or docs)
   tar cf - --exclude=./example --exclude=./tools --exclude=./docs --exclude=./prebuilt \
       --exclude=./.git --exclude='*.lib' . | (cd "$tmp" && tar xf -)
-  sed -i.bak 's/^\( *DEFC BITMAPBG *= *\)1/\10/' "$tmp/SPconfig.def"
-  grep -q 'DEFC BITMAPBG *= *0' "$tmp/SPconfig.def" || { echo "could not set BITMAPBG = 0"; exit 1; }
+  for kv in "$@"; do
+    sym=${kv%%=*}; val=${kv#*=}
+    grep -q "DEFC $sym *=" "$tmp/SPconfig.def" || { echo "no DEFC $sym in SPconfig.def"; exit 1; }
+    sed -i.bak "s/^\( *DEFC $sym *= *\)[^ ;]*/\1$val/" "$tmp/SPconfig.def"
+    grep "DEFC $sym *=" "$tmp/SPconfig.def"
+  done
   "$tmp/build.sh"
-  cp "$tmp/splib2f.lib" splib2t.lib
-  echo "built splib2t.lib (BITMAPBG = 0, tile backgrounds)"
+  cp "$tmp/splib2f.lib" "$name.lib"
+  echo "built $name.lib"
   exit 0
 fi
 

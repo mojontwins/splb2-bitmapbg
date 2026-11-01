@@ -13,3 +13,5 @@ example/*/src/*.bin
 tools/suvleir4/tests/out_*
 /splib2t.lib
 __pycache__/
+example/*/build/
+/splib2hi.lib

@@ -24,6 +24,10 @@ The example game in `example/eleuterio` (graphics, levels, code) is by
 The Mojon Twins (2010). It is included as an example. Ask the authors
 before reusing its assets.
 
+The example game in `example/phantomasa` (graphics, music, texts) is by
+na_th_an and Black Hole, (C) WOPR2K & CEZGS 2006. It is included as an
+example. Ask the authors before reusing its assets.
+
 ## ZX0
 
 `bitmapbg/SPZX0Depack.asm` is the ZX0 "turbo" decoder by Einar Saukas and

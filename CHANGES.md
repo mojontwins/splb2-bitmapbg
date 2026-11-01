@@ -34,6 +34,11 @@
   `Makefile.bat` now names its output `splib2f.lib`, as documented.
 * `example/eleuterio`: a third game, using the tile-mode library and the
   RAM that the shadow screen would take.
+* `build.sh variant NAME SYMBOL=VALUE...`: library builds with other
+  `SPconfig.def` settings (`tiles` is now one of them).
+* `example/phantomasa`: a 128K game in one load (screens in RAM banks,
+  the original music player kept at its address by moving splib2's
+  tables with a variant build).
 
 ## Earlier Mojon Twins changes (inherited)
 

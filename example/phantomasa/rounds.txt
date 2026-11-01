@@ -1,0 +1,137 @@
+; Phantomasa rounds. Edit, then rebuild (build.sh).
+; Everything after ';' is a comment. Coordinates are in CHARACTERS, like
+; the original BASIC: Y = row 0-23, X = column 0-31.
+;
+;   round <stage> <number> screen=<name in gfx/screens, without NN->
+;     start=<W>,<A>        player's feet row W and left column A (he is
+;                          2x2 characters: rows W-1..W, columns A..A+1)
+;     exit=<W>,<A>         the round ends when he stands with his feet on
+;                          row W and his left column at A; W=* = any row
+;     snot=<first>,<speed> stage 3: the snot starts at row <first> (may be
+;                          negative: it takes a while to appear) and comes
+;                          down one row every <speed>+1 ticks
+;   box <Y>,<X> ...        pushable boxes (2x2), top-left corner. These are
+;                          the only boxes: red graphics in the pictures are
+;                          solid scenery. All the
+;                          boxes of a round must have Y of the same parity
+;                          (the first box decides): you can only push a box
+;                          when your rows are its rows, and that test is
+;                          what keeps stacked boxes whole (stage 1 uses
+;                          even rows, stage 3 odd rows)
+;   portal <Y>,<X>         the flashing portal (2x1, decoration + floor)
+;   platform <Y>,<X> <min>,<max> <dir>
+;                          moving platform (2x1) at row Y, starting at
+;                          column X, bouncing between columns min and max,
+;                          dir = 1 right, -1 left
+;   gate                   round 9 of stage 1: the barrier at column 12,
+;                          rows 0-5, opens when the player reaches it
+;   door <Y>               stage 3: opens the way out through the right wall
+;                          on rows Y and Y+1 (cols 22-31)
+;   tiles <Y>,<X> <attr> <text>
+;                          font characters painted on the background, solid
+;                          unless their attribute is 7 (e.g. "lmn" pieces of
+;                          platform). attr in decimal or $hex.
+;
+; Free space is attribute 7 (white ink on black paper) in the screen PNGs;
+; attribute 1 (blue ink on black) kills when you stand on it; anything
+; else is solid. See README.md.
+
+; ---------------------------------------------------------------- stage 1
+round 1 1 screen=round1 start=19,0 exit=*,30
+box 10,10 12,10 14,10 16,10 18,10 10,16 12,16 14,16 16,16 18,16
+
+round 1 2 screen=round2 start=19,1 exit=3,23
+box 4,3 4,7 4,11 4,15 4,19 4,23
+box 8,3 8,7 8,11 8,15 8,19 8,23
+box 12,3 12,7 12,11 12,15 12,19 12,23
+box 16,3 16,7 16,11 16,15 16,19 16,23
+portal 4,23
+
+round 1 3 screen=round3 start=9,0 exit=19,30
+portal 20,30
+box 16,20
+platform 18,12 10,28 1
+
+round 1 4 screen=round4 start=19,0 exit=7,30
+portal 8,30
+box 10,16 12,16 14,16 16,16 10,20 8,24
+platform 18,5 1,26 -1
+
+round 1 5 screen=round5 start=19,0 exit=2,30
+portal 3,30
+box 4,16 6,16 8,16 10,16 18,4
+platform 14,2 0,20 1
+
+round 1 6 screen=round6 start=19,0 exit=6,30
+portal 7,30
+box 18,4 16,5 14,6 12,7 10,8 8,9 6,10 4,11 2,12
+
+round 1 7 screen=round7 start=19,0 exit=4,2
+portal 5,2
+box 10,5 12,5 14,5 16,5 18,5
+box 10,25 12,25 14,25 16,25 18,25
+box 0,20 2,20 4,20 6,20 8,20
+
+round 1 8 screen=round8 start=19,1 exit=9,1
+portal 10,1
+box 16,3 10,25
+
+round 1 9 screen=round9 start=18,0 exit=2,0
+portal 3,0
+box 16,6
+platform 9,26 19,29 1
+gate
+
+; ---------------------------------------------------------------- stage 3
+round 3 1 screen=mazeA start=19,13 exit=*,30 snot=-2,8
+door 10
+tiles 14,21 $0d o
+box 19,16
+
+round 3 2 screen=mazeB start=20,13 exit=*,30 snot=-2,6
+tiles 15,10 $0d nonono
+tiles 16,16 $0d lm
+door 7
+tiles 13,21 $0d o
+box 19,16
+
+round 3 3 screen=mazeA start=20,13 exit=*,30 snot=-2,6
+door 7
+tiles 13,21 $0d o
+platform 17,11 10,14 1
+
+round 3 4 screen=mazeB start=12,13 exit=*,30 snot=-1,6
+door 19
+tiles 15,12 $0d nonononono
+tiles 8,12 $0d m
+tiles 9,12 $0d o
+tiles 10,12 $0d m
+tiles 11,12 $0d o
+tiles 12,12 $0d m
+tiles 13,12 $0d o
+tiles 14,12 $0d m
+tiles 15,12 $0d o
+box 13,18
+
+round 3 5 screen=mazeA start=19,11 exit=*,30 snot=-4,6
+box 3,16 5,16 7,16 9,16 11,16 13,16 15,16 17,16 19,16
+door 6
+
+round 3 6 screen=mazeB start=19,11 exit=*,30 snot=-5,6
+box 3,16 5,16 7,16 9,16 11,16 13,16 15,16
+door 6
+platform 17,11 10,20 1
+
+round 3 7 screen=mazeA start=19,11 exit=*,30 snot=-4,8
+tiles 17,10 $0d mmn
+tiles 13,19 $0d mlo
+tiles 10,10 $0d lmn
+tiles 7,20 $0d no
+door 5
+
+round 3 8 screen=mazeB start=19,11 exit=*,30 snot=-3,8
+tiles 17,15 $0d mn
+tiles 13,14 $0d ml
+tiles 10,14 $0d ln
+tiles 7,14 $0d no
+door 5

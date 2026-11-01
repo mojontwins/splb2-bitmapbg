@@ -45,6 +45,10 @@ clipping.
   the same library with `BITMAPBG = 0` (plain tile backgrounds, made with
   `./build.sh tiles`). The 6K shadow area is then free RAM, and its README
   explains how to use it and how to save memory when you do need BITMAPBG.
+* And a 128K one: [`example/phantomasa`](example/phantomasa) loads a whole
+  two-tape game at once, keeping its ZX0-packed screens in the extra RAM
+  banks, with splib2 rebuilt for a different memory layout
+  (`./build.sh variant`).
 
 **Documentation:**
 
@@ -85,7 +89,10 @@ If you move the shadow, change `BGSHADOW` here **and** define `SP_BGSHADOW`
   `GenCompile.exe`, which is included in `cwrapper/` and `heap/`.
 * **Linux / macOS**: `./build.sh`.
 
-Either one produces `splib2f.lib`. `./build.sh tiles` also builds
+Either one produces `splib2f.lib`. `./build.sh variant NAME SYMBOL=VALUE...`
+builds `NAME.lib` with some `SPconfig.def` settings changed (e.g. a
+different memory layout), leaving `SPconfig.def` itself alone. `./build.sh
+tiles` is the variant
 `splib2t.lib`: the same library with `BITMAPBG = 0`, i.e. stock tile
 backgrounds, for programs that don't need bitmaps (on Windows, set
 `BITMAPBG = 0` in `SPconfig.def`, run `Makefile.bat` and rename the result). Copy it to `z88dk/lib/clibs/` and
@@ -168,6 +175,7 @@ docs/              documentation
 example/lhikoj/    complete game using the library (vector screens)
 example/cjmc3/     complete game using the library (packed thirds + tiles)
 example/eleuterio/ complete game using the tile-mode build (no BITMAPBG)
+example/phantomasa/ complete 128K game: one load, screens in RAM banks
 ```
 
 ## Credits and licence
