@@ -1,0 +1,12 @@
+*.o
+*.err
+*.sym
+*.map
+*.opt
+*.i
+/cwrapper/zcc_opt.def
+/heap/zcc_opt.def
+example/*/src/zcc_opt.def
+sp_unix.lst
+/splib2f.lib
+example/*/src/*.bin

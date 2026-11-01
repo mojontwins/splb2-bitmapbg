@@ -1,0 +1,9 @@
+* text=auto eol=lf
+*.bat text eol=crlf
+*.lib binary
+*.exe binary
+*.tap binary
+*.bin binary
+*.png binary
+*.scr binary
+*.bas -text
