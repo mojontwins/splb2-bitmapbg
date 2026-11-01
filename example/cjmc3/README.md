@@ -139,8 +139,8 @@ at `$D92D`, inside the block memory.
 * sccz80 `__FASTCALL__` parameters live in HL and can only be used from
   inline asm, never by name in C. `inport` and `sfx` use them that way.
 * Speeds and timings are constants at the top of `src/cjmc3.c`
-  (`PLAYER_HORZ_SPEED`, `JUMP_HEIGHT`, `ENEMY_SPEED`, `TICK_FRAMES`,
-  `GROW_FRAMES`, ...).
+  (`PLAYER_HORZ_SPEED`, `ENEMY_SPEED`, `TICK_FRAMES`, `GROW_FRAMES`, ...),
+  plus the jump arc `jump_tab`.
 
 ## 6. Timing
 
@@ -151,11 +151,18 @@ original routines block, as on the original).
 
 ## 7. Differences from the BASIC version
 
-* **Movement is pixel by pixel**: 2 px per frame horizontally, jumps of 40
-  px (the original's 5 characters) at 2 px per frame, and gravity at 2 px
-  per frame. Collisions use a 16×16 box against the cell map. The enemy
-  uses the same physics and the original's random AI; one AI step ("tick")
-  is 4 frames (8 px), the distance of one original step.
+* **Movement is pixel by pixel**: 2 px per frame horizontally and gravity
+  at 2 px per frame. Collisions use a 16×16 box against the cell map. The
+  enemy uses the same physics and the original's random AI; one AI step
+  ("tick") is 4 frames (8 px), the distance of one original step.
+* **Jumps follow an arc** (`jump_tab` in `src/cjmc3.c`): 40 px in total,
+  the original's 5 characters, rising at 4 px per frame at first and
+  slowing down near the top. The rise is applied before walking in each
+  frame, and it is faster than walking. So a jump next to a ledge always
+  meets the ledge's side, never its underside, and the slow top leaves time
+  to land on a ledge **32 px above your feet** while holding the direction
+  from the start. Hitting your head ends the jump. The table can be edited
+  freely (`JUMP_STEPS` is its length).
 * Positions that the original compared exactly in characters (the well,
   the cauldron, the boniato patches) use the player's nearest character
   `(p+4)>>3`, with ±1 character of slack for the well and the cauldron.

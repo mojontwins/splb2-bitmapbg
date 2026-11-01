@@ -47,9 +47,8 @@
 /* ------------------------------------------------------------------ */
 
 #define PLAYER_HORZ_SPEED   2
-#define PLAYER_JUMP_SPEED   2       /* going up                          */
 #define PLAYER_FALL_SPEED   2       /* gravity                           */
-#define JUMP_HEIGHT         40      /* 5 characters, like the original   */
+#define JUMP_STEPS          13      /* entries in jump_tab (below)       */
 #define ENEMY_SPEED         2
 #define MAX_X               240     /* 256 - 16                          */
 #define MAX_Y               176     /* 192 - 16: the original allows the */
@@ -443,13 +442,14 @@ unsigned char coll_at (void) {
 unsigned char np;                       /* screen 0..11                 */
 unsigned char px, py, pox, poy;         /* player; entry position       */
 unsigned char pfacing;                  /* 0 right, 1 left              */
-unsigned char pjump, pjc;               /* jumping, pixels risen        */
+unsigned char pjump, pjc;               /* jumping, step in jump_tab    */
 unsigned char pfal, pmoved, pfire_prev;
 unsigned char plife, pwat, pbon, pscore, show_score;
 
 unsigned char ex, ey, etype, estate, ect, ejump, ejc;
 
 unsigned char tick;                     /* frames to the next tick      */
+unsigned char ticked;                   /* 1 on the frames that tick    */
 unsigned int  grow;                     /* frames to the next growth    */
 unsigned char anim;                     /* fire frame 0..3              */
 unsigned char eye_open, eye_ct;
@@ -470,6 +470,14 @@ unsigned char fire_row [] = { 17, 0, 0, 0, 0, 0,  9, 0, 0, 0, 19, 0 };
 unsigned char fire_col [] = { 10, 0, 0, 0, 0, 0,  9, 0, 0, 0, 13, 0 };
 unsigned char fire_col2 [] = { 0, 0, 0, 0, 0, 0, 16, 0, 0, 0,  0, 0 };
 unsigned char fire_attr [] = { 2, 6, 2, 6 };
+
+/* Jump: pixels risen on each frame of the jump. 40 px in total, the
+   original's 5 characters, but fast at first and slowing down at the top.
+   Rising (4 px/frame) faster than walking (2 px/frame) means that a jump
+   next to a ledge always meets the ledge's side, never its underside, and
+   the slow top gives time to steer onto a ledge 32 px above your feet.
+   Change it freely: JUMP_STEPS must be its length. Shared by the enemy. */
+unsigned char jump_tab [] = { 4, 4, 4, 4, 4, 4, 4, 3, 3, 2, 2, 1, 1 };
 
 /* boniato patch by state: tile, attribute */
 unsigned char bon_tile [] = { 95, 55, 55, 56, 57, 57, 57, 57, 58, 0 };
@@ -622,6 +630,26 @@ void player_move (void) {
 		}
 	}
 
+	/* jump: only from solid ground (or the bottom of the screen) */
+	if (k_up && !pjump) {
+		bx = px; by = py + 1;
+		if (py >= MAX_Y || !box_free ()) {
+			pjump = 1; pjc = 0;
+			sfx (SFX_JUMP);
+		}
+	}
+
+	/* going up comes before walking, see jump_tab */
+	if (pjump) {
+		for (mk = jump_tab [pjc]; mk; mk --) {
+			if (py == 0) break;             /* screens 9 and 11 go up */
+			bx = px; by = py - 1;
+			if (!box_free ()) { pjump = 0; break; }   /* head bump */
+			-- py;
+		}
+		if (++ pjc == JUMP_STEPS) pjump = 0;
+	}
+
 	if (k_left) {
 		pfacing = 1;
 		for (mk = 0; mk < PLAYER_HORZ_SPEED; mk ++) {
@@ -641,26 +669,6 @@ void player_move (void) {
 		}
 	}
 	if (pmoved && !pfal && !pjump && (px & 7) == 0) play_step ();
-
-	/* jump: only from solid ground (or the bottom of the screen) */
-	if (k_up && !pjump) {
-		bx = px; by = py + 1;
-		if (py >= MAX_Y || !box_free ()) {
-			pjump = 1; pjc = 0;
-			sfx (SFX_JUMP);
-		}
-	}
-
-	if (pjump) {
-		for (mk = 0; mk < PLAYER_JUMP_SPEED; mk ++) {
-			if (py) {
-				bx = px; by = py - 1;
-				if (box_free ()) -- py;
-			}
-		}
-		pjc += PLAYER_JUMP_SPEED;
-		if (pjc >= JUMP_HEIGHT) pjump = 0;
-	}
 }
 
 /* returns 1 if the player left the screen (new screen drawn) */
@@ -673,7 +681,7 @@ unsigned char player_exits (void) {
 		np = 4; py = MAX_Y; pjc = 0;
 	} else if (py == 0 && pjump && np == 11) {
 		/* the original gives one more character of jump here */
-		np = 8; py = MAX_Y; if (pjc >= 8) pjc -= 8;
+		np = 8; py = MAX_Y; if (pjc >= 2) pjc -= 2;   /* 8 px more */
 	} else if (py == MAX_Y && !pjump && np == 4) {
 		np = 9; py = 0;
 	} else if (py == MAX_Y && !pjump && np == 8) {
@@ -708,7 +716,7 @@ drown:
 /* ------------------------------------------------------------------ */
 
 void enemy_move (void) {
-	if (tick == 0) {
+	if (ticked) {
 		if (ect) -- ect;
 		else {
 			mk = rnd () % 25;
@@ -749,14 +757,13 @@ void enemy_move (void) {
 		}
 	}
 	if (ejump) {
-		for (mk = 0; mk < ENEMY_SPEED; mk ++) {
-			if (ey) {
-				bx = ex; by = ey - 1;
-				if (box_free ()) -- ey;
-			}
+		for (mk = jump_tab [ejc]; mk; mk --) {
+			if (ey == 0) break;
+			bx = ex; by = ey - 1;
+			if (!box_free ()) { ejump = 0; break; }
+			-- ey;
 		}
-		ejc += ENEMY_SPEED;
-		if (ejc >= JUMP_HEIGHT) ejump = 0;
+		if (++ ejc == JUMP_STEPS) ejump = 0;
 	}
 }
 
@@ -962,7 +969,8 @@ void game (void) {
 			continue;
 		}
 
-		if (-- tick == 0) { tick = TICK_FRAMES; anim_tick (); }
+		ticked = 0;
+		if (-- tick == 0) { tick = TICK_FRAMES; ticked = 1; anim_tick (); }
 		enemy_move ();
 		check_enemy ();
 		check_water ();
