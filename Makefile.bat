@@ -18,7 +18,7 @@ gencompile "zcc +zx -vn -make-lib -I.." sp_c.lst
 del SPconfig.def
 cd ..
 
-z80asm -I. -d -ns -nm -Mo -DFORzx -xsplib2 @sp.lst
+z80asm -I. -d -ns -nm -Mo -DFORzx -xsplib2f @sp.lst
 
 
 

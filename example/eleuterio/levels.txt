@@ -1,0 +1,50 @@
+; Eleuterio levels. Edit, then rebuild (build.sh / make.bat).
+; Everything after a ';' is a comment.
+;
+; Each level is:
+;
+;   level
+;   floor <stairs> <p1> <p2> <p3> <p4> <p5> <p6>     four of these, top to bottom
+;   enemy ai=<0-3> fix=<turns> life=<hits> speed=<0|1>    three of these
+;   tiles platform=<n> background=<n> frame=<n>
+;
+; floor: the play area is 7 columns of stairs/platform with 6 breakable
+;   pieces of floor between them:
+;
+;       col 0   p1   col 1   p2   col 2  ...  p6   col 6
+;
+;   <stairs> is 7 characters, one per column, left to right: '#' = stairs
+;   going DOWN from this floor at that column, '.' = floor (it can be
+;   broken too). p1..p6 are the pieces between the columns: 12 = intact,
+;   8 and 4 = cracked, 0 = already a hole (use multiples of 4). Each hammer blow takes
+;   HAMMER_STRENGTH (2) off; at 3 or less the piece is a hole.
+;   The bottom floor (5th) is spikes: enemies that fall there die.
+;
+; enemy:  ai     0 = blind (never notices you, wanders)
+;                1 = notices you when on your floor
+;                2 = notices you on your floor or the ones next to it
+;                3 = hound: always after you
+;         fix    ticks (of 4 frames) it spends fixing a hole
+;         life   hammer points (each blow takes HAMMER_STRENGTH); when it
+;                reaches 0 the enemy falls through the hole it was fixing,
+;                and comes back with half the life
+;         speed  1 = 2 px per frame, 0 = 1 px per frame
+;         Enemies start on the top floor at columns 0, 3 and 6.
+;
+; tiles:  platform    0..5   which of the platform tile sets (6 tiles each)
+;         background  0..?   which background set (8 tiles each, from tile 36)
+;         frame       0..?   which frame set (4 tiles each, from tile 68)
+;         (tile numbers as in gfx/tiles.png, row * 16 + column)
+;
+; When the three enemies are dead the next level starts (after the last
+; one, the first one again).
+
+level                                   ; level 0, the original's only level
+floor ......#  12  8  8  4 12  8
+floor #....#.   0  4 12 12 12 12
+floor .##....  12 12  8 12 12 12
+floor ....#.#  12 12 12 12 12 12
+enemy ai=0 fix=32 life=8  speed=1
+enemy ai=1 fix=24 life=8  speed=0
+enemy ai=2 fix=32 life=12 speed=1
+tiles platform=0 background=2 frame=3

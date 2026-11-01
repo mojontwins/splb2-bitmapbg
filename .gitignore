@@ -11,3 +11,5 @@ sp_unix.lst
 /splib2f.lib
 example/*/src/*.bin
 tools/suvleir4/tests/out_*
+/splib2t.lib
+__pycache__/

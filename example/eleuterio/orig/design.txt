@@ -1,0 +1,56 @@
+Diseño del juego de Eleuterio
+=============================
+
+Fases:
+
+Offs	Length		Desc
+=======================================================
+
+0		1			Escaleras piso 0 (superior)
+1		6			Hoyos piso 0
+7		1			Escaleras piso 1
+8		6			Hoyos piso 1
+14		1			Escaleras piso 2
+15		6			Hoyos piso 2
+21		1			Escaleras piso 3
+22		6			Hoyos piso 3
+
+7*p		1			Escaleras piso p (0 <= p <= 3)
+7*p+1	6			Hoyos piso p (0 <= p <= 3)
+
+-------------------------------------------------------
+
+28		1			Tipo IA enemigo #0 (0-5)
+29		1			Turnos que tarda el enemigo #0 en arreglar un hoyo
+30		1			Nº de martillazos para morirse del enemigo #0
+31		1			Velocidad del enemigo #0 (0 = rápido, 1 = lento)
+
+32		1			Tipo IA enemigo #1 (0-5)
+33		1			Turnos que tarda el enemigo #1 en arreglar un hoyo
+34		1			Nº de martillazos para morirse del enemigo #1
+35		1			Velocidad del enemigo #1 (0 = rápido, 1 = lento)
+
+36		1			Tipo IA enemigo #2 (0-5)
+37		1			Turnos que tarda el enemigo #2 en arreglar un hoyo
+38		1			Nº de martillazos para morirse del enemigo #2
+39		1			Velocidad del enemigo #2 (0 = rápido, 1 = lento)
+
+========================================================
+
+40		1			ID tile primer plano
+41		2			ID tile fondo
+42		3			ID tile marco
+43		8			reserved
+
+(50 bytes)
+
+Tipos de IA
+
+0	Stoopid			Moves randomly 
+1	Idiot			Moves randomly, decides just on joints
+2	Blind			Moves randomly, but if you are in the same level it chases you
+3   Stalker         Moves randomly, but if you are in the same level it chases you, 
+					and if you are in the level immediately above or below it runs 
+					to a stair to chase you.
+4	Assassin		Chases you all over. 3 Extended to all levels.
+5	Robot			Undecided, maybe it just goes top to bottom, then bottom to top.

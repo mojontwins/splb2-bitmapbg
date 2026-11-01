@@ -40,6 +40,11 @@ clipping.
   * [`example/cjmc3`](example/cjmc3): ZX0-packed bitmap thirds plus tiles,
     all painted straight into the shadow (no screen capture), pixel-by-pixel
     platform action at 25 fps.
+* And one that **doesn't** use bitmaps:
+  [`example/eleuterio`](example/eleuterio) is built against `splib2t.lib`,
+  the same library with `BITMAPBG = 0` (plain tile backgrounds, made with
+  `./build.sh tiles`). The 6K shadow area is then free RAM, and its README
+  explains how to use it and how to save memory when you do need BITMAPBG.
 
 **Documentation:**
 
@@ -80,10 +85,13 @@ If you move the shadow, change `BGSHADOW` here **and** define `SP_BGSHADOW`
   `GenCompile.exe`, which is included in `cwrapper/` and `heap/`.
 * **Linux / macOS**: `./build.sh`.
 
-Either one produces `splib2f.lib`. Copy it to `z88dk/lib/clibs/` and
+Either one produces `splib2f.lib`. `./build.sh tiles` also builds
+`splib2t.lib`: the same library with `BITMAPBG = 0`, i.e. stock tile
+backgrounds, for programs that don't need bitmaps (on Windows, set
+`BITMAPBG = 0` in `SPconfig.def`, run `Makefile.bat` and rename the result). Copy it to `z88dk/lib/clibs/` and
 `spritepack.h` to `z88dk/include/`, or point `zcc` at them as the example
-does. A prebuilt library with the default settings is in
-`prebuilt/splib2f.lib`.
+does. Prebuilt libraries with the default settings are in
+`prebuilt/` (`splib2f.lib`, and `splib2t.lib` for tile mode).
 
 ### 3. Use it
 
@@ -159,6 +167,7 @@ prebuilt/          splib2f.lib built with the default SPconfig.def
 docs/              documentation
 example/lhikoj/    complete game using the library (vector screens)
 example/cjmc3/     complete game using the library (packed thirds + tiles)
+example/eleuterio/ complete game using the tile-mode build (no BITMAPBG)
 ```
 
 ## Credits and licence

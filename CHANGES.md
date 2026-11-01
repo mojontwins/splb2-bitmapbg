@@ -29,6 +29,11 @@
   Saukas' ZX0 "turbo" depacker (BSD 3-Clause).
 * `example/cjmc3`: a second complete game, built only with those helpers:
   ZX0-packed screen thirds and tile layouts painted into the shadow.
+* `build.sh tiles` builds `splib2t.lib`, the library with `BITMAPBG = 0`
+  (stock tile backgrounds), in a temporary copy; `prebuilt/splib2t.lib`.
+  `Makefile.bat` now names its output `splib2f.lib`, as documented.
+* `example/eleuterio`: a third game, using the tile-mode library and the
+  RAM that the shadow screen would take.
 
 ## Earlier Mojon Twins changes (inherited)
 

@@ -333,3 +333,13 @@ all**. The address comes from the screen address the updater already has, it
 is as fast as the tile path, any screen-drawing code can be reused, screen
 thirds can be saved with one block copy, and display-list byte 1 becomes
 free. Both approaches touch only the same two spots in `SPUpdateNow`.
+
+## 12. Not using it
+
+`BITMAPBG = 0` builds stock Sprite Pack tile mode, and the shadow's 6K are
+yours. `./build.sh tiles` makes that library as `splib2t.lib` without
+touching `SPconfig.def`. [`example/eleuterio`](../example/eleuterio)
+uses it and puts the stack, splib2's block memory and its buffers in
+`$D800-$EFFF`. Its README (§4) also lists ways to get RAM back while
+keeping BITMAPBG: the shadow as scratch before a new background is painted,
+the part behind unmanaged rows, and moving the shadow.
