@@ -1,0 +1,199 @@
+# Every text of the game. tools/conv.py turns this into src/assets.h.
+#
+#   @name        starts a text; the game uses it as t_name
+#   the lines that follow are the text. A line break here is a line break
+#   on screen; texts typed with the typewriter effect are also word-wrapped
+#   at 32 columns, so a paragraph can be one long line.
+#   A line ending in \ continues on the next line without a line break.
+#   Lines starting with # are comments. Blank lines are ignored inside a
+#   text (write {nl} for an empty line on screen).
+#
+# Characters: plain ASCII as the Spectrum ROM draws it (^ is the arrow,
+# ` is the pound sign), © ↑ and the Spanish á é í ó ú ñ ¡ ¿.
+# {A} .. {U} are the UDGs (gfx/tiles.png, characters 144-164), {nl} a line
+# break, and the Unicode quarter blocks ▘▝▀▖▌▞▛▗▚▐▜▄▙▟█ are the Spectrum's
+# block graphics (characters 128-143).
+#
+# The wording is the original's, spelling included. Only the 1990 tricks
+# for missing characters became the real thing: "tu"+CHR$ 8+"'" is "tú",
+# "a|o" is "año", "[" was "¡" and "]" was "¿". The hand-made line breaks
+# (runs of spaces, words split with "-") are gone: the typewriter wraps.
+
+# ---------------------------------------------------------------- intro
+@welcome
+Bienvenido a Ghost Embustes 2
+@copyright
+© copyright 1990 by Loko soft
+@by
+By jose luis 90.
+@drive
+conduce el Ghost-tipo por las calles, y ve a los edificios parpadeantes.
+@fire
+Cuando llegues pulsa FIRE
+@aqui
+Aqui veras al Ghost,-a secas-. Debes ir tras de el y disparar, si fallas, eres hombre muerto
+@graficos
+Graficos
+@es_tipo
+Es el Ghost-tipo
+@eres_tu
+Ese eres tú
+@es_secas
+Este es el Ghost-a secas-
+@pulsa_algo
+Pulsa algo
+
+# ---------------------------------------------------------------- street
+@street_copy
+© 1990 by Loko soft.
+@street_joy
+Use Sinclair Joystick Interface.
+@street_home
+Ve a tu casa.(Calle 1,2a Trav.)
+@street_arrived
+Cuando llegues pulsa FIRE
+
+# ---------------------------------------------------------------- shop
+@shop_exit
+ Pulse La letra E para salir
+@shop_money
+Dinero:
+@shop_red
+*****Estas en números rojos*****
+@shop_key
+  Pulsa una tecla, por favor.
+
+# ---------------------------------------------------------------- song
+@lets_go
+Let's go, Ghost Embustes, Let's Let's go, Let's go, Let's go
+
+# ---------------------------------------------------------------- prueba
+@prueba_title
+Ghost-Prueba
+@prueba
+Prueba tus reflejos como Ghost-Embuste. Maneja a Tracy, y pulsa FIRE cuando creas necesario a darle al Ghost -a secas-.Si fallas, el Ghost -a secas- ira hacia ti, y te matara. Pulsa una tecla.
+@mueres
+Mueres.
+
+# ---------------------------------------------------------------- trampa
+@noche
+Se hace denoche...
+@corridas
+Y los Ghost empiezan sus corridas...
+@gente
+La gente, se asusta de los Ghost
+@socorro
+  ¡¡¡¡¡Socorro!!!!!!
+@quien
+¿Quién nos Salvará?
+@block_title
+▞▚▐▐▗▀▖▞▘▜▘ ▛▘▙▟▐▚▐▐▗▀▝▛▐▀▗▀    ▌▚▐▜▐ ▌▝▖▐  ▛ ▛▐▐▚▐▐ ▚ ▌▐▘ ▚    ▝▘▝▝ ▀ ▀ ▝  ▀▘▘▝▝▘ ▘▝▘ ▘▝▀▝▘
+@pulsa_tecla
+Pulsa una tecla
+
+# ---------------------------------------------------------------- gregory
+@gregory_title
+Ghost-Gregory
+@gregory
+Hemos llamado a esta fase 'Gregory' en honor a un juego de mineros de Heligrapix en Diciembre de 1989, hace ahora un año (este programa data de Dic/90). Trataba de ir a traves de algunas pantallas, para encontrar el oro. En este juego, ese 'oro' es el desmaterializador de Tracy. Buscalo.
+{nl}
+{nl}
+Teclas: Usa Sinclair joystick Interface.(6-0)
+{nl}
+Pulsa una tecla para jugar
+@gregory2_title
+Gregory, Pantalla 2
+@caes
+Caes. Mueres.
+@estas_muerto
+Estas muerto
+@repetir
+-¿Quieres repetir la fase?(s/n)
+
+# ---------------------------------------------------------------- jefe
+@jefe
+Tienes el desmaterializador de Tracy. Ahora debes encontrar el del jefe en esta camara de tortura, que tiene pinchos en las paredes, por lo tanta, no la toques, pues moriras... Las teclas son las de siempre: Sinclair Joystick Interface(6-0)
+@status
+Ghost embustes
+@money_sign
+$$=
+@muerto_punto
+Estas muerto.
+
+# ---------------------------------------------------------------- ayudante
+@ayudante
+Ok. Son tuyos el desm. de Tracy y el desm. del Jefe. Ahora ve a por el del ayudante. Recuerda , en esta fase, has de llegar hasta arriba, sin que te maten, y cuidandote de los ~↑~, y de todas las cosas que se te indicaran en la pantalla Inferior en un cuadro parpadeante de colorido. Sigue las instrucciones del cuadro y... !Buena Suerte!
+@pulsa_tecla2
+Pulsa una tecla:
+@minas
+Bueno, ahora espera, que estoy poniendo algunas minas.
+@listo
+!!Ya estas listo!! !Vamos! !Sal!
+@mina_cerca
+Una mina cerca
+@nada_cerca
+nada cerca
+@rocas
+Y ahora ten cuidado de que no te den las rocas...
+@por_favor
+Por favor, pulsa una tecla
+@valla
+cruza la valla cuando este en azul( deselectrizada)
+@pasado1
+Has pasado esta pantalla. Pulsa
+@listo2
+!Estas listo! !vamos! !sal!
+@paredes
+!no toques las paredes! o si no,
+tendras que empezar de nuevotodo
+@alambrada
+!Como antes! Cruza la alambrada cuando este sin voltaje (azul)
+@electro
+te has electrocutado...Pulsa
+@pasado2
+Has pasado. pulsa una tecla
+
+# ---------------------------------------------------------------- come-come
+@come
+Esto es la prueba del Come-Come.Debes borrar todo el texto de lapantalla antes de que se acabe  el tiempo marcado abajo. ve rapido y no olvides-- dejar nada en blanco, y que es- tas a contrareloj.
+@pulsa_mayus
+PULSA UNA TECLA
+@time
+TIME::
+@tiempo
+TIEMPO ACABADO.
+@conseguiste
+LO CONSEGUISTES.
+
+# ---------------------------------------------------------------- sea
+@mar
+Estas en el mar. ahora !Sal!
+@reflejos
+Ahora, utiliza tus reflejos como en la prueba.Disparo=Space.
+@bien
+!!Bien!!
+@ohoh
+Oh,Oh...
+@muerto
+Estas muerto
+@tocas
+Ahora, si tocas ~↑~, mueres del
+todo.Empiezas desde el principio
+
+# ---------------------------------------------------------------- end
+@por_fin
+!Por fin! !Ya tienes los Tres desmaterializadores! Ahora: ¿a quien eliges?(Tracy=T, Jefe= J, Ayudante=A).Pulsalo.
+@elegido
+Bueno. Ya hecha la eleccion.Has elegido a
+@tracy
+ Tracy
+@jefe_name
+l Jefe
+@ayudante_name
+l Ayudante
+@pulsa_tecla_end
+. Pulsa una tecla
+@ghostbusters
+GHOSTBUSTERS
+@fin
+PULSA ALGO, Y LUEGO PLAY. TENGO UNOS 38 K OCUPADOS. NO CABE MAS. CARGA OTRA FASE

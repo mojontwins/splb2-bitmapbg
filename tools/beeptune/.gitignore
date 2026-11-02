@@ -1,0 +1,6 @@
+/beeptune
+/beeptune-headless
+/beeptune.exe
+tests/out_*
+demo/demo.bin
+demo/zcc_opt.def

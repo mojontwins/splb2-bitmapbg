@@ -1,0 +1,327 @@
+  10 {0x1100}{0x1007}BORDER 0: PAPER 0: CLS : INK 7
+  11 LET LAP=0
+  12 LET sigue=0
+  20 CLS : GO SUB 9700
+  30 LET a$="Bienvenido a Ghost Embustes 2"
+  40 GO SUB 9999
+  50 PRINT '''': LET a$="© copyright 1990 by Loko soft": GO SUB 9999
+  60 PRINT '': LET a$="By jose luis 90.": GO SUB 9999: PRINT ': LET a$="conduce el Ghost-tipo por las   calles, y ve a los edificios parpadeantes.": GO SUB 9999: PRINT ': LET a$="Cuando llegues pulsa FIRE": GO SUB 9999
+  70 BEEP .2,10: PRINT '''
+  80 LET a$="Aqui veras al Ghost,-a secas-.  Debes ir tras de el y disparar, si fallas, eres hombre muerto": PAUSE 100: GO SUB 9999: BEEP .2,10
+  90 PAUSE 200: PRINT ''': LET a$="Graficos": PAUSE 50: GO SUB 9999
+ 100 PRINT '"{0x1107}{0x1002}{UDG-A}{UDG-B}{0x1100}{0x1007}"'"{0x1107}{0x1002}{UDG-C}{UDG-D}{0x1100}{0x1007}"': LET a$="Es el Ghost-tipo": PAUSE 20: GO SUB 9999
+ 110 PAUSE 20: PRINT OVER 0;AT 19,0;"{0x1004}{UDG-O}{0x1100}{0x1007} ";AT 20,0;"{0x1003}{0x1004}{UDG-P}{0x1007} ": LET a$="Ese eres tu"+CHR$ 8+"'": OVER 1: PAUSE 50: GO SUB 9999
+ 120 OVER 0: PAUSE 20: PRINT AT 19,0;"  ";AT 20,0;"{0x1003}{UDG-R} {0x1007}{0x1100}{0x1007}": PAUSE 50: LET a$="Este es el Ghost-a secas-": GO SUB 9999
+ 130 PAUSE 50: PRINT #0;AT 0,0;"Pulsa algo"
+ 140 PAUSE 0
+ 150 REM pantalla de calle"
+ 170 PAPER 7: CLS : BORDER 0: PRINT AT 21,0; PAPER 1;"                                ": PRINT #0;AT 0,0;"© 1990 by Loko soft.            Use Sinclair Joystick Interface."
+ 180 INK 0
+ 190 FOR n=1 TO 20 STEP 7
+ 200 FOR a=1 TO 5: PRINT AT a+n,0;         "{0x1104}     {0x1107}  {0x1104}     {0x1107}  {0x1104}     {0x1107}  {0x1104}     {0x1107}  {0x1104}    {0x1100}{0x1007}{0x1007}": NEXT a: NEXT n
+ 210 {0x1107}{0x1000}PRINT AT 0,0; PAPER 0; INK 7;"Avenues {UDG-F}streets {UDG-F}squares {UDG-F}halls     {UDG-I}1     {UDG-I}2     {UDG-I}3     {UDG-I}4    "
+ 220 PRINT AT 2,0; PAPER 4;"{UDG-G}{UDG-E}{UDG-E}{UDG-H}{UDG-F}"'"{UDG-F}{UDG-K}{UDG-K}{UDG-L}{UDG-F}"'"{UDG-F}{UDG-K}{UDG-K}{UDG-L}{UDG-F}"'"{UDG-I}{UDG-E}{UDG-E}{UDG-J}{UDG-F}"
+ 230 PRINT AT 2,7; PAPER 4; INK 3;"{UDG-G}{UDG-H}{UDG-F}";AT 3,7;"{UDG-F}{UDG-L}{UDG-H}{UDG-F}";AT 4,7;"{UDG-F}{UDG-K}{UDG-K}{UDG-L}{UDG-F}";AT 5,7;"{UDG-F}{UDG-K}{UDG-K}{UDG-L}{UDG-F}";AT 6,7;"{UDG-I}{UDG-E}{UDG-E}{UDG-J}"
+ 240 PRINT AT 2,14; PAPER 4; INK 0;"{UDG-G}{UDG-H}{UDG-F}";AT 3,14;"{UDG-F}{UDG-L}{UDG-F}";AT 4,14;"{UDG-I}{UDG-J}{UDG-F}"
+ 250 PRINT AT 2,21; PAPER 4;"{UDG-G}{UDG-E}{UDG-H}{UDG-G}{UDG-H}{UDG-F}";AT 3,21;"{UDG-I}{UDG-E}{UDG-J}{UDG-I}{UDG-J}{UDG-F}";AT 4,21;"{UDG-G}{UDG-H}{UDG-G}{UDG-E}{UDG-H}";AT 5,2
+ 260 PRINT AT 2,28;"{UDG-G}{UDG-H}{UDG-G}{UDG-H}";AT 3,28;"{UDG-F}{UDG-L}{UDG-F}{UDG-L}";AT 4,28;"{UDG-F}{UDG-L}{UDG-F}{UDG-L}";AT 5,28;"{UDG-I}{UDG-J}{UDG-I}{UDG-J}"
+ 270 PRINT AT 7,0; PAPER RND*6; INK 9;"{0x1002}{UDG-A}{UDG-B}"; INK 9;"{UDG-E}";AT 8,0;"{0x1002}{UDG-C}{UDG-D}"; INK 9;"{UDG-K}{UDG-L}"'"{UDG-K}{UDG-K}{UDG-K}{UDG-L}"'"{UDG-K}{UDG-K}{UDG-K}{UDG-L}"'"{UDG-K}{UDG-K}{UDG-K}{UDG-L}"
+ 280 {0x1000}PRINT AT 9,7;"{UDG-G}{UDG-H}{UDG-G}{UDG-H}{UDG-F}";AT 10,7;"{UDG-F}{UDG-L}{UDG-F}{UDG-L}{UDG-F}";AT 11,7;"{UDG-F}{UDG-L}{UDG-F}{UDG-L}{UDG-F}";AT 12,7;"{UDG-F}{UDG-L}{UDG-F}{UDG-L}{UDG-F}";AT 13,7;"{UDG-I}{UDG-J}{UDG-I}{UDG-J}{UDG-F}"
+ 290 PRINT AT 9,14;"{UDG-H}{UDG-J}{UDG-H}{UDG-J}";AT 10,14;"{UDG-H}{UDG-I}{UDG-J}{UDG-K}";AT 11,14;"{UDG-J}{UDG-K}{UDG-K}{UDG-J}";AT 12,14;"Rui-{UDG-F}";AT 13,14;"nas{UDG-F}{UDG-G}"
+ 300 PRINT AT 9,21;"{UDG-G}{UDG-H}{UDG-I}";AT 10,21;"{UDG-K}{UDG-G}";CHR$ 8; OVER 1;"{UDG-F}{UDG-E}{UDG-H}{UDG-F}";AT 11,21;"{UDG-K}{UDG-K}{UDG-K}{UDG-L}{UDG-F}";AT 12,21;"{UDG-K}{UDG-K}{UDG-K}{UDG-L}{UDG-F}";AT 13,21;"{UDG-I}{UDG-E}{UDG-E}{UDG-J}{UDG-F}"
+ 310 PRINT PAPER 4;AT 16,0;"{UDG-G}{UDG-H}{UDG-G}{UDG-H}{UDG-F}";AT 17,0;"{UDG-F}{UDG-L}{UDG-F}{UDG-L}{UDG-F}";AT 18,0;"{UDG-F}{UDG-L}{UDG-F}{UDG-L}{UDG-F}";AT 19,0;"{UDG-F}{UDG-L}{UDG-F}{UDG-L}{UDG-F}";AT 20,0;"{UDG-I}{UDG-J}{UDG-I}{UDG-J}{UDG-I}"
+ 320 PRINT AT 16,7;" {UDG-E}{UDG-E}{UDG-E}";AT 17,7;"{UDG-H}{UDG-F} {UDG-H}{UDG-F}";AT 17,7; OVER 1;"{UDG-E}{UDG-E}{UDG-E}{UDG-E}";AT 18,7;"{UDG-I}{UDG-E}{UDG-E}{UDG-G}";CHR$ 8; OVER 1;"{UDG-E}";CHR$ 8; OVER 1;"{UDG-F}"
+ 330 PRINT AT 16,14; PAPER 4;"     ";AT 17,14; PAPER 4;" "; PAPER 6;"   "; PAPER 4;" ";AT 18,14; PAPER 4;"     "
+ 340 PRINT AT 16,21; PAPER 4;"Poli";AT 17,21;"ce"; PAPER 1;"   ";AT 18,21; PAPER 1;"     ";AT 19,21; PAPER 1;"     ";AT 20,21;"    "
+ 350 PRINT #0;AT 0,0;"Ve a tu casa.(Calle 1,2a Trav.)"
+ 360 LET a=30: LET w=7
+ 361 PRINT INK 2;AT w,a;"{UDG-A}{UDG-B}";AT w+1,a;"{UDG-C}{UDG-D}"
+ 370 GO SUB 2000
+ 380 IF a<=5 AND w=7 OR a<=5 AND w=14 THEN GO TO 1000
+ 390 GO TO 370
+1000 PRINT AT 0,0;"Ghost-casa     {0x1002}{UDG-A}{UDG-B}                              {UDG-C}{UDG-D}{0x1107}{0x1000}"
+1001 LET k=0
+1010 PRINT AT 2,0; PAPER 1;"                                "
+1020 LET money=10000: PRINT '''                 "{UDG-I}{UDG-I}{UDG-I}{UDG-I}{UDG-I}{UDG-I}{UDG-I}{UDG-I}{UDG-I}{UDG-I}{UDG-I}{UDG-I}{UDG-I}{UDG-I}{UDG-I}{UDG-I}{UDG-I}{UDG-I}{UDG-I}{UDG-I}{UDG-I}{UDG-I}{UDG-I}{UDG-I}{UDG-I}{UDG-I}{UDG-I}{UDG-I}{UDG-I}{UDG-I}{UDG-I}{UDG-H}{0x1106}{0x1000}          Inventario                                              ---Caza-busters         $900                                    ---Caja-guardadora(Ghost)$100                                  Tienes $10000. Elige bien tus   materiales.                                                      ---Desmaterializados de Tracy                                   ---Desmaterializador del jefe                                   ---Desmaterializador del ayu. {0x1107}{0x1000}"
+1030 LET x=2: LET y=8: PRINT AT y,x; PAPER 6; INK 2;"{UDG-A}{UDG-B}";AT y+1,x;"{UDG-C}{UDG-D}"
+1041 PRINT OVER 1;AT y,x;"{0x1106}{0x1002}{UDG-A}{UDG-B}";AT y+1,x;"{0x1106}{0x1002}{UDG-C}{UDG-D}{0x1107}{0x1000}"
+1050 IF INKEY$="8" AND y<21 THEN LET y=y+1
+1060 IF INKEY$="9" AND y>8 THEN LET y=y-1
+1070 IF (y=8 AND INKEY$="0") THEN LET hov=1: LET money=money-900: BEEP .2,10
+1080 IF (y=10 AND INKEY$="0") THEN LET k=k+1: LET money=money-100: BEEP .2,10
+1090 PRINT AT 21,0; PAPER 6; INK RND*7;" Pulse La letra E para salir"
+1100 IF INKEY$="E" OR INKEY$="e" THEN GO TO 3000
+1110 PRINT OVER 1;AT y,x; PAPER 6; INK 2;"{UDG-A}{UDG-B}";AT y+1,x;"{UDG-C}{UDG-D}"
+1111 PRINT AT 20,0;"Dinero:";money;"     "
+1112 OVER 0: IF money<0 THEN PRINT AT 20,0; OVER 0; PAPER 7; INK 2;"{0x1002}*****Estas en nu{0x1007}{0x1000}";CHR$ 8; OVER 1;"{0x1002}'meros rojos*****{0x1007}{0x1000}":{0x1107} FOR n=60 TO 0 STEP -1: BEEP .01,n: NEXT n: PRINT AT 20,0;"  Pulsa una tecla, por favor.   ": PAUSE 0: RUN 
+1120 GO TO 1040
+1999 PRINT AT 0,0;"Ghost-casa     {0x1002}{UDG-A}{UDG-B}                              {UDG-C}{UDG-D}{0x1107}{0x1000}"
+2001 PRINT INK 2; OVER 1;AT w,a;"{UDG-A}{UDG-B}";AT w+1,a;"{UDG-C}{UDG-D}"
+2010 IF INKEY$="6" AND a>0 THEN LET a=a-1
+2020 IF INKEY$="7" AND a<30 THEN LET a=a+1
+2030 IF INKEY$="8" AND w<19 THEN LET w=w+1
+2040 IF INKEY$="9" AND w>2 THEN LET w=w-1
+2050 PRINT INK 2; OVER 1;AT w,a;"{UDG-A}{UDG-B}";AT w+1,a;"{UDG-C}{UDG-D}"
+2060 RETURN 
+3000 CLS : PRINT AT 5,0;       "{0x1107} {0x1000}                                                                           {0x89}{0x86}                             {0x85}{0x88}{0x84}{0x8A}                            {0x8A}{0x82}{0x81}{0x85}                            {0x1001}{0x1002}{0x8E}  {0x8D}                           {0x85}{0x8F}{0x8E}{0x8D}{0x8F}{0x8A}                   {0x1006}{0x8C}{0x8C}{0x8C}{0x85}{0x8F}{0x8F}{0x8F}{0x1102}{0x8A}{0x1105}{0x8B}{0x83}{0x83}{0x87}{0x1102}{0x85}{0x1107}{0x8F}{0x8F}{0x8F}{0x8A}{0x8C}{0x8C}{0x8C}           {0x8F}{0x8F}{0x8F}{0x8F}{0x8E}{0x87}{0x8F}{0x8F}{0x1102}{0x8A}{0x85}{0x1105}{0x8C}{0x8C}{0x1102}{0x8A}{0x85}{0x1107}{0x8F}{0x8F}{0x8B}{0x8D}{0x8F}{0x8F}{0x8F}{0x8F}           {0x83}{0x83}{0x83}{0x8F}{0x8F}{0x8F}{0x8F}{0x1102}{0x8A}{0x1104} {0x1002}{0x85}{0x8A} {0x1106}{0x8A} {0x1107}{0x1006}{0x8F}{0x8F}{0x8F}{0x83}{0x83}{0x83}                   {0x1002}{0x85}{0x1104}{0x1301} {0x1300}{0x85}{0x8A}{0x1301} {0x1300}{0x1106}{0x1107}{0x1300}{0x1400}{0x8A}                           {0x8F}{0x8F}{0x8F}{0x8F}                            {0x1001}{0x89}{0x83}{0x83}{0x86}                           {0x83}{0x83}{0x83}{0x83}{0x83}{0x83}{0x1000}                "
+3010 PRINT '"Let's go, Ghost Embustes, Let's Let's go, Let's go, Let's go"
+3020 RESTORE 3020: FOR n=0 TO 15: READ a
+3030 IF a=1000 THEN PAUSE 5: NEXT n
+3040 BEEP .3,a: NEXT n
+3050 DATA 0,0,1000,5,4,2,1000,4,0,1000,5,5,5,5,5,5
+3060 PAUSE 5
+3070 FOR n=1 TO 8: READ a: BEEP .3,a: NEXT n: DATA 0,2,4,5,7,5,4,3
+3080 PAUSE 5
+3090 FOR n=1 TO 4: READ a: BEEP .3,a: NEXT n: DATA 7,5,4,2: FOR n=1 TO 4: READ a: BEEP .3,a: NEXT n: DATA 5,4,2,0
+3100 CLS 
+3200 REM Ghost-Prueva
+3210 PRINT AT 0,0;"Ghost-Prueba      {0x1002}{UDG-A}{UDG-B}                              {UDG-C}{UDG-D}{0x1000}"
+3220 PRINT ''"Prueba tus reflejos como Ghost- Embuste. Maneja a Tracy, y pulsaFIRE cuando creas necesario a   darle al Ghost -a secas-.Si fa- llas, el Ghost -a secas- ira ha-cia ti, y te matara. Pulsa una  tecla.": PAUSE 0
+3230 FOR r=3 TO 10: PRINT AT r,0;"                                ": NEXT r
+3231 FOR n=0 TO 31
+3240 PRINT AT 16,28;"{0x1002}{UDG-M}{0x1100}{0x1107}{0x1000}";AT 17,28;"{0x1002}{UDG-N}{0x1000}"
+3260 IF INKEY$="0" AND n>=28 THEN FOR x=16 TO 11 STEP -1: PRINT AT x,28;"{UDG-F}": BEEP .001,30: BEEP .001,20: NEXT x: FOR x=32 TO 100: PRINT AT 10,28;CHR$ x: BEEP .01,x/2: NEXT x: GO TO 3400
+3270 IF INKEY$="0" AND n<28 THEN FOR x=16 TO 11 STEP -1: PRINT AT x,28;"{UDG-F}": BEEP .001,30: BEEP .001,20: NEXT x: PRINT AT 10,n;" ";: FOR n=0 TO 28: PRINT AT 16,n;" {0x1003}{UDG-R}{0x1107}{0x1000}": NEXT n:{0x1104} PRINT {0x1107}''"Mueres.": PAUSE 0: GO TO 3e3
+3280 BEEP .1,0: PRINT AT 10,n;" {0x1003}{UDG-R}{0x1000}"
+3281 PRINT AT 21,0;n
+3290 NEXT n: GO TO 3231
+3401 PAUSE 0
+3410 PRINT AT 0,0;"Ghost-Trampa        {0x1002}{UDG-A}{UDG-B}                              {UDG-C}{UDG-D}{0x1000}"
+3420 PRINT '                   "{0x1102}{0x1007}{UDG-G}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-H}{UDG-G}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-H}{0x1106}{0x1000}{UDG-F}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-F}{UDG-F}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-L}{UDG-F}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-F}{UDG-F}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-L}{UDG-F}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-F}{UDG-F}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-K}{UDG-L}{UDG-I}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-I}{UDG-I}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-J}{0x1107}"
+3430 PRINT ''"Se hace denoche...              ": PAUSE 100
+3440 FOR n=2 TO 21: PRINT AT n,0; OVER 1; PAPER 0; INK 1;"                                ": NEXT n
+3450 PRINT AT 9,0;"                                "
+3460 PRINT AT 9,0; PAPER 0; INK 7;"Y los Ghost empiezan sus        corridas...": PAUSE 50
+3470 FOR n=20 TO 7 STEP -1: BEEP .1,n: PRINT OVER 1;AT n,0;"{0x1100}{0x1003}{UDG-R}{0x1107}{0x1000}"; OVER 0;AT n+1,0;"{0x1100} {0x1107}": NEXT n
+3480 PRINT AT 7,0;" "
+3490 PRINT AT 9,0; PAPER 0; INK 7;"La gente, se asusta de los Ghost                               "
+3500 PAUSE 50
+3510 FOR n=1 TO 16: PRINT AT 4,n; OVER 0; PAPER 0; INK 6;"{UDG-K}";AT 5,n;"{UDG-K}";AT 6,n;"{UDG-K}": BEEP .1,30: NEXT n
+3520 FOR n=18 TO 30: PRINT AT 4,n; OVER 0; PAPER 0; INK 6;"{UDG-K}";AT 5,n;"{UDG-K}";AT 6,n;"{UDG-K}": BEEP .1,30: NEXT n
+3530 BEEP 1,30
+3540 PRINT AT 9,0; PAPER 0; INK 7;"  [[[[[Socorro!!!!!!                 ]Quie";CHR$ 8; OVER 1;"'n nos Salvara";CHR$ 8; OVER 1;"'?"
+3550 PAUSE 100: PRINT AT 16,0; PAPER 0; INK 0;"{0x89}{0x86}{0x85}{0x85}{0x84}{0x83}{0x88}{0x89}{0x82}{0x87}{0x82} {0x8B}{0x82}{0x8E}{0x8D}{0x85}{0x86}{0x85}{0x85}{0x84}{0x83}{0x81}{0x8B}{0x85}{0x83}{0x84}{0x83}    {0x8A}{0x86}{0x85}{0x87}{0x85} {0x8A}{0x81}{0x88}{0x85}  {0x8B} {0x8B}{0x85}{0x85}{0x86}{0x85}{0x85} {0x86} {0x8A}{0x85}{0x82} {0x86}    {0x81}{0x82}{0x81}{0x81} {0x83} {0x83} {0x81}  {0x83}{0x82}{0x82}{0x81}{0x81}{0x82} {0x82}{0x81}{0x82} {0x82}{0x81}{0x83}{0x81}{0x82}"
+3560 BEEP 1,0: FOR n=0 TO 31: PRINT PAPER 0; OVER 1; INK RND*6;AT 16,n;" ";AT 17,n;" ";AT 18,n;" ": BEEP .01,n: NEXT n
+3570 PAUSE 50: FOR n=0 TO 5: PRINT AT 16,0; PAPER 0; INK 7; OVER 1;"                                                                                                ": BEEP .1,n: PAUSE 20: PRINT AT 16,0; PAPER 0; INK 0; OVER 1;"                                                                                                ": NEXT n
+3580 RESTORE 3580: FOR n=1 TO 8: READ a: BEEP .3,a: NEXT n: DATA 0,2,4,5,7,5,4,3
+3590 PAUSE 5
+3600 FOR n=1 TO 4: READ a: BEEP .3,a: NEXT n: DATA 7,5,4,2: FOR n=1 TO 4: READ a: BEEP .3,a: NEXT n: DATA 5,4,2,0
+3610 PRINT AT 21,0;"Pulsa una tecla": PAUSE 0
+3620 REM gregory
+3630 PAPER 7: INK 0: CLS : PRINT AT 0,0;"Ghost-Gregory        {0x1002}{UDG-A}{UDG-B}                              {UDG-C}{UDG-D}{0x1107}{0x1000}"
+3640 PRINT ''"Hemos llamado a esta fase'Grego-ry' en honor a un juego de mine-ros de Heligrapix en Diciembre  de 1989, hace ahora un a|o (esteprograma data de Dic/90). Trata-ba de ir a traves de algunas pantallas, para encontrar el oro.  En este juego, ese 'oro' es el  desmaterializador de Tracy. Bus-calo."'''"Teclas: Usa Sinclair joystick   Interface.(6-0)"
+3650 PRINT ''"Pulsa una tecla para jugar": LET rutina de movimiento=8000
+3660 PAUSE 0: CLS 
+3670 PAPER 0: CLS 
+3680 LET a=0: LET w=10: INK 7: PRINT AT 0,0;"Gregory. © Loko soft  {0x1002}{UDG-A}{UDG-B}                              {UDG-C}{UDG-D}{0x1107}{0x1000}"
+3690 REM pantalla Gregory 1
+3800 PRINT AT 2,0;             "                                {0x1004}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}               {UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}     {0x1005}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}               {UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}     {UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}               {UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}     {UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{0x1004}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}        {UDG-S}{UDG-S}{0x1005}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{0x1004}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{0x1005}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}        {UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}                     {UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}                        {UDG-T}{UDG-T}{UDG-T}                                {0x1004}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}             {UDG-S}{UDG-S}{UDG-S}{0x1005}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}             {UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{0x1007}↑↑↑↑↑↑↑↑↑↑↑↑↑{0x1005}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{0x1007}"
+3801 {0x1000}{0x1107}REM {0x1107}{0x1000}
+3810 GO SUB 8000
+3820 FOR n=16 TO 28
+3830 GO SUB 8000
+3840 PRINT AT 11,n;"{0x1002}{0x83}{0x1007}{0x1107}{0x1000}"
+3850 IF (a=16 AND n=16) THEN GO SUB 9000
+3860 IF (a>=16 AND n<>16) THEN GO SUB 9100
+3870 BEEP .01,n: PRINT AT 11,n;" ": NEXT n
+3880 FOR n=28 TO 16 STEP -1
+3890 GO SUB 8000
+3900 PRINT AT 11,n;"{0x1002}{0x83}{0x1000}"
+3910 IF (a=16 AND n=16) THEN GO SUB 9000
+3920 IF (a=16 AND n<>16) THEN GO SUB 9100
+3930 BEEP .01,n: PRINT AT 11,n;" ": NEXT n
+3940 GO TO 3810
+3950 CLS : PRINT AT 0,0;"Gregory, Pantalla 2  {0x1002}{UDG-A}{UDG-B}                              {UDG-C}{UDG-D} {0x1007}{0x1107}{0x1000}"
+3960 PRINT AT 0,0;"{0x1004}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{0x1005}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}                           {UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{0x1004}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}    {UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{0x1005}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}    {UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}      {UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}        {UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}                                {0x1004}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{0x1005}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{0x1007}{0x1107}{0x1000}": FOR n=3 TO 7: PRINT AT n,18;"{UDG-F}": NEXT n: PRINT AT 7,31;"{0x1107}{0x1100}{0x1007}{UDG-T}{0x1107}{0x1000}"
+3970 LET w=7: LET a=0
+3980 IF (a=18 AND INKEY$="9") OR (a=19 AND INKEY$="9") OR (a=17 AND INKEY$="9") THEN LET w=w-5: LET a=a+3
+3990 IF a=31 AND w=2 THEN GO TO 4010
+4000 GO SUB 8000: GO TO 3980
+4010 PRINT AT 0,0;"Ghost-Gregory, Pantalla 3"
+4020 PRINT AT 2,0;             "{0x1002}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}                 {UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}                            {UDG-T}{UDG-T}                    {UDG-T}{UDG-T}{UDG-T}{UDG-F}{UDG-T}{UDG-T}{UDG-T}{UDG-T}  {UDG-T}{UDG-T}                       {UDG-F}                   {UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-F}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}       {UDG-T}            {UDG-F}             {UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-F}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}           {UDG-F}                               {UDG-T}{UDG-T}{UDG-F}                             {UDG-T}{UDG-T}{UDG-F}                               {UDG-T}{UDG-T}{UDG-F}                               {UDG-T}{UDG-T}{UDG-F}                              {UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-F}                               {UDG-F}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{UDG-T}{0x1107}{0x1000}"
+4030 LET a=1: LET w=15
+4040 GO SUB 9500
+4050 IF (a=28 AND w=15 AND INKEY$="9") THEN PRINT AT w,a;"{UDG-F}": LET w=w-2: LET a=a-1
+4060 IF (a=18 AND w=13 AND INKEY$="9") THEN PRINT AT w,a;"{UDG-F}": LET w=w-2: LET a=a-1
+4070 IF (a=16 AND w=12 AND INKEY$="9") THEN PRINT AT w,a;"{UDG-F}": LET w=w-1: LET a=a-1
+4080 IF (a=14 AND w=11 AND INKEY$="9") THEN PRINT AT w,a;"{UDG-F}": LET w=w-2: LET a=a-1
+4090 IF (a=12 AND w=8 AND INKEY$="9") THEN PRINT AT w,a;"{UDG-F}": LET w=w-2: LET a=a-1
+4100 IF (a=19 AND w=7 AND INKEY$="9") THEN PRINT AT w,a;"{UDG-F}": LET w=w-2: LET a=a+1
+4110 IF (a=27 AND w=5 AND INKEY$="9") THEN CLS : GO TO 4140
+4120 IF SCREEN$ (w+1,a)=" " THEN PRINT AT 21,0;"Caes. Mueres.": PAUSE 0: GO TO 4000
+4121 IF (w=5 AND a=31) THEN GO TO 4140
+4130 GO TO 4040
+4140 CLS : PRINT AT 10,0;"-]Quieres repetir la fase?(s/n)": IF INKEY$="" THEN GO TO 4150
+4150 IF INKEY$="s" OR INKEY$="S" THEN GO TO 3610
+4160 IF INKEY$="n" OR INKEY$="N" THEN GO TO 4180
+4170 GO TO 4150
+4180 BORDER 0: PAPER 7: INK 0: CLS : LET a$="Tienes el desmaterializador de  Tracy.   Ahora debes encontrar  el del jefe en esta camara de   tortura, que tiene pinchos en   las paredes, por  lo tanta, no  la toques, pues  moriras...     Las teclas son  las de siempre: Sinclair Joystick Interface(6-0)"
+4190 GO SUB 9999: PAUSE 0: CLS 
+4200 REM Desm. del Jefe: RUN utina de graficacion (Escenario)"
+4210 FOR y=1 TO 5: LET sigue=4200: LET a=0: LET w=21: LET a$="↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑": FOR n=0 TO 20 STEP 2: PRINT AT n,0; PAPER 2; INK 2;a$; PAPER 7; INK 0;AT n,RND*31;" ";AT n,RND*31;" ": NEXT n
+4220 GO SUB 8000: BEEP .01,a: BEEP .01,w: IF w=0 THEN GO TO 4240
+4230 PRINT #0;AT 0,0;"{0x1100}{0x1007}Ghost embustes    {0x1107}{0x1002}{UDG-A}{UDG-B}{0x1100}{0x1007}                              {0x1107}{0x1002}{UDG-C}{UDG-D}{0x1100}{0x1007}$$={0x1107}{0x1000}";money;: GO TO 4220
+4240 NEXT y
+4250 LET sigue=4270: CLS : LET a$="Ok. Son tuyos el desm. de Tracy y el desm. del Jefe. Ahora ve a por el del ayudante. Recuerda , en esta fase, has de llegar has ta arriba, sin que te maten,  y cuidandote de los ~↑~, y de to- das las cosas que se te indica- ran en la pantalla Inferior  en un cuadro parpadeante de colori do. Sigue las instrucciones del cuadro y... !Buena Suerte!": GO SUB 9999
+4260 PRINT '''': LET a$="Pulsa una tecla:": GO SUB 9999
+4270 PAUSE 0: CLS 
+4271 LET sigue=4271: LET pqs=1
+4280 PAPER 5: INK 0: CLS : LET pun=money*26
+4290 FLASH 1: FOR n=0 TO 31: PRINT AT 0,n;"{UDG-T}";AT 21,n;"{UDG-T}": NEXT n: FOR n=0 TO 21: PRINT AT n,0;"{UDG-T}";AT n,31;"{UDG-T}": NEXT n
+4300 FLASH 0: PRINT AT 21,14;"    "
+4310 LET a=15: LET w=21
+4320 LET a$="Bueno, ahora espera, que estoy  poniendo algunas minas.": PRINT #0;AT 0,0;a$
+4330 FOR n=0 TO 20: BEEP .01,-20: LET s=INT (RND*29)+1: LET t=INT (RND*19)+1: BEEP .01,-10: BEEP .01,0: PRINT AT t,s; PAPER 5; INK 5;"↑": BEEP .01,10: BEEP .01,20: NEXT n
+4331 GO SUB 6000: REM detector
+4340 PRINT AT w,a;"{UDG-U}"
+4350 PRINT #0;AT 0,0; INK RND*6;"!!Ya estas listo!! !Vamos! !Sal!                                "
+4351 GO SUB 6e3
+4360 IF w<=18 THEN GO TO 4390
+4370 GO SUB 8000
+4380 GO TO 4350
+4390 PRINT INK RND*6;#0;AT 0,0;"Y ahora ten cuidado de que no teden las rocas...                "
+4400 LET o=INT (RND*29)+1: FOR n=1 TO 20: PRINT AT n,o;"{UDG-T}": GO SUB 8000
+4410 IF w=n AND a=o THEN PRINT #0;AT 0,0;"Por favor, pulsa una tecla": GO TO 4270
+4411 GO SUB 6000
+4420 PRINT AT n,o;" "
+4430 IF w<=6 THEN GO TO 4450
+4440 NEXT n: GO TO 4400
+4450 PRINT AT 4,1; INK pqs;"{UDG-H}{UDG-H}{UDG-H}{UDG-H}{UDG-H}{UDG-H}{UDG-H}{UDG-H}{UDG-H}{UDG-H}{UDG-H}{UDG-H}{UDG-H}{UDG-H}{UDG-H}{UDG-H}{UDG-H}{UDG-H}{UDG-H}{UDG-H}{UDG-H}{UDG-H}{UDG-H}{UDG-H}{UDG-H}{UDG-H}{UDG-H}{UDG-H}{UDG-H}{UDG-H}"
+4460 LET i=INT (RND*5): IF i=1 OR i=3 THEN LET pqs=2
+4470 IF i=2 OR i=4 THEN LET pqs=1
+4480 IF w=4 AND pqs=2 THEN LET w=0: LET n=0: LET a=0: LET o=0: GO TO 4410
+4481 GO SUB 6000
+4490 IF w=4 AND pqs=1 THEN PRINT AT w,a;" ": LET w=w-2: PRINT #0;AT 0,0;"Has pasado esta pantalla. Pulsa                                ": PAUSE 0: GO TO 4520
+4500 PRINT #0; INK RND*6;AT 0,0;"     cruza la valla cuando este en azul( deselectrizada)"
+4510 GO SUB 8000: GO TO 4450
+4520 CLS : PAPER 2: CLS 
+4521 FOR n=0 TO 31: PRINT AT 0,n;"{UDG-T}";AT 21,n;"{UDG-T}": NEXT n: FOR n=0 TO 21: PRINT AT n,0;"{UDG-T}";AT n,31;"{UDG-T}": NEXT n
+4540 PRINT AT 21,14;"    "
+4550 LET w=21: LET a=15
+4560 PRINT #0;AT 0,0; INK RND*6;"!Estas listo! !vamos! !sal!"
+4570 GO SUB 8000
+4580 IF w<=18 THEN GO TO 4600
+4590 GO TO 4560
+4600 LET a$="↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑"
+4610 FOR n=10 TO 17 STEP 2: PRINT AT n,1; PAPER 1; INK 1;a$;AT n,INT (RND*29)+1; PAPER 2; INK 0;" ": NEXT n
+4620 PRINT #0;AT 0,0; INK RND*6;"!no toques las paredes! o si no,tendras que empezar de nuevo{0x1201}todo{0x1200}": GO SUB 8000
+4630 IF w<=9 THEN GO TO 4650
+4640 GO TO 4620
+4650 LET pqs=6
+4660 PRINT AT 7,1; INK pqs;"{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}{UDG-S}"
+4670 PRINT #0;AT 0,0; INK RND*6;"!Como antes! Cruza la alambrada cuando este sin voltaje (azul) "
+4680 LET e=INT (RND*5): IF w=1 OR e=3 THEN LET pqs=6
+4690 IF e=2 OR e=4 THEN LET pqs=5
+4700 IF w=7 AND pqs=6 THEN PRINT #0;AT 0,0;"te has electrocutado...Pulsa": PAUSE 0: GO TO 4270
+4710 IF w=7 AND pqs=5 THEN PRINT AT w,a;" ": LET w=w-1: GO TO 4740
+4720 GO SUB 8000
+4730 GO TO 4660
+4740 PRINT AT 5,INT (RND*29)+1;"{UDG-H}"
+4750 PRINT #0;"Has pasado. pulsa una tecla": PAUSE 0
+4760 PAPER 7: CLS 
+4770 PRINT AT 0,0;"Esto es la prueba del Come-Come.Debes borrar todo el texto de lapantalla antes de que se acabe  el tiempo marcado abajo. ve rapido y no olvides-- dejar nada en blanco, y que es- tas a contrareloj."
+4780 PRINT ;"Esto es la prueba del Come-Come.Debes borrar todo el texto de lapantalla antes de que se acabe  el tiempo marcado abajo. ve rapido y no olvides-- dejar nada en blanco, y que es- tas a contrareloj."
+4790 PRINT ;"Esto es la prueba del Come-Come.Debes borrar todo el texto de lapantalla antes de que se acabe  el tiempo marcado abajo. ve rapido y no olvides-- dejar nada en blanco, y que es- tas a contrareloj."
+4800 PRINT INVERSE 1;AT 10,9;"PULSA UNA TECLA": PAUSE 0
+4810 LET TIME=22*32+120
+4820 LET LAP=0
+4830 GO SUB 8000
+4840 PRINT AT 21,0;"TIME::";TIME;"    "
+4850 LET TIME=TIME-1: IF TIME=0 THEN PRINT AT 10,9; INVERSE 1;"TIEMPO ACABADO.": PAUSE 0: GO TO 4770
+4860 IF LAP=22*32 THEN GO TO 4880
+4870 GO TO 4830
+4880 CLS : PRINT AT 10,9; INVERSE 1;"LO CONSEGUISTES."
+4890 BEEP 1,0
+4900 PRINT AT 21,0;"PULSA UNA TECLA"
+4910 PAUSE 0: PAPER 1: INK 0: CLS 
+4920 FOR N=0 TO 31: PRINT AT 0,N;"{UDG-T}";AT 21,N;"{UDG-T}": NEXT N: FOR N=0 TO 21: PRINT AT N,0;"{UDG-T}";AT N,31;"{UDG-T}": NEXT N
+4930 FOR N=0 TO 20: LET i=INT (RND*220)+1: LET k=INT (RND*150)+1: INK 5: PLOT i,k: DRAW 10,5: DRAW 10,-5: NEXT n
+4940 PRINT AT 21,14;"    ": LET w=21: LET a=15
+4950 PRINT INK RND*6;#0;AT 0,0;"Estas en el mar. ahora !Sal!"
+4960 IF w<=18 THEN GO TO 4980
+4970 GO SUB 8000: GO TO 4950
+4980 PRINT AT 15,1;"{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}{UDG-E}"
+4990 PRINT #0;AT 0,0; INK RND*6;"Ahora, utiliza tus reflejos comoen la prueba.Disparo=Space."
+5000 FOR n=1 TO 26: PRINT AT 15,n;"{UDG-R}{UDG-G}{UDG-F}"
+5010 GO SUB 8000
+5020 IF (INKEY$=" " AND n=a) OR (INKEY$=" " AND n=a+1) THEN PRINT "!!Bien!!": PRINT AT 15,n;"{UDG-T}": BEEP 1,0: GO TO 5060
+5030 IF INKEY$=" " AND n<>a THEN PRINT "Oh,Oh...": PRINT AT 15,n;" ": FOR g=1 TO 29: PRINT AT w,g;" {UDG-R}": NEXT g: PRINT ''"Estas muerto": PAUSE 0: GO TO 4270
+5040 BEEP .001,n: PRINT AT 15,n;"___"
+5050 NEXT n: GO TO 5000
+5060 INK 0: FOR N=0 TO 31: PRINT AT 0,N;"{UDG-T}";AT 21,N;"{UDG-T}": NEXT N: FOR N=0 TO 21: PRINT AT N,0;"{UDG-T}";AT N,31;"{UDG-T}": NEXT N
+5070 GO SUB 8000
+5080 FOR n=0 TO 50: INVERSE 1: LET l=INT (RND*31)+1: LET k=INT (RND*21)+1: PRINT AT k,l;"↑": NEXT n
+5090 INVERSE 0
+5100 PRINT #0;AT 0,0; INK RND*6;"Ahora, si tocas ~↑~, mueres del todo. Empiezas{0x1201}desde el principio{0x1200}"
+5110 GO SUB 8000
+5120 IF w=1 THEN GO TO 5140
+5130 GO TO 5100
+5140 CLS : LET a$="!Por fin! !Ya tienes los Tres   desmaterializadores! Ahora:     ]a quien eliges?(Tracy=T, Jefe= J, Ayudante=A).Pulsalo.": GO SUB 9999
+5150 IF INKEY$="t" OR INKEY$="T" THEN LET o$="Tracy": LET m$="{UDG-M}": LET n$="{UDG-N}": LET cs=2: GO TO 5190
+5160 IF INKEY$="j" OR INKEY$="J" THEN LET o$="Jefe": LET m$=" ": LET n$="{UDG-U}": LET cs=4: GO TO 5190
+5170 IF INKEY$="a" OR INKEY$="A" THEN LET o$="Ayudante": LET m$="{UDG-M}": LET n$="{UDG-P}": LET cs=3: GO TO 5190
+5180 GO TO 5150
+5190 PRINT : LET a$="Bueno. Ya hecha la eleccion.Has elegido a"+("l" AND o$<>"Tracy")+" "+o$+". Pulsa una tecla": GO SUB 9999
+5200 PAUSE 0
+5210 CLS : BORDER 7: PAPER 7: INK 0: CLS : PRINT AT 0,0;"{0x1002}{UDG-A}{UDG-B}    {0x1000}GHOSTBUSTERS{0x1002}            {UDG-A}{UDG-B}{UDG-C}{UDG-D}                            {UDG-C}{UDG-D}{0x1007}":
+5220 PRINT ''''"PULSA ALGO, Y LUEGO PLAY. TENGO UNOS 38 K OCUPADOS. NO CABE     MAS. CARGA OTRA FASE"
+5330 LOAD ""
+6000 {0x1000}REM detector de minas.
+6010 IF SCREEN$ (w-1,a)="↑" THEN PRINT AT 0,0;"Una mina cerca"
+6020 IF SCREEN$ (w+1,a)="↑" THEN PRINT AT 0,0;"Una mina cerca"
+6030 IF SCREEN$ (w,a+1)="↑" THEN PRINT AT 0,0;"Una mina cerca"
+6040 IF SCREEN$ (w,a-1)="↑" THEN PRINT AT 0,0;"Una mina cerca"
+6050 IF (SCREEN$ (w-1,a)="↑" AND SCREEN$ (w+1,a)="↑") THEN PRINT "una mina cerca"
+6060 IF (SCREEN$ (w-1,a+1)="↑" AND SCREEN$ (w,a+1)="↑") THEN PRINT "una mina cerca"
+6070 IF (SCREEN$ (w,a+1)="↑" AND SCREEN$ (w,a-1)="↑") THEN PRINT "una mina cerca"
+6080 IF SCREEN$ (w,a+1)=" " THEN PRINT AT 0,0;"nada cerca    "
+6090 IF SCREEN$ (w,a-1)=" " THEN PRINT AT 0,0;"nada cerca    "
+6100 IF SCREEN$ (w+1,a)=" " THEN PRINT AT 0,0;"nada cerca    "
+6110 IF SCREEN$ (w-1,a)=" " THEN PRINT AT 0,0;"nada cerca    "
+6120 RETURN 
+7999 STOP 
+8000 PRINT AT w,a;" "
+8001 LET LAP=LAP+1
+8010 IF INKEY$="6" AND a>0 THEN LET a=a-1
+8020 IF INKEY$="7" AND a<31 THEN LET a=a+1
+8030 IF INKEY$="8" AND w<21 THEN LET w=w+1
+8040 IF INKEY$="9" AND w>0 THEN LET w=w-1
+8041 IF INKEY$="0" THEN GO SUB 9200
+8050 IF SCREEN$ (w,a)="↑" THEN CLS : PRINT "Estas muerto.": PAUSE 0: GO TO sigue
+8060 IF SCREEN$ (w,a)="{UDG-T}" THEN PRINT AT w,a;"AY"
+8070 PRINT AT w,a; INK 4;"{UDG-U}": RETURN 
+9000 PRINT AT w,a;" ": FOR n=16 TO 23: GO SUB 8000
+9010 BEEP .01,n: PRINT AT 11,n;"{0x1002}{0x83}{0x1007}{0x1107}{0x1000}": PRINT AT 10,n;"{0x1004}{UDG-U}{0x1007}{0x1000}"
+9020 PAUSE 1
+9030 PRINT AT 11,n;" ": PRINT AT 10,n;" "
+9040 NEXT n: LET a=n: GO SUB 9200
+9050 GO TO 3950
+9100 FOR n=w TO w+2: PRINT AT n,a;"{UDG-U}": PRINT AT n,a;" ": NEXT n
+9110 PRINT "Estas muerto": PAUSE 0: RUN 
+9200 PRINT AT w,a;" ": LET a=a+1: LET w=w-1
+9210 PRINT AT w,a;"{UDG-U}"
+9220 PRINT AT w,a;" ": LET a=a+1: LET w=w-1
+9230 PRINT AT w,a;"{UDG-U}"
+9240 PRINT AT w,a;" ": LET a=a+1: LET w=w-1
+9250 PRINT AT w,a;"{UDG-U}"
+9260 PRINT AT w,a;" ": LET a=a+1: LET w=w+1
+9270 PRINT AT w,a;"{UDG-U}"
+9280 PRINT AT w,a;" ": LET a=a+1: LET w=w+1
+9290 PRINT AT w,a;"{UDG-U}"
+9300 PRINT AT w,a;" ": LET a=a+1: LET w=w+1
+9310 RETURN 
+9500 IF INKEY$="7" AND a<31 THEN PRINT AT w,a;" ": LET a=a+1: PRINT AT w,a;"{UDG-U}": RETURN 
+9510 IF INKEY$="6" AND a>0 THEN PRINT AT w,a;" ": LET a=a-1: PRINT AT w,a;"{UDG-U}": RETURN 
+9520 IF INKEY$="8" AND w<21 THEN PRINT AT w,a;"{UDG-F}": LET w=w+1: PRINT AT w,a;"{UDG-U}": RETURN 
+9530 IF INKEY$="9" AND w>0 THEN PRINT AT w,a;"{UDG-F}": LET w=w-1: PRINT AT w,a;"{UDG-U}": RETURN 
+9640 PRINT AT w,a;"{UDG-U}": PRINT AT w,a;" ": RETURN 
+9700 RESTORE 9700: FOR n=0 TO 7: READ fila: POKE USR "{UDG-S}"+n,fila: NEXT n: DATA BIN 00100010,BIN 10010101,BIN 10100101,BIN 01011001,BIN 10101001,BIN 10101001,255,255
+9710 FOR n=0 TO 7: READ fila: POKE USR "{UDG-T}"+n,fila: NEXT n: DATA BIN 01110111,BIN 11101110,BIN 11011101,BIN 10111011,BIN 01110111,BIN 11101110,BIN 11011101,BIN 10111011
+9720 FOR n=0 TO 7: READ fila: POKE USR "{UDG-U}"+n,fila: NEXT n: DATA BIN 00110000,BIN 00110000,BIN 01111000,BIN 01111110,BIN 01111000,BIN 00101000,BIN 01001000,BIN 11001100: RETURN 
+9900 FOR n=1 TO LEN a$
+9911 PRINT a$(n);
+9912 IF a$(n)="." THEN BEEP .5,10: NEXT n
+9914 BEEP .01,-10
+9915 NEXT n: RETURN 
+9998 STOP 
+9999 GO SUB 9900: RETURN 

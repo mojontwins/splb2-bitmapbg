@@ -1,0 +1,24 @@
+# screens of the original used as the starting point of gfx/screens/*.png
+wait 2000
+key SPACE 10
+line 2010 2040
+scr street
+go 3100 3200 3220
+go 1000 1050 1100
+scr shop
+go 3000 3020 3090
+scr logo
+go 3100 3200 3220
+go 3410 3430 3430
+scr city
+go 3660 3660 3660
+key SPACE 10
+line 3810 3940
+scr greg1
+go 3950 3950 3970
+line 3980 8070
+scr greg2
+go 3100 3200 3220
+go 4010 4010 4030
+line 4040 4130
+scr greg3

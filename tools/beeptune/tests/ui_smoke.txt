@@ -1,0 +1,20 @@
+# Headless UI test: writes a two-pattern song with the keyboard and the
+# buttons and saves it through the built-in file browser.
+wait 1
+key z
+key x
+key c
+key 1
+key tab
+key home
+key q
+key del
+key w
+click 480 456
+key v
+key ins
+shot out_ui.bmp
+key s ctrl
+type out_ui.bts
+key enter
+quit

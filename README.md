@@ -34,6 +34,10 @@ clipping.
   patterned fills and a hardness map) made with the bundled editor,
   [`tools/suvleir4`](tools/suvleir4). It runs on Windows and Linux, and on
   macOS through XQuartz.
+* **Beeper music**: [`tools/beeptune`](tools/beeptune) is a two channel
+  beeper player for your games (once, looping, or one slice per frame
+  in-game), with a tracker in the same style as Suvleir 4 to write the
+  tunes (patterns and an order list).
 * Two complete games:
   * [`example/lhikoj`](example/lhikoj): vector backgrounds, pixel-by-pixel
     masked sprites, 25 fps.
@@ -49,6 +53,10 @@ clipping.
   two-tape game at once, keeping its ZX0-packed screens in the extra RAM
   banks, with splib2 rebuilt for a different memory layout
   (`./build.sh variant`).
+* And a 1990 BASIC game full of bugs:
+  [`example/ghostembustes2`](example/ghostembustes2), also in tile mode,
+  with screens, tiles and every text editable as PNGs and a text file, and
+  [a list of the bugs found](example/ghostembustes2/BUGS.md) on the way.
 
 **Documentation:**
 
@@ -167,6 +175,7 @@ bitmapbg/          new: SPBgCapture, SPBgShow, SPBgAddr, SPBgPutTile,
                    SPBgAttrFill, SPZX0Depack
 vector/            new: SPVecDraw (Suvleir 4 vector screens)
 tools/suvleir4/    the vector screen editor (C, Win32/X11)
+tools/beeptune/    two channel beeper music: Z80 player + tracker (C, Win32/X11)
 updater/           SPUpdateNow.asm (BITMAPBG patch) and the rest of the updater
 cwrapper/          C wrappers (now including sp_Bg*, sp_ZX0, sp_Vec*)
 ...                all other Sprite Pack 2.2 modules, unchanged
@@ -176,6 +185,7 @@ example/lhikoj/    complete game using the library (vector screens)
 example/cjmc3/     complete game using the library (packed thirds + tiles)
 example/eleuterio/ complete game using the tile-mode build (no BITMAPBG)
 example/phantomasa/ complete 128K game: one load, screens in RAM banks
+example/ghostembustes2/ 1990 BASIC game ported in tile mode, with its bug list
 ```
 
 ## Credits and licence

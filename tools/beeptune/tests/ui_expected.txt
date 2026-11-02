@@ -1,0 +1,4 @@
+# Beeptune song. Notes: C-4 C#4 ... (octaves 1-7), --- keep playing, === silence
+speed 6
+loop 0
+order 0 1
