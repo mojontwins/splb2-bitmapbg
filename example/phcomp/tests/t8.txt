@@ -1,0 +1,10 @@
+wait 30
+tap 1
+wait 30
+poke ex_r 0 4
+poke py 0 144
+poke exit_dir 0 2
+wait 30
+key p 40
+wait 60
+print

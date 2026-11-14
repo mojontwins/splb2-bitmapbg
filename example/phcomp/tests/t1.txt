@@ -1,0 +1,12 @@
+wait 60
+shot menu
+tap 1
+wait 40
+shot r1
+key p 30
+shot r1b
+key p,q 6
+wait 10
+shot jump
+key p 60
+shot r2

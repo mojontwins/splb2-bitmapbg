@@ -39,6 +39,16 @@
 * `example/phantomasa`: a 128K game in one load (screens in RAM banks,
   the original music player kept at its address by moving splib2's
   tables with a variant build).
+* `SPRCOLOUR` option (off by default, so the usual builds don't change):
+  coloured sprites in Spectrum mode. A sprite char whose colour byte
+  (`struct sp_CS .colour`) has bit 7 set paints its ink (and BRIGHT) on the
+  cell's paper, on cells whose tile is below `SPRCOLTILES` (default 1: only
+  blank cells, so floors and walls keep their colours). The char structs
+  are created with colour 0. `build.sh variant splib2tc BITMAPBG=0
+  SPRCOLOUR=1` makes the tile-mode library with it.
+* `example/phcomp`: six Phantomas games in one load on pheng2, a revamp of
+  pheng (Phantomas Engine): rooms from the room editor, generic enemies,
+  coloured sprites (`splib2tc.lib`).
 
 ## Earlier Mojon Twins changes (inherited)
 

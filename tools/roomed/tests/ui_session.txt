@@ -1,0 +1,36 @@
+# Headless UI session: draws a rect, a pattern, a char and a crate (custom
+# object) with the mouse,
+# moves the pattern with the select tool, undo/redo, changes room, saves.
+# Run from tests/ with run_tests.sh (it checks the saved file).
+wait 1
+shot out_start.bmp
+key 2
+click 1028 180
+drag 140 290 260 290
+key 3
+click 804 180
+drag 356 410 428 482
+key 1
+click 820 148
+click 500 122
+key 4
+click 500 410
+shot out_drawn.bmp
+key s
+drag 356 410 164 410
+shot out_moved.bmp
+key z ctrl
+key y ctrl
+key pgdn
+shot out_room1.bmp
+key pgup
+key k
+shot out_solid.bmp
+key f1
+shot out_help.bmp
+key esc
+key s ctrl shift
+type out_session.txt
+key enter
+shot out_saved.bmp
+quit

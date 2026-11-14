@@ -1,0 +1,38 @@
+# CJMC93 rooms, in the room editor's format (tools/roomed), compact
+# encoding. tools/conv.py turns them into the bytes room_draw () reads.
+#
+#   room NAME                 the names are used in src/cjmc93.c (L_1_4...)
+#   header BG PIC TEXT        BG: 0 castle, 1 cave, 2 bridge, 3 black,
+#                             4 none (nothing under the objects).
+#                             PIC: picture in the game area, 0 none,
+#                             1 temple, 2 castle, 3 corridor (gfx/pictures)
+#                             TEXT: the room's texts, a set of
+#                             gfx/texts.txt (0 none)
+#   char X Y CODE ATTR        one cell
+#   rect X Y CODE ATTR X2 Y2  (X,Y)-(X2,Y2) filled with CODE
+#   pattern X Y CODE ATTR X2 Y2 W H
+#                             (X,Y)-(X2,Y2) filled with the W x H figure of
+#                             tiles CODE .. CODE+W*H-1, row by row
+#   end
+#
+# X, Y: screen columns and rows. CODE: tile number (gfx/tileset.png): the
+# font is 0-95 (character - 32), the block graphics 96-111, the UDGs A-U
+# 112-132. CODE 255 draws nothing (a wall that is part of the backdrop).
+# ATTR: the colour, and
+#   BRIGHT (64)  solid
+#   FLASH (128)  deadly (the water); not shown as FLASH
+# The rooms' order, exits and enemies are in src/cjmc93.c.
+#
+# Made from the original's PRINT statements (orig/rooms-print.txt) by
+# tools/print2rooms.py. Bug fix kept from there: 3.1's hole in the wall is
+# two rows tall (13-14); the original's single holes at 10 and 13 left no
+# way out.
+
+encoding compact
+solid_bit 6
+bg_params 0 2
+bg_params 1 2
+bg_params 2 2
+bg_params 3 2
+bg_params 4 2
+

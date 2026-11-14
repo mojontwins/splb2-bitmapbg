@@ -42,6 +42,9 @@
 
 #include "assets.h"
 
+/* the title music player (two channel beeper, see ../../tools/beeptune) */
+#include "../../../tools/beeptune/player/beeptune.h"
+
 /* ------------------------------------------------------------------ */
 /* Tuning (pixels per frame at 25 fps)                                 */
 /* ------------------------------------------------------------------ */
@@ -898,7 +901,9 @@ void title (void) {
 
 	t_minrow = 0; lp = title_layout; draw_layout ();
 	sp_BgShow ();
-	wait_key ();
+	/* the music plays until a key is pressed, like the original's
+	   RANDOMIZE USR 51720 */
+	bt_loop (title_song);
 }
 
 void game_over (void) {

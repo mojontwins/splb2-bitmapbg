@@ -1,0 +1,99 @@
+wait 30
+tap 1
+wait 50
+poke flicker 0 250
+poke ex_r 0 0
+poke py 0 40
+poke exit_dir 0 2
+wait 40
+shot r00
+poke flicker 0 250
+poke ex_r 0 1
+poke py 0 40
+poke exit_dir 0 2
+wait 40
+shot r01
+poke flicker 0 250
+poke ex_r 0 2
+poke py 0 40
+poke exit_dir 0 2
+wait 40
+shot r02
+poke flicker 0 250
+poke ex_r 0 3
+poke py 0 40
+poke exit_dir 0 2
+wait 40
+shot r03
+poke flicker 0 250
+poke ex_r 0 4
+poke py 0 40
+poke exit_dir 0 2
+wait 40
+shot r04
+poke flicker 0 250
+poke ex_r 0 5
+poke py 0 40
+poke exit_dir 0 2
+wait 40
+shot r05
+poke flicker 0 250
+poke ex_r 0 6
+poke py 0 40
+poke exit_dir 0 2
+wait 40
+shot r06
+poke flicker 0 250
+poke ex_r 0 7
+poke py 0 40
+poke exit_dir 0 2
+wait 40
+shot r07
+poke flicker 0 250
+poke ex_r 0 8
+poke py 0 40
+poke exit_dir 0 2
+wait 40
+shot r08
+poke flicker 0 250
+poke ex_r 0 9
+poke py 0 40
+poke exit_dir 0 2
+wait 40
+shot r09
+poke flicker 0 250
+poke ex_r 0 10
+poke py 0 40
+poke exit_dir 0 2
+wait 40
+shot r10
+poke flicker 0 250
+poke ex_r 0 11
+poke py 0 40
+poke exit_dir 0 2
+wait 40
+shot r11
+poke flicker 0 250
+poke ex_r 0 12
+poke py 0 40
+poke exit_dir 0 2
+wait 40
+shot r12
+poke flicker 0 250
+poke ex_r 0 13
+poke py 0 40
+poke exit_dir 0 2
+wait 40
+shot r13
+poke flicker 0 250
+poke ex_r 0 14
+poke py 0 40
+poke exit_dir 0 2
+wait 40
+shot r14
+poke flicker 0 250
+poke ex_r 0 15
+poke py 0 40
+poke exit_dir 0 2
+wait 40
+shot r15

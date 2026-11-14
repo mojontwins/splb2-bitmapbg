@@ -143,6 +143,9 @@ ENDIF
 ;   ld (hl),a
 ;   ex af,af'
 ;ENDIF
+IF SPRCOLOUR
+   ld (hl),0                  ; colour: none (the cell's own)
+ENDIF
    inc hl
    ld (hl),0            ; no next char struct in display list
    pop hl               ; hl = last column char struct

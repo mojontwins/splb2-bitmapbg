@@ -1,0 +1,5 @@
+wait 60
+tap 1
+wait 60
+mem ADB0 48
+mem EFEF 16

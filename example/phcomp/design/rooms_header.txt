@@ -1,0 +1,45 @@
+# Phantomas Compilation: every room of the six games, and their backdrops,
+# in the room editor's format (compact encoding). tools/conv.py turns them
+# into the bytes room_draw () reads; gfx/games.txt says which game uses
+# each room, its exits and its enemies.
+#
+#   room NAME                 games.txt uses the names
+#   header BG TEXT            BG: the backdrop drawn first, 0 none, or N:
+#                             the Nth room called "bg ..." in this file.
+#                             TEXT: the room's texts, a set of
+#                             gfx/texts.txt (0 none)
+#   char X Y CODE ATTR        one cell
+#   rect X Y CODE ATTR X2 Y2  (X,Y)-(X2,Y2) filled with CODE
+#   pattern X Y CODE ATTR X2 Y2 W H
+#                             (X,Y)-(X2,Y2) filled with the W x H figure of
+#                             tiles CODE .. CODE+W*H-1, row by row
+#   zigzag X Y CODE ATTR X2 Y2
+#                             (X,Y)-(X2,Y2) filled with CODE and CODE+1
+#                             taking turns, each row starting one cell on
+#                             (CODE CODE+1 CODE..., then CODE+1 CODE...):
+#                             staggered bricks of two halves
+#   end
+#
+# X, Y: screen columns and rows; the play area is rows 0-21 (22 and 23
+# are the HUD). CODE: tile number (gfx/tiles.png, 32 a row): 0-63 are the
+# font (character - 32). CODE 255 draws nothing (an invisible wall).
+# ATTR: the colour, and
+#   BRIGHT (64)          solid
+#   FLASH (128)          deadly (water, fire, spikes); FLASH isn't shown
+#   both (192)           a platform: solid from above only
+# Empty cells take the colour of the backdrop (the player and the enemies
+# show their own ink on that paper).
+
+encoding compact
+solid_bit 6
+bg_params 0 1
+bg_params 1 1
+bg_params 2 1
+bg_params 3 1
+bg_params 4 1
+bg_params 5 1
+bg_params 6 1
+bg_params 7 1
+bg_params 8 1
+bg_params 9 1
+

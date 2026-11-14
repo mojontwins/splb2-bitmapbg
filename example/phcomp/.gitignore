@@ -1,0 +1,4 @@
+tests/*.png
+tests/*.z80
+src/*.bin
+__pycache__/

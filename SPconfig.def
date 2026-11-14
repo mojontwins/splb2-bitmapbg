@@ -90,6 +90,23 @@
 ; use attr bit 7 for fg cells (sprites not drawn on them)
     DEFC FLASHASFG = 1
 
+; Coloured sprites (Spectrum display only). When true, the colour byte of
+; every sprite char struct (struct sp_CS .colour, offset 10) is used: if
+; its bit 7 is set, a cell with that sprite char in it shows
+;   (cell attribute AND SPRCOLMASK) OR (colour AND $7F)
+; e.g. colour $80 + INK: the sprite's ink on the cell's paper. The char
+; structs are created with colour 0 (the cell's own colour): set it
+; yourself, e.g. with sp_IterateSprChar. Several sprites in one cell: the
+; last one drawn wins. FLASHASFG cells (foreground) keep their colour.
+; Off by default.
+; Only cells whose background tile is below SPRCOLTILES take the sprite
+; colour (1: only tile 0, the blank one): a figure over a drawn tile keeps
+; the tile's colours, so walls and floors don't change colour under it.
+; 0: every cell.
+    DEFC SPRCOLOUR = 0
+    DEFC SPRCOLMASK = $F8
+    DEFC SPRCOLTILES = 1
+
 ; na_th_an / Lhikoj: bitmapped background.
 ; When true, SPUpdateNow ignores tile numbers and SPTileArray: the background
 ; of every cell is read from a 6144-byte shadow screen laid out exactly like

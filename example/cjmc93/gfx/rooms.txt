@@ -1,0 +1,262 @@
+# CJMC93 rooms, in the room editor's format (tools/roomed), compact
+# encoding. tools/conv.py turns them into the bytes room_draw () reads.
+#
+#   room NAME                 the names are used in src/cjmc93.c (L_1_4...)
+#   header BG PIC TEXT        BG: 0 castle, 1 cave, 2 bridge, 3 black,
+#                             4 none (nothing under the objects).
+#                             PIC: picture in the game area, 0 none,
+#                             1 temple, 2 castle, 3 corridor (gfx/pictures)
+#                             TEXT: the room's texts, a set of
+#                             gfx/texts.txt (0 none)
+#   char X Y CODE ATTR        one cell
+#   rect X Y CODE ATTR X2 Y2  (X,Y)-(X2,Y2) filled with CODE
+#   pattern X Y CODE ATTR X2 Y2 W H
+#                             (X,Y)-(X2,Y2) filled with the W x H figure of
+#                             tiles CODE .. CODE+W*H-1, row by row
+#   end
+#
+# X, Y: screen columns and rows. CODE: tile number (gfx/tileset.png): the
+# font is 0-95 (character - 32), the block graphics 96-111, the UDGs A-U
+# 112-132. CODE 255 draws nothing (a wall that is part of the backdrop).
+# ATTR: the colour, and
+#   BRIGHT (64)  solid
+#   FLASH (128)  deadly (the water); not shown as FLASH
+# The rooms' order, exits and enemies are in src/cjmc93.c.
+#
+# Made from the original's PRINT statements (orig/rooms-print.txt) by
+# tools/print2rooms.py. Bug fix kept from there: 3.1's hole in the wall is
+# two rows tall (13-14); the original's single holes at 10 and 13 left no
+# way out.
+
+encoding compact
+solid_bit 6
+bg_params 0 2
+bg_params 1 2
+bg_params 2 2
+bg_params 3 2
+bg_params 4 2
+
+room 1.1
+header 0 1 1
+end
+
+room 1.2
+header 0 1 2
+pattern 0 19 130 40 3 21 2 1
+rect 4 6 131 80 4 9
+rect 4 11 131 80 4 19
+pattern 4 5 130 80 6 5 2 1
+char 7 5 130 80
+pattern 11 5 130 80 16 5 2 1
+pattern 20 5 130 80 21 5 2 1
+pattern 4 10 130 80 13 10 2 1
+pattern 18 10 130 80 19 10 2 1
+pattern 9 15 130 80 19 15 2 1
+end
+
+room 1.3
+header 0 1 3
+pattern 12 8 126 96 13 9 2 2
+pattern 20 18 126 88 21 19 2 2
+rect 4 5 130 80 4 19
+rect 5 15 131 80 10 15
+char 5 5 131 80
+pattern 6 5 130 80 21 5 2 1
+pattern 10 10 130 80 18 10 2 1
+pattern 22 10 130 80 26 10 2 1
+pattern 11 15 130 80 12 15 2 1
+end
+
+room 1.4
+header 0 1 0
+pattern 15 8 126 96 16 9 2 2
+pattern 10 12 126 200 11 13 2 2
+pattern 10 14 126 80 11 15 2 2
+pattern 10 16 126 88 11 17 2 2
+pattern 10 18 126 112 11 19 2 2
+rect 15 10 131 80 17 10
+pattern 7 10 130 80 12 10 2 1
+char 13 10 131 80
+char 14 10 130 80
+pattern 18 10 130 80 19 10 2 1
+char 20 10 131 80
+pattern 21 10 130 80 25 10 2 1
+pattern 10 11 126 104 11 11 2 1
+pattern 24 15 130 80 27 15 2 1
+end
+
+room 1.5
+header 0 1 0
+end
+
+room 1.6
+header 0 2 4
+pattern 9 3 126 96 10 4 2 2
+pattern 12 13 126 112 13 14 2 2
+pattern 20 18 126 114 21 19 2 2
+rect 5 5 131 80 16 5
+rect 4 8 127 80 4 11
+rect 4 13 127 80 4 16
+char 4 5 130 80
+char 17 5 130 80
+char 4 6 127 80
+pattern 4 7 130 80 11 7 2 1
+pattern 18 7 130 80 21 7 2 1
+pattern 4 12 130 80 10 12 2 1
+pattern 11 12 130 80 12 12 2 1
+pattern 16 12 130 80 23 12 2 1
+char 24 12 131 80
+pattern 10 15 130 80 19 15 2 1
+pattern 4 17 130 80 7 17 2 1
+char 8 17 131 80
+pattern 9 17 130 80 13 17 2 1
+pattern 14 17 130 80 20 17 2 1
+char 4 18 127 80
+char 4 19 127 80
+end
+
+room 1.S
+header 0 2 0
+pattern 6 18 130 80 23 18 2 1
+char 6 19 131 80
+pattern 7 19 130 80 23 19 2 1
+end
+
+room 1.Sboxes
+header 4 0 5
+pattern 6 12 126 96 7 13 2 2
+pattern 14 12 126 104 15 13 2 2
+pattern 22 12 126 112 23 13 2 2
+end
+
+room 1.7
+header 0 2 0
+pattern 11 5 120 122 12 6 2 2
+rect 7 4 111 68 17 4
+rect 18 4 108 68 21 4
+rect 4 5 111 68 10 19
+rect 13 5 111 68 22 7
+rect 11 7 111 68 12 19
+rect 14 8 97 7 22 8
+rect 13 18 111 68 14 19
+rect 15 18 100 7 19 18
+rect 20 18 111 68 24 18
+rect 15 19 111 68 22 19
+char 4 4 100 68
+rect 5 4 108 68 6 4
+rect 23 6 111 68 24 6
+char 23 7 111 68
+char 13 8 111 68
+char 23 19 99 68
+end
+
+room 1.8
+header 0 2 0
+rect 5 7 131 80 7 7
+rect 12 7 132 200 15 7
+rect 8 9 132 200 11 9
+rect 12 9 131 80 14 9
+rect 4 10 129 80 4 12
+rect 4 13 130 80 7 13
+rect 8 13 131 80 13 13
+rect 14 13 130 80 16 13
+rect 4 15 130 80 13 15
+rect 5 17 131 80 18 17
+char 4 7 130 80
+pattern 8 7 130 80 11 7 2 1
+pattern 16 7 130 80 18 7 2 1
+pattern 19 7 130 80 20 7 2 1
+char 4 8 129 80
+rect 4 9 132 200 5 9
+pattern 6 9 130 80 7 9 2 1
+pattern 15 9 130 80 18 9 2 1
+char 19 9 131 80
+pattern 20 9 130 80 21 9 2 1
+char 20 13 131 80
+pattern 21 13 130 80 27 13 2 1
+char 28 13 131 16
+char 29 13 130 16
+char 4 14 129 80
+char 4 16 129 80
+char 4 17 130 80
+char 4 18 129 80
+char 4 19 129 80
+end
+
+room card2
+header 3 0 6
+end
+
+room 2.1
+header 0 2 7
+pattern 10 18 126 96 11 19 2 2
+pattern 15 18 130 80 18 18 2 1
+end
+
+room 2.2
+header 0 2 7
+pattern 4 18 126 104 5 19 2 2
+pattern 11 18 126 112 12 19 2 2
+pattern 22 19 130 80 23 19 2 1
+char 24 19 131 80
+char 25 19 130 80
+end
+
+room card3
+header 3 0 8
+end
+
+room 3.1
+header 1 3 9
+rect 4 3 129 80 4 9
+rect 4 16 129 80 4 19
+char 4 11 129 80
+char 4 12 129 80
+pattern 4 15 130 80 7 15 2 1
+end
+
+room 3.2
+header 1 3 9
+rect 4 7 129 80 4 19
+char 4 3 129 80
+char 4 4 129 80
+char 7 10 130 80
+char 5 15 131 80
+end
+
+room 3.3
+header 1 3 0
+pattern 8 11 126 96 9 12 2 2
+pattern 8 13 126 104 9 14 2 2
+pattern 10 13 126 88 11 14 2 2
+pattern 6 15 130 80 17 15 2 1
+end
+
+room card4
+header 3 0 10
+end
+
+room 4.1
+header 2 0 0
+rect 4 15 255 64 31 15
+char 5 1 255 64
+char 6 2 255 64
+char 7 3 255 64
+char 8 4 255 64
+char 9 5 255 64
+char 10 6 255 64
+char 11 7 255 64
+char 12 8 255 64
+char 13 9 255 64
+char 14 10 255 64
+char 15 11 255 64
+char 16 12 255 64
+char 17 13 255 64
+end
+
+room end
+header 3 0 0
+rect 0 20 127 32 31 20
+rect 0 21 131 16 31 21
+end
+

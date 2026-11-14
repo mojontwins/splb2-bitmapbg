@@ -1,0 +1,13 @@
+# CJMC93: the rooms' texts. A room's header (gfx/rooms.txt) names one set
+# by its number; rooms can share a set. room_texts () in the game draws
+# them over the room, with nothing solid.
+#
+#   text N                    the set N (1-255)
+#   ROW COL ATTR "text"       a text at (ROW, COL) in colour ATTR;
+#                             characters 32-127, no line breaks. A space
+#                             on black paper isn't drawn (what is under
+#                             it shows)
+#
+# Rows 22-23 are the lower part of the frame (the hints). '#' outside
+# quotes starts a comment.
+

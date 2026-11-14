@@ -184,6 +184,7 @@ for n in ('p1t1', 'p1t2', 'p1t3', 'p2t1', 'p2t2', 'p2t3'):
     o.append('extern unsigned char zx0_%s[];' % n)
 for n in range(12):
     o.append('extern unsigned char layout_%d[];' % n)
+o.append('extern unsigned char title_song[];      /* music/title.bts */')
 o.append('\n#asm')
 o.append('._tiles\n' + asm_bytes(list(rd('gfxchars.bin')) + list(rd('udg.bin')) + list(rd('chars.bin'))))
 o.append('._sprite_frames_pad\n' + asm_bytes(spr[:16]))
@@ -192,6 +193,9 @@ o.append('._backdrop_thirds\n' + asm_bytes(list(rd('backdropthirds.bin'))))
 o.append('._boniatos_init\n' + asm_bytes(list(rd('boniatos.bin')), 12))
 o.append('._sfx_data\n' + asm_bytes(list(rd('sonidos.bin'))))
 o.append('._sfx_step\n' + asm_bytes(list(rd('step.bin'))))
+# the title music: music/title.bts, a Beeptune song (../../tools/beeptune).
+# The .bts file is the player's own format, so it goes in as it is.
+o.append('._title_song\n' + asm_bytes(list(open(os.path.join(ROOT, 'music', 'title.bts'), 'rb').read())))
 for n in ('p1t1', 'p1t2', 'p1t3', 'p2t1', 'p2t2', 'p2t3', 'logo', 'ending'):
     o.append('._zx0_%s\n' % n + asm_bytes(list(rd(n + '.zx0'))))
 # screen layouts are ZX0-packed too (5.8K -> 2.1K); the game depacks the

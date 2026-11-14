@@ -1,0 +1,19 @@
+wait 30
+tap 1
+wait 30
+poke flicker 0 250
+poke ex_r 0 5
+poke py 0 100
+poke exit_dir 0 2
+wait 4
+poke px 0 64
+wait 10
+print
+wait 10
+print
+wait 20
+print
+shot raft
+wait 40
+print
+shot raft2

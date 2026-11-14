@@ -57,6 +57,15 @@ clipping.
   [`example/ghostembustes2`](example/ghostembustes2), also in tile mode,
   with screens, tiles and every text editable as PNGs and a text file, and
   [a list of the bugs found](example/ghostembustes2/BUGS.md) on the way.
+* And a 1993 compiled BASIC game, decompiled back to BASIC first:
+  [`example/cjmc93`](example/cjmc93), BITMAPBG with whole backdrops in the
+  shadow, jumps along an arc, one function each for drawing rooms, moving
+  enemies/platforms and moving the player, a
+  [section-by-section description](example/cjmc93/GAME.md) and
+  [its bug list](example/cjmc93/BUGS.md).
+* And six 1990-92 BASIC games in one load: [`example/phcomp`](example/phcomp),
+  the Phantomas compilation on pheng2 (rooms from the room editor, generic
+  enemies, coloured sprites with the `SPRCOLOUR` tile-mode build).
 
 **Documentation:**
 
@@ -186,6 +195,8 @@ example/cjmc3/     complete game using the library (packed thirds + tiles)
 example/eleuterio/ complete game using the tile-mode build (no BITMAPBG)
 example/phantomasa/ complete 128K game: one load, screens in RAM banks
 example/ghostembustes2/ 1990 BASIC game ported in tile mode, with its bug list
+example/cjmc93/     1993 compiled BASIC game: decompiler, port, design doc, bug list
+example/phcomp/     six Phantomas games on one engine (pheng2), one load
 ```
 
 ## Credits and licence

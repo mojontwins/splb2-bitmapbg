@@ -82,6 +82,10 @@ ENDIF
 IF DISP_SPECTRUM
 .tempcolour
    defb 0
+IF SPRCOLOUR
+.temptile                        ; the cell's tile (SPRCOLTILES)
+   defb 0
+ENDIF
 ENDIF
 
 ;
@@ -437,6 +441,11 @@ IF DISP_HICOLOUR
 ENDIF
 
    ld a,(hl)
+IF DISP_SPECTRUM
+IF SPRCOLOUR
+   ld (temptile),a
+ENDIF
+ENDIF
    ex af,af'                     ; a' = graphic tile #
    inc hl                        ; point at MSB sprite list
    ld a,(hl)
@@ -1249,6 +1258,27 @@ ELSE                             ; not DISP_HICOLOUR
    pop hl                        ; hl = char struct + 9
    inc hl
 IF DISP_SPECTRUM
+IF SPRCOLOUR
+IF SPRCOLTILES
+   ld a,(temptile)               ; only on cells with a tile below
+   cp SPRCOLTILES                ; SPRCOLTILES (the blank ones)
+   jr nc, nosprcolour
+ENDIF
+   ld a,(hl)                     ; hl = char struct + 10: the sprite colour
+   bit 7,a
+   jr z, nosprcolour             ; bit 7 clear: the cell keeps its own
+   and $7f
+   ld c,a
+   ld a,(tempcolour)
+IF FLASHASFG
+   bit 7,a
+   jr nz, nosprcolour            ; foreground cell: keep it
+ENDIF
+   and SPRCOLMASK
+   or c
+   ld (tempcolour),a
+.nosprcolour
+ENDIF
 ;; na_th_an
 ;   ld a,(hl)                     ; colour
 ;   cp $80                        ; special transparent colour

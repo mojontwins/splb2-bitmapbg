@@ -1,0 +1,1112 @@
+# Phantomas Compilation: every room of the six games, and their backdrops,
+# in the room editor's format (compact encoding). tools/conv.py turns them
+# into the bytes room_draw () reads; gfx/games.txt says which game uses
+# each room, its exits and its enemies.
+#
+#   room NAME                 games.txt uses the names
+#   header BG TEXT            BG: the backdrop drawn first, 0 none, or N:
+#                             the Nth room called "bg ..." in this file.
+#                             TEXT: the room's texts, a set of
+#                             gfx/texts.txt (0 none)
+#   char X Y CODE ATTR        one cell
+#   rect X Y CODE ATTR X2 Y2  (X,Y)-(X2,Y2) filled with CODE
+#   pattern X Y CODE ATTR X2 Y2 W H
+#                             (X,Y)-(X2,Y2) filled with the W x H figure of
+#                             tiles CODE .. CODE+W*H-1, row by row
+#   zigzag X Y CODE ATTR X2 Y2
+#                             (X,Y)-(X2,Y2) filled with CODE and CODE+1
+#                             taking turns, each row starting one cell on
+#                             (CODE CODE+1 CODE..., then CODE+1 CODE...):
+#                             staggered bricks of two halves
+#   end
+#
+# X, Y: screen columns and rows; the play area is rows 0-21 (22 and 23
+# are the HUD). CODE: tile number (gfx/tiles.png, 32 a row): 0-63 are the
+# font (character - 32). CODE 255 draws nothing (an invisible wall).
+# ATTR: the colour, and
+#   BRIGHT (64)          solid
+#   FLASH (128)          deadly (water, fire, spikes); FLASH isn't shown
+#   both (192)           a platform: solid from above only
+# Empty cells take the colour of the backdrop (the player and the enemies
+# show their own ink on that paper).
+
+encoding compact
+solid_bit 6
+bg_params 0 1
+bg_params 1 1
+bg_params 2 1
+bg_params 3 1
+bg_params 4 1
+bg_params 5 1
+bg_params 6 1
+bg_params 7 1
+bg_params 8 1
+bg_params 9 1
+
+
+room bg brujas
+header 0 0
+rect 0 0 0 45 31 1
+rect 0 2 67 29 31 2
+rect 0 3 0 28 31 21
+char 23 3 68 28
+char 5 4 68 28
+char 16 4 68 28
+char 2 5 68 28
+char 28 5 68 28
+char 11 6 68 28
+char 20 7 68 28
+char 1 8 68 28
+char 14 9 68 28
+char 24 9 68 28
+char 7 10 68 28
+char 30 11 68 28
+char 3 12 68 28
+char 19 12 68 28
+end
+
+room bru_01
+header 1 1
+pattern 0 10 69 30 1 11 2 2
+pattern 15 10 69 30 16 11 2 2
+rect 0 12 64 80 1 21
+rect 15 12 64 80 16 21
+rect 2 16 64 80 14 21
+rect 17 16 64 80 31 21
+end
+
+room bru_02
+header 1 0
+rect 21 9 64 80 23 9
+rect 10 12 64 80 12 12
+rect 0 16 64 80 31 21
+end
+
+room bru_03
+header 1 0
+pattern 30 12 69 30 31 13 2 2
+rect 30 14 64 80 31 21
+rect 17 15 64 80 20 15
+rect 0 16 64 80 1 21
+rect 2 18 64 80 29 21
+end
+
+room bru_04
+header 1 0
+rect 2 3 64 80 31 4
+pattern 15 5 69 30 16 6 2 2
+pattern 0 12 69 30 1 13 2 2
+rect 0 14 64 80 1 21
+rect 2 20 64 80 31 21
+end
+
+room bru_05
+header 1 0
+rect 0 3 64 80 1 4
+pattern 15 13 69 30 16 14 2 2
+rect 15 15 64 80 16 21
+rect 17 17 64 80 31 21
+rect 9 19 64 80 10 21
+rect 0 20 64 80 1 21
+end
+
+room bru_06
+header 1 0
+rect 0 17 64 80 1 21
+rect 7 19 64 80 7 21
+rect 28 19 64 80 28 21
+pattern 2 20 65 96 6 21 1 2
+pattern 8 20 81 141 27 21 1 2
+pattern 29 20 65 96 31 21 1 2
+end
+
+room bru_07
+header 1 0
+rect 27 0 64 80 31 1
+rect 11 2 64 80 14 2
+rect 30 2 64 80 31 19
+rect 6 5 64 80 9 5
+pattern 10 7 69 30 11 8 2 2
+pattern 10 9 73 25 11 17 2 1
+rect 2 10 64 80 4 10
+char 8 15 64 80
+pattern 22 15 69 30 23 16 2 2
+rect 22 17 64 80 23 19
+pattern 10 18 75 25 11 19 2 2
+pattern 0 20 65 96 31 21 1 2
+end
+
+room bru_07b
+header 1 0
+pattern 10 6 125 31 11 6 2 1
+pattern 21 6 125 31 22 6 2 1
+pattern 5 8 125 31 6 8 2 1
+rect 23 9 64 80 27 9
+rect 16 10 64 80 19 10
+rect 30 11 64 80 31 21
+rect 9 12 64 80 12 12
+rect 2 14 64 80 5 14
+rect 27 14 64 80 29 21
+rect 19 16 64 80 21 16
+rect 9 17 64 80 16 17
+end
+
+room bru_07c
+header 1 0
+pattern 5 8 125 31 6 8 2 1
+pattern 24 8 125 31 25 8 2 1
+rect 0 11 64 80 4 21
+rect 10 12 64 80 15 12
+rect 10 13 64 80 10 21
+rect 15 13 64 80 15 21
+rect 26 13 64 80 31 21
+pattern 12 14 69 30 13 15 2 2
+rect 11 16 64 80 14 21
+rect 21 16 64 80 22 21
+end
+
+room bru_08
+header 1 2
+rect 0 13 64 80 1 21
+rect 4 17 64 80 5 19
+rect 30 17 64 80 31 19
+pattern 2 20 65 96 31 21 1 2
+end
+
+room bru_fly1
+header 1 3
+pattern 7 4 125 31 8 4 2 1
+pattern 26 4 125 31 27 4 2 1
+pattern 18 6 125 31 19 6 2 1
+pattern 3 7 125 31 4 7 2 1
+pattern 28 9 125 31 29 9 2 1
+pattern 9 10 125 31 10 10 2 1
+pattern 22 12 125 31 23 12 2 1
+pattern 2 14 125 31 3 14 2 1
+pattern 17 16 125 31 18 16 2 1
+rect 0 17 64 80 1 19
+rect 7 18 64 80 8 19
+rect 23 18 64 80 25 19
+rect 15 19 64 80 16 19
+pattern 0 20 65 96 31 21 1 2
+end
+
+room bru_fly2
+header 1 0
+pattern 3 4 125 31 4 4 2 1
+pattern 24 4 125 31 25 4 2 1
+pattern 13 6 125 31 14 6 2 1
+pattern 26 8 125 31 27 8 2 1
+pattern 7 9 125 31 8 9 2 1
+pattern 19 11 125 31 20 11 2 1
+pattern 3 13 125 31 4 13 2 1
+pattern 25 14 125 31 26 14 2 1
+pattern 30 15 69 30 31 16 2 2
+pattern 14 16 125 31 15 16 2 1
+rect 30 17 64 80 31 19
+rect 2 18 64 80 4 19
+rect 16 18 64 80 17 19
+rect 27 18 64 80 29 19
+rect 10 19 64 80 11 19
+rect 22 19 64 80 23 19
+pattern 0 20 65 96 31 21 1 2
+end
+
+room bru_09
+header 1 0
+pattern 5 13 69 30 6 14 2 2
+pattern 26 13 69 30 27 14 2 2
+pattern 0 15 69 30 1 16 2 2
+rect 5 15 64 80 6 19
+pattern 16 15 69 30 17 16 2 2
+rect 26 15 64 80 27 19
+pattern 11 16 69 30 12 17 2 2
+rect 0 17 64 80 1 19
+rect 16 17 64 80 17 19
+pattern 21 17 69 30 22 18 2 2
+pattern 30 17 69 30 31 18 2 2
+rect 11 18 64 80 12 19
+rect 21 19 64 80 22 19
+rect 30 19 64 80 31 19
+pattern 0 20 65 96 31 21 1 2
+end
+
+room bru_10
+header 1 0
+pattern 10 7 69 30 11 8 2 2
+pattern 22 7 69 30 23 8 2 2
+pattern 10 9 73 25 11 17 2 1
+pattern 22 9 73 25 23 17 2 1
+rect 7 10 64 80 8 10
+rect 16 10 64 80 17 10
+rect 20 14 64 80 21 14
+rect 3 15 64 80 4 15
+rect 12 15 64 80 13 15
+pattern 0 17 69 30 1 18 2 2
+rect 30 17 64 80 31 21
+pattern 10 18 75 25 11 19 2 2
+pattern 22 18 75 25 23 19 2 2
+rect 0 19 64 80 1 19
+pattern 0 20 65 96 29 21 1 2
+end
+
+room bru_11
+header 1 0
+pattern 14 15 69 30 15 16 2 2
+rect 30 16 64 80 31 21
+rect 0 17 64 80 1 21
+rect 8 17 64 80 9 21
+rect 16 17 64 80 17 21
+rect 24 17 64 80 25 21
+end
+
+room bru_12
+header 1 0
+rect 10 0 64 80 31 13
+rect 30 14 64 80 31 21
+rect 0 16 64 80 29 21
+end
+
+room bg earth
+header 0 0
+rect 0 0 0 9 31 2
+rect 0 3 86 1 31 3
+end
+
+room bg cave
+header 0 0
+end
+
+room bg moon
+header 0 0
+char 5 1 68 7
+char 18 1 68 7
+char 27 1 68 7
+char 2 3 68 7
+char 13 3 68 7
+char 23 3 68 7
+char 8 5 68 7
+char 27 5 68 7
+char 31 5 68 7
+char 0 7 68 7
+char 17 7 68 7
+char 25 8 68 7
+char 4 10 68 7
+char 13 10 68 7
+char 18 12 68 7
+char 30 12 68 7
+char 1 14 68 7
+char 9 14 68 7
+end
+
+room luna_01
+header 2 4
+rect 25 16 120 112 28 19
+rect 23 17 120 112 24 19
+rect 29 17 120 112 30 19
+rect 21 18 120 112 22 19
+rect 31 18 120 112 31 19
+char 20 19 120 112
+pattern 0 20 84 96 31 21 1 2
+end
+
+room luna_02
+header 2 0
+pattern 14 11 89 87 15 19 2 1
+pattern 12 12 89 87 13 12 2 1
+pattern 18 13 89 87 21 13 2 1
+pattern 7 16 89 87 10 16 2 1
+pattern 22 16 89 87 23 16 2 1
+rect 0 17 120 112 0 19
+rect 1 18 120 112 1 19
+pattern 12 19 89 87 13 19 2 1
+pattern 20 19 89 87 21 19 2 1
+pattern 0 20 84 96 31 21 1 2
+end
+
+room luna_03
+header 2 0
+pattern 20 8 89 87 29 8 2 1
+pattern 20 9 89 87 21 17 2 1
+pattern 24 9 89 87 25 12 2 1
+pattern 28 9 89 87 29 17 2 1
+pattern 22 10 89 87 23 10 2 1
+pattern 26 10 89 87 27 10 2 1
+pattern 14 12 87 88 15 13 1 2
+pattern 22 12 89 87 23 12 2 1
+pattern 26 12 89 87 27 12 2 1
+pattern 12 14 87 96 13 15 1 2
+pattern 14 14 87 104 15 15 1 2
+pattern 10 16 87 87 11 17 1 2
+pattern 12 16 87 104 13 17 1 2
+pattern 14 16 87 88 15 17 1 2
+pattern 16 16 87 79 17 17 1 2
+pattern 8 18 87 79 9 19 1 2
+pattern 10 18 87 96 11 19 1 2
+pattern 12 18 87 87 13 19 1 2
+pattern 14 18 87 104 15 19 1 2
+pattern 16 18 87 88 17 19 1 2
+pattern 0 20 84 96 31 21 1 2
+end
+
+room luna_04
+header 2 0
+pattern 3 10 87 79 6 11 1 2
+pattern 14 10 89 87 19 10 2 1
+pattern 23 14 87 104 24 19 1 2
+pattern 9 16 87 88 10 19 1 2
+pattern 21 16 87 96 22 19 1 2
+pattern 7 18 87 87 8 19 1 2
+pattern 11 18 87 96 12 19 1 2
+pattern 19 18 87 79 20 19 1 2
+pattern 25 18 87 87 26 19 1 2
+pattern 0 20 84 96 31 21 1 2
+end
+
+room luna_05
+header 2 0
+pattern 14 7 89 87 23 7 2 1
+pattern 14 19 89 87 15 19 2 1
+pattern 21 19 89 87 22 19 2 1
+pattern 0 20 84 96 13 21 1 2
+pattern 14 20 81 141 23 21 1 2
+pattern 24 20 84 96 31 21 1 2
+end
+
+room luna_06
+header 2 0
+pattern 30 0 89 87 31 19 2 1
+pattern 14 19 89 87 17 19 2 1
+pattern 0 20 84 96 17 21 1 2
+pattern 22 20 84 96 31 21 1 2
+end
+
+room luna_07
+header 3 0
+pattern 0 0 84 96 17 1 1 2
+pattern 22 0 84 96 31 1 1 2
+rect 0 2 121 80 0 21
+rect 29 2 121 80 30 21
+rect 9 4 121 80 15 4
+rect 21 6 121 80 26 6
+rect 1 7 121 80 3 7
+rect 6 9 121 80 10 9
+rect 19 9 121 80 22 9
+rect 1 12 121 80 6 12
+rect 14 12 121 80 18 12
+rect 20 15 121 80 25 15
+rect 7 17 121 80 11 17
+rect 1 20 121 80 24 21
+rect 27 20 121 80 28 21
+rect 31 20 121 80 31 21
+end
+
+room luna_08
+header 3 0
+rect 0 0 121 80 24 1
+rect 27 0 121 80 31 1
+rect 0 2 121 80 0 21
+rect 29 2 121 80 30 2
+rect 29 4 121 80 30 13
+rect 12 5 121 80 20 5
+rect 4 7 121 80 7 7
+rect 22 8 121 80 25 8
+rect 11 9 121 80 13 9
+rect 22 11 121 80 25 11
+rect 7 12 121 80 10 12
+rect 21 14 116 135 25 14
+rect 21 15 121 80 25 15
+rect 12 16 121 80 16 16
+rect 1 20 121 80 31 21
+end
+
+room luna_09
+header 2 5
+rect 0 0 121 80 1 1
+rect 2 0 0 9 31 0
+char 0 2 121 80
+rect 0 4 121 80 0 13
+rect 22 10 120 112 23 19
+rect 26 10 120 112 27 19
+rect 24 11 120 112 25 12
+rect 18 14 120 112 21 19
+rect 24 14 120 112 25 19
+rect 28 14 120 112 29 19
+rect 14 17 120 112 15 19
+rect 30 17 120 112 31 19
+rect 0 20 121 80 1 21
+pattern 2 20 84 96 31 21 1 2
+end
+
+room luna_10
+header 4 6
+rect 0 0 0 9 1 0
+rect 0 17 120 112 1 19
+pattern 0 20 84 96 1 21 1 2
+rect 30 20 91 96 31 21
+end
+
+room luna_11
+header 4 0
+rect 30 12 91 96 31 21
+rect 25 13 91 96 29 21
+rect 20 15 91 96 24 21
+rect 15 17 91 96 19 21
+char 10 18 136 5
+char 2 19 170 70
+rect 14 19 91 96 14 21
+rect 0 20 91 96 13 21
+end
+
+room luna_12
+header 4 0
+pattern 20 9 89 87 31 9 2 1
+pattern 18 10 89 87 21 10 2 1
+pattern 16 11 89 87 19 11 2 1
+char 28 11 136 5
+rect 0 12 91 96 9 21
+pattern 14 12 89 87 17 12 2 1
+pattern 12 13 89 87 15 13 2 1
+char 23 13 170 70
+rect 26 14 91 96 27 21
+rect 14 15 116 135 21 15
+rect 14 16 91 96 21 21
+rect 10 17 170 70 13 17
+rect 22 17 170 70 25 17
+rect 10 18 91 96 13 21
+rect 22 18 91 96 25 21
+rect 28 20 91 96 31 21
+end
+
+room luna_13
+header 4 0
+rect 3 0 135 120 28 2
+rect 30 0 135 120 31 16
+rect 2 2 135 120 2 15
+rect 29 2 135 120 29 15
+rect 3 3 135 120 3 15
+rect 28 3 135 120 28 15
+rect 9 5 135 120 15 5
+rect 20 6 135 120 24 6
+rect 7 8 135 120 10 8
+pattern 0 9 89 87 1 9 2 1
+rect 15 9 135 120 20 9
+rect 20 11 135 120 24 11
+rect 9 12 135 120 13 12
+rect 18 14 135 248 23 14
+rect 4 15 135 120 5 15
+rect 26 15 135 120 27 15
+rect 13 18 135 120 20 18
+rect 0 20 91 96 29 21
+rect 30 20 135 120 31 21
+end
+
+room luna_14
+header 4 7
+rect 0 0 135 120 31 0
+rect 0 1 135 120 1 16
+rect 30 1 135 120 31 21
+pattern 14 3 172 79 15 3 2 1
+rect 14 4 171 5 15 8
+rect 2 6 135 120 7 6
+rect 22 6 135 120 29 6
+rect 7 9 135 120 23 9
+rect 2 13 135 120 8 13
+rect 23 13 135 120 29 13
+rect 10 16 135 120 21 16
+rect 0 20 135 120 29 21
+end
+
+room bg storm
+header 0 0
+end
+
+room bg sky
+header 0 0
+rect 0 0 107 19 31 0
+rect 0 1 0 27 31 1
+rect 0 2 107 25 31 2
+rect 0 3 0 9 31 3
+rect 0 4 107 8 31 4
+end
+
+room bg mountains
+header 0 0
+rect 0 0 0 45 31 0
+rect 0 1 0 45 1 1
+char 2 1 148 41
+rect 3 1 0 9 4 3
+char 5 1 149 41
+rect 6 1 0 45 9 1
+char 10 1 148 41
+rect 11 1 0 9 12 3
+char 13 1 149 41
+rect 14 1 0 45 16 1
+char 17 1 148 41
+rect 18 1 0 9 19 3
+char 20 1 149 41
+rect 21 1 0 45 25 1
+char 26 1 148 41
+rect 27 1 0 9 28 3
+char 29 1 149 41
+rect 30 1 0 45 31 1
+char 0 2 0 45
+char 1 2 148 41
+rect 2 2 0 9 2 3
+rect 5 2 0 9 5 3
+char 6 2 149 41
+rect 7 2 0 45 8 2
+char 9 2 148 41
+rect 10 2 0 9 10 3
+rect 13 2 0 9 13 3
+char 14 2 149 41
+char 15 2 0 45
+char 16 2 148 41
+rect 17 2 0 9 17 3
+rect 20 2 0 9 20 3
+char 21 2 149 41
+rect 22 2 0 45 24 2
+char 25 2 148 41
+rect 26 2 0 9 26 3
+rect 29 2 0 9 29 3
+char 30 2 149 41
+char 31 2 0 45
+char 0 3 148 41
+char 1 3 0 9
+char 6 3 0 9
+char 7 3 149 41
+char 8 3 148 41
+char 9 3 0 9
+char 14 3 0 9
+char 15 3 148 41
+char 16 3 0 9
+char 21 3 0 9
+char 22 3 149 41
+char 23 3 0 45
+char 24 3 148 41
+char 25 3 0 9
+char 30 3 0 9
+char 31 3 149 41
+rect 0 4 107 8 31 4
+end
+
+room v1_01
+header 5 8
+rect 8 10 64 87 24 10
+rect 8 11 64 87 9 13
+rect 23 11 64 87 24 13
+rect 10 13 64 87 22 13
+rect 0 20 64 87 31 21
+end
+
+room v1_02
+header 5 0
+rect 15 11 64 87 23 11
+rect 29 11 64 87 31 11
+rect 10 14 64 87 20 14
+rect 5 17 64 87 7 17
+rect 0 20 64 87 16 21
+rect 17 21 105 130 31 21
+end
+
+room v1_03
+header 5 0
+rect 0 11 64 87 10 11
+rect 14 11 64 87 16 11
+rect 22 11 64 87 26 11
+rect 30 11 64 87 31 11
+rect 16 16 64 87 17 16
+rect 0 21 105 130 31 21
+end
+
+room v1_04
+header 5 0
+rect 0 11 64 87 1 11
+rect 2 20 64 87 31 21
+rect 0 21 105 130 1 21
+end
+
+room v1_05
+header 5 0
+pattern 20 5 127 4 27 6 2 2
+rect 12 14 64 87 15 14
+rect 17 17 64 87 20 17
+rect 0 20 64 87 8 21
+rect 29 20 64 87 31 21
+end
+
+room v1_06
+header 5 0
+rect 0 0 64 87 8 1
+rect 29 0 64 87 31 1
+rect 0 3 64 87 25 3
+rect 10 7 64 87 31 7
+rect 0 11 64 87 10 11
+rect 21 11 64 87 31 11
+rect 8 14 64 87 26 14
+rect 27 18 64 87 31 18
+rect 0 20 64 87 31 21
+end
+
+room v1_07
+header 5 0
+rect 30 0 64 87 31 1
+rect 30 3 64 87 31 3
+rect 30 11 64 87 31 11
+rect 0 14 64 87 15 14
+rect 0 20 64 87 31 21
+end
+
+room v1_08
+header 5 9
+pattern 0 0 127 4 29 1 2 2
+rect 30 14 64 87 31 14
+rect 0 20 112 84 29 20
+rect 30 20 64 87 31 21
+rect 0 21 113 84 29 21
+end
+
+room v1_09
+header 5 0
+pattern 0 0 127 4 31 1 2 2
+pattern 10 16 65 96 25 17 1 2
+rect 0 20 112 84 31 20
+rect 0 21 113 84 31 21
+end
+
+room v1_10
+header 5 0
+pattern 0 0 127 4 31 1 2 2
+rect 4 13 64 87 7 13
+rect 22 13 64 87 25 13
+rect 0 20 112 84 31 20
+rect 0 21 113 84 31 21
+end
+
+room v1_11
+header 5 10
+pattern 0 0 127 4 31 1 2 2
+rect 10 8 64 87 21 8
+rect 10 9 64 87 11 11
+rect 12 9 123 15 13 10
+rect 14 9 64 87 15 11
+rect 16 9 123 15 17 10
+rect 18 9 64 87 21 11
+rect 12 11 64 87 13 11
+rect 16 11 64 87 17 11
+rect 3 14 64 87 6 14
+rect 25 14 64 87 28 14
+rect 0 19 64 87 1 21
+rect 2 20 112 84 31 20
+rect 2 21 113 84 31 21
+end
+
+room v1_12
+header 5 0
+pattern 0 0 127 4 31 1 2 2
+rect 21 11 64 87 23 11
+rect 16 14 64 87 18 14
+rect 19 14 64 150 21 14
+rect 22 14 64 87 24 14
+rect 3 15 64 87 8 15
+rect 9 15 64 150 11 15
+rect 12 15 64 87 14 15
+rect 2 16 64 87 3 21
+rect 0 19 64 87 1 21
+rect 4 19 64 87 31 21
+end
+
+room v1_13
+header 5 0
+pattern 0 0 127 4 31 1 2 2
+rect 5 5 64 79 8 5
+rect 17 7 64 79 20 7
+rect 25 7 64 79 28 7
+rect 1 9 64 79 4 9
+rect 11 9 64 79 14 9
+rect 21 11 64 79 24 11
+rect 6 13 64 79 9 13
+rect 15 13 64 79 18 13
+rect 28 13 64 79 29 13
+rect 3 15 64 79 6 15
+rect 23 15 64 79 26 15
+rect 11 17 64 79 14 17
+rect 18 17 64 79 21 17
+rect 30 19 64 87 31 21
+rect 0 20 112 84 29 20
+rect 0 21 113 84 29 21
+end
+
+room v1_14
+header 5 11
+pattern 30 0 127 4 31 1 2 2
+char 31 9 64 79
+rect 0 20 120 112 29 21
+rect 30 20 112 84 31 20
+rect 30 21 113 84 31 21
+end
+
+room v2_01
+header 6 8
+pattern 0 6 92 112 1 7 2 2
+pattern 0 8 92 104 1 9 2 2
+pattern 0 10 92 112 1 11 2 2
+rect 8 10 104 87 24 10
+rect 8 11 104 87 9 13
+rect 23 11 104 87 24 13
+pattern 0 12 92 104 1 13 2 2
+rect 10 13 104 87 22 13
+pattern 0 14 92 112 1 15 2 2
+pattern 0 16 92 104 1 17 2 2
+pattern 0 18 92 112 1 21 2 2
+pattern 2 20 92 112 31 21 2 2
+end
+
+room v2_02
+header 6 0
+rect 15 11 104 87 26 11
+rect 30 11 104 87 31 11
+rect 10 14 104 87 21 14
+rect 5 17 104 87 7 17
+pattern 0 20 92 112 15 21 2 2
+rect 16 21 105 130 31 21
+end
+
+room v2_03
+header 6 0
+rect 0 11 104 87 10 11
+rect 14 11 104 87 16 11
+rect 22 11 104 87 26 11
+pattern 30 11 92 112 31 12 2 2
+pattern 26 13 92 104 27 14 2 2
+pattern 26 15 92 112 27 16 2 2
+pattern 26 17 92 104 27 18 2 2
+pattern 26 19 92 112 27 20 2 2
+pattern 14 20 96 112 17 21 4 2
+pattern 30 20 92 112 31 21 2 2
+rect 0 21 105 130 13 21
+rect 18 21 105 130 29 21
+end
+
+room v2_04
+header 6 0
+pattern 0 11 92 112 1 12 2 2
+pattern 0 20 92 112 31 21 2 2
+end
+
+room v2_05
+header 6 0
+pattern 26 6 92 104 27 7 2 2
+pattern 26 8 92 112 27 9 2 2
+pattern 26 10 92 104 27 11 2 2
+rect 11 14 104 87 14 14
+rect 18 17 104 87 21 17
+pattern 0 20 92 112 9 21 2 2
+pattern 28 20 92 112 31 21 2 2
+end
+
+room v2_06
+header 6 0
+pattern 0 0 92 112 9 1 2 2
+pattern 28 0 92 112 31 1 2 2
+pattern 12 8 92 112 15 11 2 2
+pattern 16 10 92 112 27 11 2 2
+pattern 10 13 92 104 11 14 2 2
+rect 25 15 104 87 28 15
+rect 6 18 104 87 9 18
+pattern 0 20 92 112 31 21 2 2
+end
+
+room v2_07
+header 6 0
+pattern 30 0 92 112 31 1 2 2
+pattern 16 8 92 112 19 9 2 2
+pattern 0 13 92 112 1 14 2 2
+pattern 18 13 92 104 19 14 2 2
+pattern 26 13 92 112 29 14 2 2
+pattern 2 14 92 112 3 15 2 2
+pattern 0 15 92 104 1 16 2 2
+rect 10 15 104 87 13 15
+pattern 0 17 92 112 1 18 2 2
+rect 22 17 104 87 25 17
+pattern 0 20 92 112 31 21 2 2
+end
+
+room v2_08
+header 6 0
+pattern 0 13 92 112 31 14 2 2
+pattern 30 15 92 104 31 16 2 2
+pattern 30 17 92 112 31 18 2 2
+pattern 0 20 92 112 19 21 2 2
+pattern 24 20 92 112 31 21 2 2
+rect 20 21 116 135 23 21
+end
+
+room v2_09
+header 7 12
+rect 8 10 0 9 27 12
+pattern 0 13 92 112 31 14 2 2
+rect 0 20 112 84 31 20
+rect 0 21 113 84 31 21
+end
+
+room v2_10
+header 7 0
+pattern 6 8 127 4 7 9 2 2
+pattern 20 8 127 4 21 9 2 2
+rect 2 12 118 198 9 12
+rect 16 12 118 198 23 12
+pattern 30 13 92 112 31 14 2 2
+rect 10 16 118 198 19 16
+pattern 2 17 127 4 3 18 2 2
+pattern 27 17 127 4 28 18 2 2
+rect 0 20 112 84 11 20
+pattern 12 20 81 141 15 21 1 2
+rect 16 20 112 84 31 20
+rect 0 21 113 84 11 21
+rect 16 21 113 84 31 21
+end
+
+room v2_11
+header 7 0
+pattern 24 6 127 4 27 7 2 2
+rect 3 10 118 198 8 10
+rect 17 10 118 198 22 10
+rect 12 14 118 198 17 14
+rect 25 14 118 198 29 14
+pattern 2 17 127 4 3 18 2 2
+pattern 8 17 127 4 9 18 2 2
+rect 0 20 112 84 31 20
+rect 0 21 113 84 31 21
+end
+
+room v2_12
+header 7 13
+rect 9 6 118 198 12 6
+rect 16 9 118 198 21 9
+rect 5 12 118 198 10 12
+rect 17 15 118 198 22 15
+rect 0 16 120 112 1 19
+pattern 2 18 127 4 3 19 2 2
+pattern 26 18 127 4 29 19 2 2
+rect 0 20 112 84 31 20
+rect 0 21 113 84 31 21
+end
+
+room v2_13
+header 7 14
+rect 25 16 120 112 31 19
+rect 0 20 112 84 31 20
+rect 0 21 113 84 31 21
+end
+
+room bg andromeda
+header 0 0
+char 6 1 68 1
+char 25 1 68 1
+char 2 3 68 1
+char 15 3 68 1
+char 21 5 68 1
+char 10 6 68 1
+char 29 6 68 1
+char 0 8 68 1
+char 19 8 68 1
+char 6 10 68 1
+char 15 10 68 1
+char 25 10 68 1
+char 3 12 68 1
+char 30 12 68 1
+char 12 14 68 1
+char 22 14 68 1
+end
+
+room i1_01
+header 8 15
+zigzag 0 16 176 87 31 21
+end
+
+room i1_02
+header 8 0
+zigzag 0 16 176 87 31 21
+end
+
+room i1_03
+header 8 0
+zigzag 0 16 176 87 31 21
+end
+
+room i1_04
+header 8 16
+zigzag 0 16 176 77 31 21
+end
+
+room i1_05
+header 8 17
+zigzag 0 16 176 77 31 21
+end
+
+room i1_06
+header 8 18
+zigzag 0 16 176 77 31 21
+end
+
+room i1_07
+header 8 0
+zigzag 6 10 176 87 9 10
+zigzag 0 16 176 87 25 21
+zigzag 30 16 176 87 31 21
+end
+
+room i1_08
+header 8 0
+zigzag 0 0 176 87 25 1
+zigzag 30 0 176 87 31 1
+zigzag 0 16 176 87 9 21
+zigzag 18 16 176 87 31 21
+end
+
+room i1_09
+header 8 0
+zigzag 30 0 176 87 31 1
+zigzag 0 16 176 87 31 21
+end
+
+room i1_10
+header 8 0
+zigzag 2 0 176 87 29 5
+zigzag 0 16 176 87 31 21
+end
+
+room i1_11
+header 8 0
+zigzag 0 16 176 87 31 21
+end
+
+room i1_12
+header 8 0
+rect 0 16 115 98 31 21
+end
+
+room i1_13
+header 8 19
+rect 2 9 167 70 7 9
+rect 2 10 167 70 2 15
+rect 3 10 142 69 4 11
+rect 5 10 141 68 6 11
+rect 7 10 167 70 7 15
+rect 3 12 141 68 4 13
+rect 5 12 142 69 6 13
+pattern 3 14 172 79 6 15 2 1
+zigzag 0 16 176 87 31 21
+end
+
+room i3_01
+header 8 15
+zigzag 0 16 176 87 31 21
+end
+
+room i3_02
+header 8 0
+zigzag 12 12 176 87 15 12
+zigzag 0 16 176 87 31 21
+end
+
+room i3_03
+header 8 20
+zigzag 0 16 176 87 31 21
+end
+
+room i3_04
+header 8 16
+zigzag 7 11 176 77 10 11
+zigzag 21 11 176 77 24 11
+zigzag 0 16 176 77 31 21
+end
+
+room i3_05
+header 8 17
+zigzag 13 9 176 77 20 9
+zigzag 3 13 176 77 5 13
+zigzag 25 13 176 77 27 13
+zigzag 0 16 176 77 31 21
+end
+
+room i3_06
+header 8 18
+zigzag 4 12 176 77 7 12
+zigzag 12 12 176 77 15 12
+zigzag 20 12 176 77 23 12
+zigzag 0 16 176 77 31 21
+end
+
+room i3_07
+header 8 0
+zigzag 6 10 176 87 9 10
+zigzag 0 16 176 87 25 21
+zigzag 30 16 176 87 31 21
+end
+
+room i3_08
+header 8 0
+zigzag 0 0 176 87 25 1
+zigzag 30 0 176 87 31 1
+zigzag 2 12 176 87 5 12
+zigzag 20 12 176 87 23 12
+rect 10 15 116 135 17 15
+zigzag 0 16 176 87 9 21
+zigzag 18 16 176 87 31 21
+end
+
+room i3_09
+header 8 0
+zigzag 30 0 176 87 31 1
+zigzag 18 10 176 87 23 10
+zigzag 0 16 176 87 31 21
+end
+
+room i3_10
+header 8 0
+zigzag 2 0 176 87 29 5
+rect 10 11 169 198 19 11
+zigzag 0 16 176 87 31 21
+end
+
+room i3_11
+header 8 0
+zigzag 3 11 176 87 6 11
+zigzag 25 11 176 87 28 11
+zigzag 0 16 176 87 31 21
+end
+
+room i3_12
+header 8 0
+zigzag 12 12 176 87 17 12
+zigzag 0 16 176 87 31 21
+end
+
+room i3_13
+header 8 21
+rect 2 11 115 98 5 11
+rect 24 11 115 98 27 11
+rect 0 16 115 98 31 21
+end
+
+room i3_14
+header 8 0
+rect 11 10 115 98 18 10
+rect 0 16 115 98 31 21
+end
+
+room i3_15
+header 8 19
+rect 20 6 169 198 23 6
+rect 2 9 167 70 7 9
+rect 2 10 167 70 2 15
+rect 3 10 142 69 4 11
+rect 5 10 141 68 6 11
+rect 7 10 167 70 7 15
+rect 3 12 141 68 4 13
+rect 5 12 142 69 6 13
+pattern 3 14 172 79 6 15 2 1
+zigzag 0 16 176 87 31 21
+end

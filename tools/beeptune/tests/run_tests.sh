@@ -16,6 +16,11 @@ $B -bts out_a.txt out_a.bts >/dev/null
 $B -txt out_a.bts out_b.txt >/dev/null
 cmp -s out_a.txt out_b.txt && ok "txt/bts round trip" || bad "txt/bts round trip"
 
+# sharps are notes, not comments; a '#' starting a word is a comment
+printf 'speed 4\norder 0\npattern 0 2\nC#4 F#2  # a comment\n# a whole line\nA#7 ===\n' > out_sharp.txt
+$B -txt out_sharp.txt out_sharp2.txt >/dev/null && grep -q '^C#4 F#2$' out_sharp2.txt && grep -q '^A#7 ===$' out_sharp2.txt \
+  && ok "sharps and comments" || bad "sharps and comments"
+
 # the binary is what the player expects: header, order list, offsets
 python3 - <<'PY' && ok "binary layout" || bad "binary layout"
 b = open('out_a.bts', 'rb').read()

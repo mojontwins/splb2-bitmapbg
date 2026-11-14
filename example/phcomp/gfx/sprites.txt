@@ -1,0 +1,29 @@
+# The figures of gfx/sprites.png (16x16 frames, 16 a row: frame = row * 16
+# + column). Each line: FIRST_FRAME NAME FRAMES
+#   FRAMES 4: walking left (2 frames), then walking right (2 frames)
+#   FRAMES 2: two frames, whichever the direction
+#   FRAMES 1: one frame
+# gfx/games.txt names the enemies' figures by NAME. Frames 0-7 are the
+# player: left 0 1 2 and jump 3, right 4 5 6 and jump 7.
+0  phantomas 4
+8  devil     4
+12 knight    4
+16 bubble    4
+20 blob      4
+24 witch     4
+28 alien     4
+32 astronaut 4
+36 android   4
+40 cop       4
+44 drop      4
+48 bird      4
+52 broom     4
+56 ball      4
+60 hopper    4
+64 bat       4
+68 rocket    1
+69 computer  1
+70 fire      2
+72 platform  2
+74 heart     1
+75 key       1

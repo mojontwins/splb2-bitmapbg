@@ -66,6 +66,36 @@ is needed.
 To add frames, add them to the PNG and to `SPR_NAMES` in `tools/conv.py`,
 and use the new frame numbers in `src/cjmc3.c` (`SPR_*` in `assets.h`).
 
+## 2b. Changing the music
+
+The title music is **`music/title.bts`**, a song for the Beeptune tracker
+and player in [`../../tools/beeptune`](../../tools/beeptune). Open it in the
+tracker (`beeptune music/title.bts`), change it, save it, and rebuild.
+`tools/conv.py` puts the file in the binary as it is (it is the player's
+own format), and the title plays it with `bt_loop (title_song)` until a key
+is pressed, as the original did.
+
+`music/title.txt` is the same song as text: readable, and what the
+conversion below produced. The tracker opens it too; if you edit the .txt
+instead, convert it with `beeptune -bts music/title.txt music/title.bts`.
+
+The song is the original's title music, taken from its `musica.bin`. That
+was a two channel engine in the style of "The Music Box", with one note
+byte per step and per channel:
+
+* Channel 1 is the tune: 64 steps. Note 41 is a rest (period 1). Values
+  whose index has bit 7 set are noise drums: four quarters of a step, a bit
+  each, noise or silence.
+* Channel 2 is the bass: 16 steps, repeated.
+* A step was about 0.126 s, and a drum step 0.111 s.
+
+In Beeptune, each original step is 2 rows of 3 frames (0.12 s), so a drum
+can sound in the first or the second half of its step. Beeptune has no
+noise: the drums are a short high tick (C-7) on channel B, which the
+original left silent during drums anyway. The original's period table was
+tuned about half a semitone sharp of A = 440 Hz; every note was moved down
+by the same half step, so the tune is the same, a little lower.
+
 ## 3. How it uses splib2-bitmapbg
 
 The library side is documented in [`../../docs/BITMAPBG.md`](../../docs/BITMAPBG.md)
@@ -112,11 +142,13 @@ The library side is documented in [`../../docs/BITMAPBG.md`](../../docs/BITMAPBG
 * **Sound**: the original's six 50-byte beeper effects and its footstep are
   position-independent, so they are included as they were and called
   directly. `BORDCR` is set to 0 so they keep the border black.
+* **Music**: the title music is played by `beeptune.h`, the player in
+  `../../tools/beeptune` (§2b).
 
 ## 4. Memory map (48K)
 
 ```
-$5E88-$CD9E  binary (org 24200): code, splib2, assets, display list
+$5E88-$D118  binary (org 24200): code, splib2, assets, display list
    ...-$D62F stack (grows down)
 $D62F-$D7FF  splib2 block memory: 31 blocks x 15
 $D800-$EFFF  SHADOW: background bitmap, display-file layout
@@ -176,10 +208,11 @@ original routines block, as on the original).
 * "GAME OVER!" uses the text font. The original printed it with the game
   font, which turned it into graphics.
 * An enemy never spawns within 32 px of the player.
-* **No title music.** The original's music player (`musica.bin`) is
-  assembled for a fixed address, with absolute jumps and song pointers, so
-  it can't be dropped into this memory map. The sound effects are all
-  there.
+* **The title music** is played by the Beeptune player, not the
+  original's `musica.bin`. That one is assembled for a fixed address, with
+  absolute jumps and song pointers, so it can't be dropped into this memory
+  map. Its song was converted (§2b): same notes, a C-7 tick for the noise
+  drums. The sound effects are the original routines.
 * The title credit says "SPLIB2 BITMAPBG SHOWCASE" instead of "FOURSPRITER
   SHOWCASE".
 * The ending is reached when the score is at least 30. The original
@@ -196,6 +229,8 @@ tools/conv.py          asset converter
 tools/layout.py        interpreter for the BASIC screen-drawing code
 tools/png.py           minimal PNG reader/writer (standard library only)
 gfx/sprites.png        the sprite sheet: edit this
+music/title.bts        the title music (Beeptune song): edit this
+music/title.txt        the same as text
 gfx/*.bin, *.zx0       thirds, pictures (raw and packed), fonts, UDGs,
                        boniato table, thirds table, sound effects
 gfx/layouts/           packed screen layouts (cache, regenerated as needed)

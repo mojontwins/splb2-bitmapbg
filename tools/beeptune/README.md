@@ -198,6 +198,10 @@ three modes:
 
 The song is [`demo/demo.txt`](demo/demo.txt), an original tune.
 
+[`example/cjmc3`](../../example/cjmc3) uses the player for its title music:
+the original game's tune, converted from its own engine (that example's
+README explains how).
+
 ## How it was checked
 
 * **Same sound as the Spectrum:** the Z80 player was run in an emulator

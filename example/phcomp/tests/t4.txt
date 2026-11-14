@@ -1,0 +1,6 @@
+wait 30
+tap 1
+wait 30
+print
+wait 100
+print

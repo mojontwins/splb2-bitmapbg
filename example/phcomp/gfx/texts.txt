@@ -1,0 +1,51 @@
+# Texts printed in rooms: sets numbered from 1 (no gaps); a room's header
+# (gfx/rooms.txt) names its set. Each text: ROW COL ATTR "TEXT".
+# ATTR is PAPER * 8 + INK (+ 64 BRIGHT). Characters 32-95 (no lowercase).
+# A space on black paper isn't drawn.
+
+text 1                                  # Brujas: bru 01
+5 6 31 "EL PAIS DE LAS BRUJAS"
+text 2                                  # Brujas: bru 08
+4 8 56 "TRINCA LA ESCOBA"
+text 3                                  # Brujas: bru fly1
+4 6 31 "VUELA CON LA ESCOBA"
+text 4                                  # Luna: luna_01
+7 10 7 "LA TIERRA, 1992"
+text 5                                  # Luna: luna_09
+4 2 6 "SUBE AL COHETE"
+text 6                                  # Luna: luna_10
+2 8 5 "RUMBO A LA LUNA"
+text 7                                  # Luna: luna_14
+2 11 71 "BASE LUNAR"
+text 8                                  # V: v1_01, v2_01
+11 10 7 "WELCOME TO:"
+12 10 7 "STORMPALACE"
+text 9                                  # V1: v1_08
+4 11 4 "EL BOSQUE"
+text 10                                 # V1: v1_11
+4 1 6 "!CUARTEL DE POLICIA! !CUIDADO!"
+text 11                                 # V1: v1_14
+6 8 7 "EL PAJARO BLANCO"
+text 12                                 # V2: v2_09
+6 3 5 "PHANTOMAS LLEGA AL BOSQUE"
+text 13                                 # V2: v2_12
+3 12 6 "EL TESORO"
+text 14                                 # V2: v2_13
+12 27 58 "EXIT"
+text 15                                 # Infinito: i1_01, i3_01
+1 0 7 "PHANTOMAS HA REGRESADO A ANDRO-"
+2 0 7 "MEDA PARA ACABAR CON LA MAQUINA"
+3 0 7 "HACEDORA DE ANDROIDES LADRONES"
+4 0 7 "MALIGNOS. PODRA CONSEGUIRLO?"
+text 16                                 # Infinito: blue phase 1
+1 12 6 "- 1 -"
+text 17                                 # Infinito: blue phase 2
+1 12 6 "- 2 -"
+text 18                                 # Infinito: blue phase 3
+1 12 6 "- 3 -"
+text 19                                 # Infinito: the machine
+4 6 66 "LA MAQUINA HACE-LADRONES"
+text 20                                 # Infinito 3: i3_03
+1 5 7 "-- LA SOMBRA FANTASMA --"
+text 21                                 # Infinito 3: i3_13
+1 8 4 "LOS CAMPOS VERDES"

@@ -1,0 +1,24 @@
+wait 30
+tap 1
+wait 30
+key p 50
+shot walk
+key q 3
+wait 6
+shot jumpup
+wait 20
+shot landed
+key a 3
+wait 6
+shot longjump
+wait 30
+print
+poke flicker 0 250
+poke ex_r 0 15
+poke py 0 112
+poke exit_dir 0 2
+wait 20
+key p 120
+shot king
+wait 400
+shot ending

@@ -199,7 +199,11 @@ int song_import_txt(Song *s, const char *text, char *msg, size_t msglen) {
         snprintf(ln, sizeof(ln), "%.*s", (int)(l < 511 ? l : 511), t);
         t += l;
         while (*t == '\r' || *t == '\n') { if (*t == '\n' && t[1] == '\r') {} t++; }
-        if (strchr(ln, '#')) *strchr(ln, '#') = 0;
+        {   /* a comment: '#' at the start of a word (not the # of C#4) */
+            char *c;
+            for (c = ln; *c; c++)
+                if (*c == '#' && (c == ln || isspace((unsigned char)c[-1]))) { *c = 0; break; }
+        }
         nw = sscanf(ln, "%31s %31s %31s %31s", w[0], w[1], w[2], w[3]);
         if (nw <= 0) continue;
         if (!strcmp(w[0], "speed") && nw >= 2) s->speed = atoi(w[1]);

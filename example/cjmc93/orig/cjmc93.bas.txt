@@ -1,0 +1,247 @@
+# Classic Japanese Monster Castle '93 (LOKO SOFT), tape 1: the compiled
+# program turned back into BASIC by tools/listing.py. Not the author's
+# source: the compiler kept no names, so the variables are named by what
+# they do (x y player column and bottom row; lives; jumping jumpt; i k
+# loop counters; e f enemy column and row; p1-p3 platforms, rows or
+# columns; d1-d4 their directions; c1-c4 their colours; bx/bdx balls;
+# g1 g2 guards; by bd the guardian; back the line after the box room).
+# [A]..[U] are the UDGs, [g0]..[gF] the block graphics. "RUN" is the
+# compiled program's restart. {else N}: the IF jumps to line N when false.
+#
+   10 LET T$="CJMC": PRINT AT 4,16 - LEN T$ / 2; T$: PRINT AT 6,10; "Teclado:"; AT 8,10; "O,P y Q"; AT 9,11; "PULSA ALGO"
+   30 PAUSE 0
+   31 BEEP 0.1,0: BEEP 0.2,0: BEEP 1,10
+   40 LET x=26: LET y=19: LET A$=PAPER 6; INK 0; "[E][F]"; PAPER 0; INK 7: LET B$=PAPER 6; INK 0; "[G][H]"; PAPER 0; INK 7: LET jumping=0: LET jumpt=0
+   50 LET lives=3
+   55 PRINT AT 10,5; "ENTRA EN EL CASTILLO"
+   60 GO SUB 8040
+   70 IF x = 4 THEN GO TO 90
+   80 GO SUB 7999: GO TO 70
+   90 RANDOMIZE USR 61913
+  110 LET x=26: LET y=19: GO SUB 8040: FOR i=19 TO 21: PRINT AT i,0; PAPER 5; INK 0; "[S][T][S][T]"; PAPER 0; INK 7: NEXT i
+  120 FOR i=5 TO 19: PRINT AT i,4; PAPER 2; INK 0; "[T]"; PAPER 0; INK 7: NEXT i: PRINT AT 10,4; PAPER 2; INK 0; "[S][T][S][T][S][T][S][T][S][T]"; PAPER 0; INK 7; "    "; PAPER 2; INK 0; "[S][T]"; AT 5,4; "[S][T][S][S]"; PAPER 0; INK 7; "   "; PAPER 2; INK 0; "[S][T][S][T][S][T]"; PAPER 0; INK 7; "   "; INK 0; PAPER 2; "[S][T]"
+  130 PRINT AT 15,9; PAPER 2; INK 0; "[S][T][S][T][S][T][S][T][S][T][S]"; PAPER 0; INK 7
+  135 PRINT #0; AT 0,4; INK 5; "IZQUIERDA<-"
+  140 GO SUB 7999: IF x = 4 THEN GO TO 160
+  150 GO TO 140
+  160 RANDOMIZE USR 61913
+  170 LET x=26: LET y=19
+  171 GO SUB 8040: PRINT #0; AT 0,4; "IZQUIERDA<-"
+  180 FOR i=5 TO 19: PRINT AT i,4; PAPER 2; INK 0; "[S]"; PAPER 0; INK 7: NEXT i: PRINT AT 15,4; PAPER 2; INK 0; PAPER 2; INK 0; "[S][T][T][T][T][T][T][S][T]"; PAPER 0; INK 7; AT 19,20; PAPER 3; INK 0; "[Q][R]"; PAPER 0; FLASH 0; INK 7; AT 18,20; PAPER 3; INK 0; "[O][P]"; PAPER 0; INK 7; AT 10,10; PAPER 2; INK 0; "[S][T][S][T][S][T][S][T][S]"; AT 9,12; PAPER 4; INK 0; "[Q][R]"; PAPER 7; INK 0; PAPER 0; INK 7; AT 8,12; PAPER 4; INK 0; "[O][P]"; PAPER 0; INK 7; AT 5,4; PAPER 2; INK 0; "[S][T][S][T][S][T][S][T][S][T][S][T][S][T][S][T][S][T]"
+  190 PRINT AT 10,22; PAPER 2; INK 0; "[S][T][S][T][S]"; PAPER 0; INK 7
+  195 GO SUB 7999
+  200 IF x = 4 THEN GO TO 220
+  210 GO TO 195
+  220 RANDOMIZE USR 61913
+  230 LET x=26: LET y=19: GO SUB 8040
+  240 PRINT AT 10,7; PAPER 2; INK 0; "[S][T][S][T][S][T][T][S][T][T][T][S][T][T][S][T][S][T][S]"; AT 15,24; "[S][T][S][T]"
+  250 PRINT AT 10,7; PAPER 2; INK 0; "[S][T][S][T][S][T][T][S][T][T][T][S][T][T][S][T][S][T][S]"; AT 9,15; PAPER 4; INK 0; "[Q][R]"; AT 8,15; "[O][P]"; AT 19,10; PAPER 6; INK 0; "[Q][R]"; AT 18,10; "[O][P]"; AT 17,10; PAPER 3; "[Q][R]"; AT 16,10; "[O][P]"; AT 15,10; PAPER 2; "[Q][R]"; AT 14,10; "[O][P]"; AT 13,10; PAPER 1; "[Q][R]"; AT 12,10; "[O][P]"; AT 11,10; PAPER 5; "[Q][R]"; AT 11,10; "[O][P]"
+  255 FOR e=24 TO 7 STEP -1
+  260 PRINT AT 9,15; PAPER 4; INK 0; "[Q][R]"; AT 8,15; "[O][P]"
+  270 PRINT AT 9,e; PAPER 3; INK 0; "[M][N]"; PAPER 0; INK 7; " "; AT 8,e; PAPER 6; INK 0; "[K][L]"; PAPER 0; INK 7; " "; AT 7,e; PAPER 6; INK 0; "[I][J]"; PAPER 0; INK 7; " "
+  280 GO SUB 7999
+  300 IF x = 4 THEN GO TO 370
+  310 IF x = e AND (y = 9 OR y = 8 OR y = 7) THEN LET lives=lives - 1: PRINT AT y,x; "  "; AT y - 1,x; "  ": LET x=26: LET y=19: GO SUB 8040: IF lives = 0 THEN CLS: RUN
+  311 NEXT e
+  320 FOR e=7 TO 24
+  330 PRINT AT 9,15; PAPER 4; INK 0; "[Q][R]"; AT 8,15; "[O][P]"
+  340 PRINT AT 9,e; " "; PAPER 3; INK 0; "[M][N]"; AT 8,e; PAPER 0; INK 7; " "; PAPER 6; INK 0; "[K][L]"; AT 7,e; PAPER 0; INK 7; " "; PAPER 6; INK 0; "[I][J]"
+  341 GO SUB 7999
+  350 IF x = 5 THEN GO TO 370
+  360 IF x = e AND (y = 9 OR y = 8 OR y = 7) THEN LET lives=lives - 1: PRINT AT y,x; "  "; AT y - 1,x; "  ": LET x=26: LET y=19: GO SUB 8040: IF lives = 0 THEN CLS: RUN
+  361 NEXT e: GO TO 255
+  370 RANDOMIZE USR 61913
+  380 LET x=26: LET y=19: GO SUB 8040
+  390 LET R$="  ": LET S$=" "; PAPER 5; INK 0; "[A][B]"; PAPER 0; INK 7; " ": LET T$=" "; PAPER 5; INK 0; "[C][D]"; PAPER 0; INK 7; " "
+  400 FOR e=5 TO 20
+  410 IF x = e AND (y = 19 OR y = 18) THEN LET lives=lives - 1: PRINT AT y,x; "  "; AT y - 1,x; "  ": LET x=26: LET y=19: GO SUB 8040: IF lives = 0 THEN CLS: RUN
+  412 LET f=INT (RND * 10) + 1
+  420 IF f < 5 OR f = 5 THEN GO SUB 8060: LET R$=" "; PAPER 6; INK 0; "[I][J]"; PAPER 0; INK 7; " ": LET S$=" "; PAPER 6; INK 0; "[K][L]"; PAPER 0; INK 7; " ": LET T$=" "; PAPER 3; INK 0; "[M][N]"; PAPER 0; INK 7; " "
+  430 GO SUB 7999
+  431 IF x = 4 THEN GO TO 530
+  432 IF f > 5 THEN GO SUB 8060: LET r2=INT (RND * 6) + 1: LET R$="    ": LET S$=" "; PAPER 4; INK 0; "[A][B]"; PAPER 0; INK 7; " ": LET T$=" "; PAPER 4; INK 0; "[C][D]"; PAPER 0; INK 7; " "
+  440 PRINT AT 19,e; T$; AT 18,e; S$; AT 17,e; R$
+  450 NEXT e
+  460 FOR e=20 TO 5 STEP -1
+  470 GO SUB 7999
+  472 IF x = e AND (y = 19 OR y = 18) THEN LET lives=lives - 1: PRINT AT y,x; "  "; AT y - 1,x; "  ": LET x=26: LET y=19: GO SUB 8040: IF lives = 0 THEN CLS: RUN
+  473 LET f=INT (RND * 10) + 1
+  480 IF f < 5 OR f = 5 THEN LET R$=" "; PAPER 6; INK 0; "[I][J]"; PAPER 0; INK 7; " ": LET S$=" "; PAPER 6; INK 0; "[K][L]"; PAPER 0; INK 7; " ": LET T$=" "; PAPER 3; INK 0; "[M][N]"; PAPER 0; INK 7; " "
+  490 IF f > 5 THEN GO SUB 8060: LET r2=INT (RND * 6) + 1: LET R$="    ": LET S$=" "; PAPER 4; INK 0; "[E][F]"; PAPER 0; INK 7; " ": LET T$=" "; PAPER 4; INK 0; "[G][H]"; PAPER 0; INK 7; " "
+  500 PRINT AT 19,e; T$; AT 18,e; S$; AT 17,e; R$
+  510 IF x = 4 THEN GO TO 530
+  511 NEXT e
+  520 GO TO 390
+  530 RANDOMIZE USR 61913: LET back=660
+  540 LET y=19: LET x=31 - 7
+  550 FOR i=5 TO 19: PRINT AT i,4; PAPER 2; INK 0; "[P]"; PAPER 0; INK 7: NEXT i: PRINT AT 8,5; "."; AT 17,4; PAPER 2; INK 0; "[S][T][S][T][T][S][T][S][T][S][S][T][S][T][S][T][S]"; AT 15,10; "[S][T][S][T][S][T][S][T][S][T]"; AT 12,4; "[S][T][S][T][S][T][S][S][T]"; AT 7,4; "[S][T][S][T][S][T][S][T]"; AT 5,4; "[S][T][T][T][T][T][T][T][T][T][T][T][T][S]"
+  560 PRINT AT 12,16; PAPER 2; INK 0; "[S][T][S][T][S][T][S][T][T]"; PAPER 0; INK 7
+  561 PRINT AT 7,18; PAPER 2; INK 0; "[S][T][S][T]"; PAPER 0; INK 7
+  562 PRINT AT 2,7; "      "; AT 1,7; "      "
+  563 PRINT AT 4,9; PAPER 4; INK 0; "[Q][R]"; AT 3,9; "[O][P]"; AT 14,12; PAPER 6; "[Q][R]"; AT 13,12; "[O][P]"
+  570 GO SUB 7999
+  610 PRINT AT 19,20; FLASH 1; INK 2; PAPER 6; "[Q][R]"; AT 18,20; "[O][P]"
+  620 PRINT #0; AT 0,4; "IZQUIERDA<-": IF x = 4 THEN GO TO 650
+  640 IF y = 9 AND x = 5 THEN GO TO 1650
+  641 GO TO 570
+  650 RANDOMIZE USR 61913
+  660 PRINT AT 4,4; INK 4; "[g4][gC][gC][gF][gF][gF][gF][gF][gF][gF][gF][gF][gF][gF][gC][gC][gC][gC]"; INK 7; AT 5,4; INK 4; "[gF][gF][gF][gF][gF][gF][gF]"; PAPER 7; INK 2; "[I][J]"; PAPER 0; INK 5; INK 4; "[gF][gF][gF][gF][gF][gF][gF][gF][gF][gF]"; INK 7; AT 6,4; INK 4; "[gF][gF][gF][gF][gF][gF][gF]"; PAPER 7; INK 2; "[K][L]"; PAPER 0; INK 4; "[gF][gF][gF][gF][gF][gF][gF][gF][gF][gF][gF][gF]"; PAPER 0; INK 7; AT 7,4; INK 4; "[gF][gF][gF][gF][gF][gF][gF][gF][gF][gF][gF][gF][gF][gF][gF][gF][gF][gF][gF][gF]"; INK 7; AT 8,4; INK 4; "[gF][gF][gF][gF][gF][gF][gF][gF][gF][gF]"; INK 7; "[g1][g1][g1][g1][g1][g1][g1][g1][g1]"
+  670 LET x=26: LET y=19: GO SUB 8040: FOR i=9 TO 17: PRINT AT i,4; PAPER 0; INK 4; "[gF][gF][gF][gF][gF][gF][gF][gF][gF]"; INK 7: NEXT i
+  680 PRINT AT 18,4; INK 4; "[gF][gF][gF][gF][gF][gF][gF][gF][gF][gF][gF]"; INK 7; "[g4][g4][g4][g4][g4]"; INK 3; INK 4; "[gF][gF][gF][gF][gF]"; INK 7; AT 19,4; INK 4; "[gF][gF][gF][gF][gF][gF][gF][gF][gF][gF][gF][gF][gF][gF][gF][gF][gF][gF][gF][g3]"; INK 7
+  690 GO SUB 7999
+  700 IF x = 14 THEN GO TO 730
+  720 GO TO 680
+  730 RANDOMIZE USR 61913
+  740 LET x=26: LET y=19: GO SUB 8040
+  750 FOR i=7 TO 19: PRINT AT i,4; PAPER 2; INK 0; "[R]"; PAPER 0; INK 7: NEXT i: PRINT AT 17,4; PAPER 2; INK 0; "[S][T][T][T][T][T][T][T][T][T][T][T][T][T][T]"; AT 15,4; "[S][S][S][S][S][S][S][S][S][S]"; AT 13,4; "[S][S][S][S][T][T][T][T][T][T][S][S][S]"; AT 9,4; PAPER 1; INK 0; "[U][U]"; PAPER 2; "[S][T]"; PAPER 1; "[U][U][U][U]"; PAPER 2; "[T][T][T][S][T][S][T][T][S][T]"; AT 7,4; PAPER 2; INK 0; "[S][T][T][T][S][T][S][T]"; PAPER 1; "[U][U][U][U]"; PAPER 2; "[S][T][S][S][T]"
+  760 PRINT AT 13,20; PAPER 2; INK 0; "[T][S][T][S][T][S][T][S][T][S]"; PAPER 0; INK 7
+  761 GO SUB 7999
+  800 IF ATTR (y + 1,x) = 8 OR ATTR (y + 1,x + 1) = 8 THEN LET lives=lives - 1: PRINT AT y,x; "  "; AT y - 1,x; "  ": LET x=26: LET y=19: GO SUB 8040: IF lives = 0 THEN CLS: RUN
+  810 IF x = 4 THEN GO TO 830
+  820 GO TO 761
+  830 CLS: LET M$="FASE 2": LET N$="PLATAFORMAS": LET O$="MOVILES": PRINT AT 7,31 / 2 - LEN M$ / 2; M$; AT 9,31 / 2 - LEN N$ / 2; N$; AT 11,31 / 2 - LEN O$ / 2; O$
+  850 FOR room=1 TO 5
+  860 FOR y=19 TO 12 STEP -1
+  870 LET x=4: GO SUB 8009: PRINT AT y + 1,x; "    "
+  880 IF INKEY$ <> "" THEN GO TO 930
+  881 NEXT y
+  890 FOR y=12 TO 19
+  900 LET x=4: GO SUB 8009: PRINT AT y - 2,x; "    "
+  910 IF INKEY$ <> "" THEN GO TO 930
+  911 NEXT y
+  920 IF INKEY$ = "" THEN NEXT room: GO TO 850
+  930 FOR room=1 TO 2: RANDOMIZE USR 61913
+  940 LET x=26: LET y=19: PRINT #0; AT 0,1; PAPER 7; INK 0; "SALIDA:PARTE SUPERIOR IZQUIERDA"
+  950 IF room = 1 THEN PRINT AT 19,10; PAPER 4; INK 0; "[Q][R]"; PAPER 0; INK 7; AT 18,10; PAPER 4; INK 0; "[O][P]"; PAPER 0; INK 7; AT 18,15; PAPER 2; INK 0; "[S][T][S][T]"; PAPER 0; INK 7
+  951 IF room = 2 THEN PRINT AT 19,4; PAPER 5; INK 0; "[Q][R]"; PAPER 0; INK 7; AT 18,4; PAPER 5; INK 0; "[O][P]"; PAPER 0; INK 7; AT 19,11; PAPER 6; INK 0; "[Q][R]"; PAPER 0; INK 7; AT 18,11; PAPER 6; INK 0; "[O][P]"; PAPER 0; INK 7; AT 19,22; PAPER 2; INK 0; "[S][T][T][S]"; PAPER 0; INK 7
+  952 LET c1=INT (RND * 6) + 1: LET c2=INT (RND * 6) + 1: LET c3=INT (RND * 6) + 1: LET c4=INT (RND * 6) + 1: LET p1=6: LET p2=31 - 8: LET p3=16: LET p4=6: LET d1=1: LET d2=1: LET d3=1: LET d4=1
+  960 GO SUB 7999
+  980 LET p1=p1 + d1: LET p2=p2 + d2: LET p3=p3 + d3: LET p4=p4 + d4
+  982 IF p1 = 5 OR p1 = 25 THEN LET d1=-d1
+  990 IF p2 = 5 OR p2 = 25 THEN LET d2=-d2
+ 1000 IF p3 = 5 OR p3 = 25 THEN LET d3=-d3
+ 1010 IF (x = p1 - 1 OR x = p1 OR x = p1 + 1) AND y = 14 THEN LET x=p1: GO SUB 8040: PRINT AT y - 1,x - 1; " "; AT y,x - 1; " "; AT y - 1,x + 2; " "; AT y,x + 2; " "
+ 1042 IF (x = p2 - 1 OR x = p2 OR x = p2 + 1 OR x = p2) AND y = 9 THEN LET x=p2: GO SUB 8040: GO SUB 8050
+ 1043 IF (x = p3 - 1 OR x = p3 OR x = p3 + 1) AND y = 4 THEN LET x=p3: GO SUB 8040: GO SUB 8050
+ 1044 PRINT AT 15,p1; " "; PAPER c1; INK 0; "[S][T]"; PAPER 0; INK 7; " "
+ 1050 PRINT AT 10,p2; " "; PAPER c2; INK 0; "[S][T]"; PAPER 0; INK 7; " "
+ 1060 PRINT AT 5,p3; " "; PAPER c3; INK 0; "[S][T]"; PAPER 0; INK 7; " "
+ 1070 IF y = 4 AND x = 5 THEN CLS: NEXT room: GO TO 1100
+ 1090 GO TO 960
+ 1100 CLS: LET M$="FASE 3": LET N$="CUEVAS": LET O$="SUBTERRANEAS"
+ 1110 PRINT AT 10,32 / 2 - LEN M$ / 2; M$; AT 12,32 / 2 - LEN N$ / 2; N$; AT 14,32 / 2 - LEN O$ / 2; O$
+ 1120 PAUSE 0
+ 1130 FOR room=1 TO 2: CLS: GO SUB 9080: LET x=26: LET y=19: GO SUB 8040: LET bx1=10: LET p1=10: LET p2=10: LET bx2=10: LET bdx1=-1: LET bdy1=1: LET bdy2=1: LET bdx2=1: LET oy1=p1: LET ox1=bx1: LET ox2=bx2: LET oy2=p2
+ 1210 PRINT #0; PAPER 7; INK 0; AT 0,4; "SALIDA A LA IZQUIERDA."
+ 1211 FOR i=3 TO 19: PRINT AT i,4; PAPER 2; INK 0; "[R]"; PAPER 0; INK 7: NEXT i
+ 1212 IF room = 1 THEN PRINT AT 15,4; PAPER 2; INK 0; "[S][T][S][T]"; PAPER 0; INK 7; AT 10,4; " "; AT 13,4; " "
+ 1214 IF room = 2 THEN PRINT AT 15,5; PAPER 2; INK 0; "[T]"; PAPER 0; INK 7; AT 10,7; PAPER 2; INK 0; "[S]"; PAPER 0; INK 7; AT 6,4; " "; AT 5,4; " "
+ 1216 IF room = 2 THEN PRINT AT 15,5; PAPER 2; INK 0; "[T]"; PAPER 0; INK 7; AT 10,7; PAPER 2; INK 0; "[S]"; PAPER 0; INK 7; AT 6,4; " "; AT 5,4; " "
+ 1221 IF room = 1 THEN PRINT AT 15,4; PAPER 2; INK 0; "[S][T][S][T]"; PAPER 0; INK 7; AT 10,4; " "; AT 13,4; " "
+ 1222 IF ATTR (p1 + bdy1,bx1) <> 7 THEN LET bdy1=-bdy1
+ 1230 IF ATTR (p2 + bdy2,bx2) <> 7 THEN LET bdy2=-bdy2
+ 1231 IF ATTR (p1,bx1 + bdx1) <> 7 THEN LET bdx1=-bdx1
+ 1232 IF ATTR (p2,bx2 + bdx2) <> 7 THEN LET bdx2=-bdx2
+ 1233 LET p1=p1 + bdy1: LET bx1=bx1 + bdx1: LET p2=p2 + bdy2: LET bx2=bx2 + bdx2
+ 1234 GO SUB 7999: PRINT AT p1,bx1; "[U]"; AT p2,bx2; "[U]"; AT oy1,ox1; " "; AT oy2,ox2; " ": LET oy1=p1: LET ox2=bx2: LET ox1=bx1: LET oy2=p2
+ 1235 IF (x = e OR x + 1 = e) AND (y = f OR y - 1 = f) THEN LET lives=lives - 1: PRINT AT y,x; "  "; AT y - 1,x; "  ": LET x=26: LET y=19: GO SUB 8040: IF lives = 0 THEN CLS: RUN
+ 1236 IF x = 4 THEN NEXT room: GO TO 1330
+ 1320 GO TO 1216
+ 1330 LET r3=INT (RND * 6) + 1: GO SUB 9080
+ 1340 LET g1=10: LET g2=15: PRINT AT 15,6; PAPER 2; INK 0; "[S][T][S][T][S][T][S][T][S][T][S][T]"; PAPER 0; INK 7; AT 14,8; PAPER 5; INK 0; "[Q][R]"; PAPER 0; INK 7; AT 13,8; PAPER 5; INK 0; "[O][P]"; PAPER 0; INK 7; AT 12,8; PAPER 4; INK 0; "[Q][R]"; PAPER 0; INK 7; AT 11,8; PAPER 4; INK 0; "[O][P]"; PAPER 0; INK 7; AT 14,10; PAPER 3; INK 0; "[Q][R]"; PAPER 0; INK 7; AT 13,10; PAPER 3; INK 0; "[O][P]"; PAPER 0; INK 7
+ 1350 LET x=31 - 6: LET y=19: GO SUB 8040
+ 1360 GO SUB 7999
+ 1380 LET r4=INT (RND * 10) + 1
+ 1390 LET r5=INT (RND * 10) + 1
+ 1391 IF (r4 < 5 OR r4 = 5) AND g1 > 5 THEN LET g1=g1 - 1
+ 1400 IF r4 > 5 AND g1 < 31 - 6 THEN LET g1=g1 + 1
+ 1410 IF (r5 < 5 OR r5 = 5) AND g2 < 31 - 6 THEN LET g2=g2 + 1
+ 1420 IF r5 > 5 AND g2 > 5 THEN LET g2=g2 - 1
+ 1430 PRINT AT 19,g1; " "; INK 2; "[D][G] "; INK 7; AT 18,g1; " "; INVERSE 1; PAPER 2; PAPER 0; INK 4; "[A][F]"; INVERSE 0; " "; INK 7
+ 1440 PRINT AT 19,g2; " "; INK 5; "[D][G] "; INK 7; AT 18,g2; " "; INVERSE 1; INK 6; "[A][F]"; INVERSE 0; " "; INK 7
+ 1450 IF (x = g1 + 1 OR x = g1 + 2 OR x = g2 + 2 OR x = g2 + 1) AND (y = 19 OR y = 18) THEN LET lives=lives - 1: PRINT AT y,x; "  "; AT y - 1,x; "  ": LET x=26: LET y=19: GO SUB 8040: IF lives = 0 THEN CLS: RUN
+ 1451 IF x = 4 THEN GO TO 1470
+ 1460 GO TO 1360
+ 1470 CLS: LET M$="FASE 4": LET N$="EL PUENTE": LET O$="LEVADIZO"
+ 1480 PRINT AT 10,32 / 2 - LEN M$ / 2; M$; AT 12,32 / 2 - LEN N$ / 2; N$; AT 14,32 / 2 - LEN O$ / 2; O$: PAUSE 0
+ 1490 CLS: GO SUB 9240
+ 1500 LET e=0: LET f=19: LET tmax=31: LET tmin=0
+ 1510 LET M$="AQUI BOLON MAYOR:SAL DEL CASTI- LLO MATANDO AL GUARDIAN CON     SPACE.!OJO QUE DISPARA!"
+ 1511 GO SUB 9200
+ 1520 PAUSE 0: GO TO 2140
+ 1530 LET qx=31: LET qy=11: LET qd=-1: LET qr=0: LET x=31 - 4: LET y=17
+ 1550 PRINT AT qr,qx; " ": PRINT AT qy,6; "  "; AT qy - 1,6; "  "
+ 1570 LET qy=qy + qd
+ 1571 IF qy = 1 OR qy = 15 THEN LET qd=-qd
+ 1580 LET qx=qx + 1: IF qx >= 31 THEN LET qx=8: LET qr=qy
+ 1590 GO SUB 7999
+ 1600 IF qx = x AND qr = y THEN RUN
+ 1610 IF INKEY$ = "0" AND y = qy THEN GO SUB 9330
+ 1620 IF SCREEN$ (y + 1,x) = " " THEN PRINT AT y,x; "    "; AT y - 1,x; "    ": LET y=y + 1: GO SUB 8040
+ 1630 PRINT AT qy,6; INK RND * 6; "[T][T]"; AT qy - 1,6; INVERSE 1; "[A][F]"; INVERSE 0
+ 1631 PRINT AT qr,qx; "-"
+ 1640 GO TO 1550
+ 1650 RANDOMIZE USR 61913
+ 2000 LET y=19: LET x=26
+ 2010 GO SUB 8040: PRINT AT 18,6; PAPER 2; INK 0; "[S][T][S][T][S][T][S][T][S][T][S][T][S][T][S][T][S][T]"; PAPER 0; INK 7; AT 19,6; PAPER 2; INK 0; "[T][S][T][S][T][S][T][S][T][S][T][S][T][S][T][S][T][S]"; PAPER 0; INK 7
+ 2020 PRINT AT 13,6; PAPER 4; INK 0; "[Q][R]"; PAPER 0; INK 7; AT 13,14; PAPER 5; INK 0; "[Q][R]"; PAPER 0; INK 7; AT 13,22; PAPER 6; INK 0; "[Q][R]"; PAPER 0; INK 7; AT 12,6; PAPER 4; INK 0; "[O][P]"; PAPER 0; INK 7; AT 12,14; PAPER 5; INK 0; "[O][P]"; PAPER 0; INK 7; AT 12,22; PAPER 6; INK 0; "[O][P]"; PAPER 0; INK 7
+ 2030 LET T$="Elige una caja": PRINT AT 5,16 - LEN T$ / 2; T$: LET T$="(Salta bajo ella)": PRINT AT 7,16 - LEN T$ / 2; T$
+ 2040 GO SUB 7999
+ 2050 IF y = 15 AND x = 6 THEN LET lives=lives + 1: PRINT AT 13,6; "  "; AT 12,6; PAPER 4; INK 0; "[Q][R]"; PAPER 0; INK 7; AT 11,6; PAPER 4; INK 0; "[O][P]"; PAPER 0; INK 7: BEEP 0.01,10: BEEP 0.05,40: FOR i=0 TO 5: PRINT AT 10 - i,6; PAPER 3; INK 0; "[C][D]"; AT 9 - i,6; "[A][B]"; AT 11 - i,6; PAPER 0; INK 7; "  " AND i > 0: BEEP 0.01,31 - i: NEXT i: FOR i=5 TO 0 STEP -1: PRINT AT 8 - i,6; "  "; AT 9 - i,6; PAPER 3; INK 0; "[A][B]"; AT 10 - i,6; PAPER 3; INK 0; "[C][D]"; AT 11,6; "  "; AT 12,6; PAPER 4; INK 0; "[O][P]"; PAPER 0; INK 7; AT 13,0; PAPER 4; INK 0; "[Q][R]"; INK 7; PAPER 0: GO SUB 7999: NEXT i: GO TO 2100
+ 2060 IF y = 15 AND x = 14 THEN PRINT AT 13,14; "  "; AT 12,14; PAPER 5; INK 0; "[Q][R]"; PAPER 0; INK 7; AT 11,14; PAPER 5; INK 0; "[O][P]"; PAPER 0; INK 7: BEEP 0.01,10: BEEP 0.05,0: GO TO 2100
+ 2070 IF y = 15 AND x = 22 THEN PRINT AT 13,22; "  "; AT 12,22; PAPER 6; INK 0; "[Q][R]"; PAPER 0; INK 7; AT 11,22; PAPER 5; PAPER 6; INK 0; "[O][P]"; PAPER 0; INK 7: BEEP 0.01,10: BEEP 0.05,0: GO TO 2100
+ 2080 GO TO 2040
+ 2100 PRINT AT 12,6; "  "; AT 13,6; "  "; AT 12,14; "  "; AT 13,14; "  "; AT 12,22; "  "; AT 13,22; "  "
+ 2110 PRINT AT 11,6; "  "; AT 11,14; "  "; AT 11,22; "  "
+ 2111 PRINT AT 10,6; "  "; AT 9,6; "  "
+ 2112 OVER 1: LET T$="Elige una caja": PRINT AT 5,16 - LEN T$ / 2; T$: LET T$="(Salta bajo ella)": PRINT AT 7,16 - LEN T$ / 2; T$
+ 2120 OVER 0: GO SUB 7999: IF x = 4 THEN GO TO back
+ 2130 GO TO 2120
+ 2140 (INK 8?): LET by=5: LET bd=1: LET x=26: LET y=13: GO SUB 8040
+ 3000 LET r2=INT (RND * 10) + 1
+ 3010 IF (r2 = 1 OR r2 = 2 OR r2 = 3) AND by > 5 THEN LET by=by - 1: PRINT AT by - 1,4; PAPER 6; INK 0; "[A][B]"; PAPER 0; INK 7; AT by,4; INK 4; "[gF][U]"; PAPER 0; INK 7; AT by + 1,4; "  "
+ 3020 IF (r2 = 4 OR r2 = 5 OR r2 = 6) AND by < 17 THEN LET by=by + 1: PRINT AT by - 1,4; PAPER 6; INK 0; "[A][B]"; PAPER 0; INK 7; AT by - 2,4; "  "; AT by,4; INK 4; "[gF][U]"; PAPER 0; INK 7
+ 3030 IF r2 = 8 THEN LET ry=175 - by * 8 + 4: PLOT 48,ry: DRAW BRIGHT 1; OVER 1; 200,0: GO SUB 3100: PLOT 48,ry: DRAW BRIGHT 0; OVER 1; 200,0
+ 3080 GO SUB 7999: IF INKEY$ = "0" OR INKEY$ = " " THEN PLOT 255,175 - y * 8: DRAW OVER 1; -255,0: GO SUB 4010: DRAW OVER 1; 255,0
+ 3090 GO TO 3000
+ 3100 IF by = y OR by = y - 1 THEN PRINT AT y - 1,x; "  "; AT y,x; "  ": PRINT AT 10,0; PAPER 7; INK 0; "EL RAYO TE ALCANZA. LA CAGAS. Oh": BEEP 1,40: PAUSE 0: RUN
+ 4000 RETURN
+ 4010 IF y = by OR y = by - 1 THEN PRINT AT by - 1,4; "  "; AT by,4; "  ": PRINT AT 10,0; PAPER 7; INK 0; "HAS CONSEGUIDO SALIR DEL CASTI- LLO"; INVERSE 0; INVERSE 0; PAPER 0; INK 7: PAUSE 0: GO TO 5010
+ 5000 RETURN
+ 5010 CLS: PRINT AT 20,0; PAPER 4; INK 0; "[P][P][P][P][P][P][P][P][P][P][P][P][P][P][P][P][P][P][P][P][P][P][P][P][P][P][P][P][P][P][P][P]"; PAPER 2; "[T][T][T][T][T][T][T][T][T][T][T][T][T][T][T][T][T][T][T][T][T][T][T][T][T][T][T][T][T][T][T][T]"; BRIGHT 1; PAPER 0; INK 7; BRIGHT 0: FOR x=29 TO 10 STEP -1: PRINT AT 18,x; PAPER 6; INK 0; "[E][F]"; PAPER 0; INK 7; " "; AT 19,x; PAPER 6; INK 0; "[G][H]"; PAPER 0; INK 7; " ": PAUSE 3: NEXT x: LET T$="ADIOS": PRINT AT 10,16 - LEN T$ / 2; T$: PAUSE 0: RUN
+ 5030 STOP
+ 7999 PRINT AT 21,13; lives: IF jumping = 1 THEN GO TO 8009
+ 8005 IF ATTR (y + 1,x) = 7 THEN IF ATTR (y + 1,x + 1) = 7 THEN LET y=y + 1: PRINT AT y - 2,x; "  "; AT y - 1,x; A$; AT y,x; B$
+ 8009 POKE 23658,0: IF INKEY$ = "o" THEN IF x > 4 THEN IF ATTR (y - 1,x - 1) = 7 THEN IF ATTR (y,x - 1) = 7 THEN LET x=x - 1: LET A$=PAPER 0; PAPER 6; INK 0; FLASH 1; FLASH 0; BRIGHT 1; "[E][F]"; BRIGHT 0; PAPER 0; INK 7: LET B$=PAPER 6; INK 0; BRIGHT 1; "[G][H]"; PAPER 0; BRIGHT 0; INK 7: PRINT AT y - 1,x; A$; " "; AT y,x; B$; " "
+ 8010 IF INKEY$ = "p" THEN IF x < 26 THEN IF ATTR (y - 1,x + 2) = 7 THEN IF ATTR (y,x + 2) = 7 THEN LET A$=PAPER 6; INK 0; BRIGHT 1; "[A][B]"; PAPER 0; INK 7; BRIGHT 0: LET B$=PAPER 6; INK 0; "[C][D]"; PAPER 0; INK 6; INK 7: PRINT AT y - 1,x; " "; A$; AT y,x; " "; B$: LET x=x + 1
+ 8020 IF INKEY$ = "q" THEN IF ATTR (y + 1,x) <> 7 OR ATTR (y + 1,x + 1) <> 7 THEN LET jumping=1: LET jumpt=0
+ 8030 IF jumping = 0 THEN RETURN
+ 8031 LET jumpt=jumpt + 1: IF ATTR (y - 2,x) = 7 THEN IF ATTR (y - 2,x + 1) = 7 THEN LET y=y - 1: PRINT AT y + 1,x; "  "; AT y,x; B$; AT y - 1,x; A$
+ 8032 IF jumpt = 6 THEN LET jumpt=0: LET jumping=0: RETURN
+ 8033 RETURN
+ 8034 IF INKEY$ = "8" THEN LET A$="   ": LET B$="   "
+ 8040 PRINT AT y,x; B$; AT y - 1,x; A$: RETURN
+ 8050 PRINT AT y - 1,x - 1; " "; AT y,x - 1; " "; AT y - 1,x + 2; " "; AT y,x + 2; " ": RETURN
+ 8060 PRINT AT 19,e; " "; PAPER 4; INK 0; "[A][B]"; PAPER 0; INK 7; " "; AT 18,e; " "; PAPER 4; INK 0; "[D]"; PAPER 2; "[A]"; PAPER 0; INK 7; " "; AT 17,e; " "; PAPER 2; INK 0; "[D]"; PAPER 5; "[D]"; PAPER 0; INK 7; " "
+ 9030 PRINT AT 19,e; " "; PAPER 3; INK 0; "[M][N]"; PAPER 0; INK 7; " "; AT 18,e; " "; PAPER 6; INK 0; "[K]"; PAPER 4; INK 0; "[B]"; PAPER 0; INK 7; " "; AT 17,e; "  "; PAPER 6; INK 0; "[J]"; PAPER 0; INK 7; " "
+ 9050 RETURN
+ 9080 CLS: FOR i=0 TO 20 STEP 2: PRINT AT i,0; PAPER 1; INK 0; "[S][T][S][T]"; PAPER 0; INK 7; AT i,28; PAPER 1; INK 0; "[T][S][T][S]"; PAPER 0; INK 7; AT i + 1,0; PAPER 1; INK 0; "[T][S][T][S]"; PAPER 0; INK 7; AT i + 1,28; PAPER 1; INK 0; "[S][T][S][T]"; PAPER 0; INK 7: NEXT i: PRINT AT 20,0; PAPER 1; INK 0; "[T][S][T][S][T][S][T][S][T][S][T][S][T][S][T][S][T][S][T][S][T][S][T][S][T][S][T][S][T][S][T][S][S][T][S][T][S][T][S][T][S][T][S][T][S][T][S][T][S][T][S][T][S][T][S][T][S][T][S][T][S][T][S][T]"; PAPER 0; INK 7
+ 9090 PRINT AT 0,0; PAPER 3; ,; ,; AT 1,4; PAPER 2; "                        "; AT 2,4; PAPER 1; BRIGHT 1; "                        "
+ 9091 PRINT AT 21,6; "VIDAS:     "
+ 9092 PRINT #0; AT 0,0; PAPER 1; INK 0; "[S][T][S][T][Q][R][S][T][S][R][Q][T][S][T][S][T][S][T][T][T][S][T][S][T][Q][R][S][S][S][T][T][S][S][T][T][S][S][S][S][T][S][T][R][Q][T][T][S][T][S][S][S][T][Q][R][Q][R][S][T][T][S][T][T][S][T]"; PAPER 0; INK 6; INK 7
+ 9093 RETURN
+ 9100 PRINT AT 0,0; PAPER 0; INK 2; OVER 1; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,; ,
+ 9110 RETURN
+ 9120 RETURN
+ 9200 FOR k=1 TO LEN M$
+ 9210 BEEP 0.01,-25
+ 9211 IF CODE M$(k) = 13 THEN LET e=4: LET f=f + 1: GO TO 9230
+ 9220 PRINT INK 4; AT f,e; M$(k); "[U]": LET e=e + 1: IF e = tmax THEN PRINT AT f,e; " ": LET e=tmin: LET f=f + 1
+ 9230 NEXT k: RETURN
+ 9240 PRINT AT 0,0; "    "; INVERSE 1; INK 6; "[F]"; INK 1; INVERSE 0; "                               "; INK 6; INVERSE 1; "[H]"; INK 1; INK 1; INVERSE 0; "*                                *                                *                                *                                *                                *                                *                                *                                *                                *                                *                                *                                *                              "; PAPER 0; INK 6; PAPER 6; INK 0; INVERSE 1; " "; INVERSE 0; "[A][F]"; PAPER 0; INK 7; "                 "; PAPER 2; INK 0; "[O][P][O][P][O][P][O][P][O][P][O][P][O][P][O][P][O][P][O][P][O][P][O][P][O][P][O][P]"; INK 0; PAPER 0; INK 7; "                                    "; PAPER 5; INK 0; FLASH 1; INK 7; "[G][H][C][F][E][F][C][F][D][G][E][F][G][H][J][G][T][H][F][G][R][F][E][G][G][D][H][G]"; PAPER 0; INK 7; FLASH 0; "    "; PAPER 5; INK 7; FLASH 1; "[G][H][H][H][H][G][C][C][F][A][D][E][S][D][F][G][D][A][C][G][F][D][D][A][C][F][D][G]"; PAPER 0; INK 7; FLASH 0
+ 9310 FOR i=2 TO 13: NEXT i: FOR i=1 TO 13: PRINT PAPER 0; OVER 1; INK 1; AT i,i + 4; INK 1; "*"; INK 7: NEXT i
+ 9311 FOR i=0 TO 18: PRINT AT i,0; PAPER 5; INK 0; "[S][S][S][T]": NEXT i
+ 9320 RETURN
+ 9330 CLS: PRINT AT 0,0; "HAS LLEGADO AL FINAL DE LA PRI- MERA CARGA. CLAVE:OJO"
+ 9600 PAUSE 0: RUN
+ 9610 <[RST $08]>: <[RST $38]>

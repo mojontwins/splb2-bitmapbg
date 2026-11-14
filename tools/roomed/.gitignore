@@ -1,0 +1,8 @@
+/roomed
+/roomed-headless
+/roomed.exe
+/roomed-headless.exe
+tests/out_*
+tests/tileset.png
+tests/templ.png
+tests/preview/
