@@ -12,6 +12,7 @@ LIB=$(cd "${SPLIB:-../..}" && pwd)
 python3 tools/conv.py
 python3 tools/edges.py -q      # warnings: rooms that don't meet at an exit
 python3 tools/reach.py | tail -1   # warnings: exits you can't reach (tools/reach.py lists them)
+python3 tools/entry.py | tail -1   # warnings: enemies where you come in (tools/entry.py lists them)
 cd src
 zcc +zx -vn -m -unsigned -zorg=24200 -I$LIB -l$LIB/splib2tc -o phcomp.bin phcomp.c
 END=$((24200 + $(stat -c %s phcomp.bin)))

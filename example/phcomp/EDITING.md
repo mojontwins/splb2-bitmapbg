@@ -57,10 +57,24 @@ every room, from every exit it can enter by, and lists exits it can't get
 to (`tools/reach.py bru_03` for one room). It ignores enemies and moving
 platforms, so a room crossed on a raft always shows up (bru_06). It
 doesn't know that some ways are one-way (dropping down a hole): "from D
-cannot reach..." for a room you can only fall out of is fine. Jumps, to
-design by: the high jump climbs 44 pixels (5 rows: a floor 5 rows higher
-is out of reach, 3-4 rows is fine), the long jump climbs 20 and crosses
-about 8 columns.
+cannot reach..." for a room you can only fall out of is fine. It also
+says if you can't get next to a goal or an item.
+
+The jumps are fixed arcs, as in Phantomas (`jump_hi` and `jump_lo` in
+`src/player.h`, which `reach.py` reads):
+
+* **high jump** (Q): 34 pixels up, 16 across. It lands on a platform up to
+  **4 rows higher**; you must start beside it, not under its edge (you'd
+  hit your head), and it carries you over at the top of the jump.
+* **long jump** (A): 16 pixels up, 64 across (32 going up, 32 coming
+  down): gaps of up to 8 columns, or a step of 2 rows. It lands about 8
+  columns on, so a narrow platform 4-5 columns away is too far for the
+  high jump and too near for the long one: leave 2-3 columns or 6-8.
+
+Both go the way Phantomas faces (no jumping straight up), and pressing
+the other direction first only turns him round. So stairs of platforms go
+up 4 rows at a time, each one starting a column
+or more to the side of the one above.
 
 ## 2. Linking rooms and placing enemies (`games.txt`)
 
@@ -117,6 +131,14 @@ BRIGHT).
 | item | stands at (X1,Y1); touching it picks it up (once per game) | | unused |
 | faller | drops from the sky at a random column of X1..X2, from Y1 to Y2, then walks there at random | | walking pixels |
 | toggle | not a sprite: cells (X1,Y1)-(X2,Y2) **in characters** switch every SPEED x 8 frames between deadly and empty. FIGURE = tile number, INK = attribute | | |
+
+**Keep enemies away from where you come in**: you come back there after
+dying, so an enemy passing over that spot costs lives for nothing. Keep
+paths 32 pixels or more from the edges you enter by (X from 32 to 208 on
+the floor you walk in on). `tools/entry.py` lists the enemies that get
+closer; the build prints the count. Two enemies side by side (Infinito's
+big robot) are too wide to jump over: give the player somewhere to wait
+for them to pass.
 
 Speeds: keep the distance X2-X1 (and Y2-Y1) a multiple of the speed so
 the turns are exact (the engine clamps anyway). Enemies ignore walls:

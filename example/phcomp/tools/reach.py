@@ -2,8 +2,9 @@
 """Can the player get through every room? For each room of each game in
 gfx/games.txt this simulates the player's physics (the same tables and
 steps as src/player.h) from every exit it can come in by, trying walks,
-high jumps (left, up, right) and long jumps, and lists which exits it can
-reach. Enemies and moving platforms are ignored (so a room that needs a
+high jumps and long jumps (left and right), and lists which exits it can
+reach. Also checks that you can stand next to each goal and item. Enemies and
+moving platforms are ignored (so a room that needs a
 raft shows as stuck). Flying rooms are skipped.
 
   tools/reach.py           every room
@@ -14,9 +15,19 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import edges
 
-JUMP_HI = [6, 6, 5, 5, 5, 4, 4, 3, 3, 2, 1]
-JUMP_LO = [4, 4, 3, 3, 2, 2, 1, 1]
-FALL = [1, 2, 2, 3, 3, 4, 4, 5, 6]
+def table(name):
+    """a table of src/player.h, as signed numbers"""
+    src = open(os.path.join(os.path.dirname(HERE), 'src', 'player.h')).read()
+    body = re.search(r'unsigned char %s \[\] = \{(.*?)\};' % name, src, re.S).group(1)
+    return [int(v) for v in body.replace('\n', ' ').split(',') if v.strip()]
+def pairs(t):
+    t = t[:t.index(128)]
+    return list(zip(t[0::2], t[1::2]))
+JUMP_HI = pairs(table('jump_hi'))
+JUMP_LO = pairs(table('jump_lo'))
+FALL = table('fall_tab')
+FALL_AFTER_JUMP = int(re.search(r'#define FALL_AFTER_JUMP\s+(\d+)',
+                      open(os.path.join(os.path.dirname(HERE), 'src', 'player.h')).read()).group(1))
 
 class Room:
     def __init__(self, name, exits):
@@ -47,24 +58,40 @@ def step_x(room, x, y, d):
     return x + 1, None, True
 
 def air(room, x, y, tab, vx):
-    """a jump (tab) or a fall (tab None) from (x, y): the ground position,
-    an exit, or 'dead'"""
-    if tab:
-        for dy in tab:
-            bump = False
-            for _ in range(dy):
-                if y == 0:
-                    if room.ex[2]: return 'U'
-                    bump = True; break
-                if y & 7 == 0 and room.row_or((y >> 3) - 1, x)[1]: bump = True; break
-                y -= 1
-            for _ in range(abs(vx)):
-                x, e, ok = step_x(room, x, y, vx)
-                if e: return e
-                if not ok: break
-            if room.deadly(x, y): return 'dead'
-            if bump: break
+    """a jump (tab: the arc, vx: its direction 1, -1, 0) or a fall (tab
+    None) from (x, y): the ground position, an exit, or 'dead'"""
+    def across(x, n):
+        for _ in range(n if vx else 0):
+            x, e, ok = step_x(room, x, y, vx)
+            if e: return x, e
+            if not ok: break
+        return x, None
     fi = 0
+    if tab:
+        fi = FALL_AFTER_JUMP
+        for dy, dx in tab:
+            if dy < 0:
+                bump = False
+                for _ in range(-dy):
+                    if y == 0:
+                        if room.ex[2]: return 'U'
+                        bump = True; break
+                    if y & 7 == 0 and room.row_or((y >> 3) - 1, x)[1]: bump = True; break
+                    y -= 1
+                if bump:
+                    vx, fi = 0, 0
+                    break
+            else:
+                for _ in range(dy):
+                    if y >= 160: return 'D' if room.ex[3] else 'dead'
+                    if room.on_floor(x, y):
+                        return 'dead' if room.deadly(x, y) else (x, y)
+                    y += 1
+            x, e = across(x, dx)
+            if e: return e
+            if room.deadly(x, y): return 'dead'
+    else:
+        vx = 0
     for frame in range(200):
         dy = FALL[min(fi, len(FALL) - 1)]; fi += 1
         for _ in range(dy):
@@ -72,10 +99,8 @@ def air(room, x, y, tab, vx):
             if room.on_floor(x, y):
                 return 'dead' if room.deadly(x, y) else (x, y)
             y += 1
-        for _ in range(abs(vx)):
-            x, e, ok = step_x(room, x, y, vx)
-            if e: return e
-            if not ok: break
+        x, e = across(x, 1)
+        if e: return e
         if room.deadly(x, y): return 'dead'
     return 'dead'
 
@@ -100,7 +125,7 @@ def explore(room, starts):
             if e: found.add(e)
             elif nx != x:
                 moves.append(air(room, nx, y, None, 0) if not room.on_floor(nx, y) else (nx, y))
-        for tab, vx in ((JUMP_HI, -2), (JUMP_HI, 0), (JUMP_HI, 2), (JUMP_LO, -4), (JUMP_LO, 4)):
+        for tab, vx in ((JUMP_HI, -1), (JUMP_HI, 1), (JUMP_LO, -1), (JUMP_LO, 1)):
             moves.append(air(room, x, y, tab, vx))
         for r in moves:
             if isinstance(r, tuple): todo.append(r)
@@ -114,14 +139,17 @@ for line in open(os.path.join(edges.G, 'games.txt'), encoding='utf-8'):
     if not w: continue
     if w[0] == 'game': games.append((w[1], []))
     elif w[0] == 'room':
-        games[-1][1].append((w[1], (w[2:6] + ['-'] * 4)[:4], 'fly' in w[6:]))
+        games[-1][1].append((w[1], (w[2:6] + ['-'] * 4)[:4], 'fly' in w[6:], []))
+    elif w[0] in ('goal', 'item'):
+        games[-1][1][-1][3].append((w[0], int(w[1]), int(w[2])))
 only = sys.argv[1:]
 bad = 0
 for game, rooms in games:
-    for name, ex, fly in rooms:
+    for name, ex, fly, things in rooms:
         if fly or (only and name not in only): continue
         room = Room(name, [e != '-' for e in ex])
         out = []
+        allseen = set()
         for side, k in (('L', 0), ('R', 1), ('U', 2), ('D', 3)):
             if ex[k] == '-': continue
             # where you come in from that side: every y (x, or every x)
@@ -134,18 +162,23 @@ for game, rooms in games:
             if side == 'D':                 # coming up: still rising
                 found, seen = set(), set()
                 for x, y in starts:
-                    for vx in (-2, 0, 2):
+                    for vx in (-1, 1):
                         r = air(room, x, 160, JUMP_HI, vx)
                         if isinstance(r, tuple):
-                            f2, s2 = explore(room, [r]); found |= f2
+                            f2, s2 = explore(room, [r]); found |= f2; allseen |= s2
                         elif r != 'dead': found.add(r)
             else:
                 found, seen = explore(room, starts)
+                allseen |= seen
             need = set(s for s, kk in (('L', 0), ('R', 1), ('U', 2), ('D', 3)) if ex[kk] != '-' and s != side)
             miss = need - found
             if miss:
                 bad += 1
                 out.append('from %s cannot reach %s' % (side, ' '.join(sorted(miss))))
+        for kind, tx, ty in things:     # can you stand where you touch it?
+            if not any(abs(x - tx) < 12 and abs(y - ty) < 13 for x, y in allseen):
+                bad += 1
+                out.append('cannot reach the %s at %d,%d' % (kind, tx, ty))
         if out or only:
             print('%s %s: %s' % (game, name, '; '.join(out) or 'ok'))
 print('reach.py: %d problems' % bad)

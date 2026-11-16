@@ -37,7 +37,7 @@ game brujas
 	room bru_01 - bru_02 - -
 		bouncer 40 40 200 96 1 bubble 5
 	room bru_02 bru_01 bru_03 - -
-		hopper 64 112 224 24 2 witch 0
+		hopper 64 112 208 24 2 witch 0
 	room bru_03 bru_02 bru_04 - -
 		hopper 48 128 200 24 2 witch 0
 		linear 136 64 136 104 1 bat 1
@@ -45,14 +45,14 @@ game brujas
 		toggle 15 7 16 19 3 168 30
 		linear 16 64 224 64 2 witch 0
 	room bru_05 bru_04 bru_06 - -
-		bouncer 24 48 220 120 1 bat 1
+		bouncer 24 48 208 120 1 bat 1
 	room bru_06 bru_05 bru_07 - -
 		platform 64 152 208 152 1 platform 6
 		hopper 120 152 180 24 1 blob 4
 	room bru_07 bru_06 - bru_07b -
-		hopper 104 144 232 24 2 witch 0
+		hopper 160 144 232 24 2 witch 0
 	room bru_07b - bru_07c - bru_07
-		bouncer 16 16 216 120 2 bat 1
+		bouncer 16 16 208 120 2 bat 1
 		linear 200 56 80 56 2 witch 0
 	room bru_07c bru_07b bru_08 - -
 		linear 40 40 200 40 2 witch 0
@@ -61,17 +61,17 @@ game brujas
 		item 200 144 0 0 0 broom 6
 		hopper 32 144 160 16 2 witch 0
 	room bru_fly1 bru_08 bru_fly2 - - fly
-		linear 240 40 0 40 3 witch 0
-		linear 0 96 240 96 2 witch 0
+		linear 206 40 32 40 3 witch 0
+		linear 32 96 208 96 2 witch 0
 		bouncer 40 16 200 120 2 bat 1
 	room bru_fly2 bru_fly1 bru_09 - - fly
-		chaser 0 64 240 0 2 witch 0
+		chaser 32 64 208 0 2 witch 0
 		linear 120 8 120 120 2 bat 1
-		linear 240 112 0 112 3 witch 0
+		linear 206 112 32 112 3 witch 0
 	room bru_09 bru_fly2 bru_10 - -
-		hopper 16 144 224 24 2 witch 0
+		hopper 32 144 208 24 2 witch 0
 	room bru_10 bru_09 bru_11 - -
-		hopper 16 144 224 24 2 witch 0
+		hopper 32 144 208 24 2 witch 0
 		bouncer 32 24 200 64 1 bubble 5
 	room bru_11 bru_10 bru_12 - -
 		bouncer 16 40 220 96 2 bat 1
@@ -91,46 +91,46 @@ game luna
 	room luna_01 - luna_02 - -
 		random 64 144 150 0 1 alien 5
 	room luna_02 luna_01 luna_03 - -
-		random 24 144 220 0 1 alien 5
+		random 24 144 208 0 1 alien 5
 		linear 40 40 200 40 2 bat 3
 	room luna_03 luna_02 luna_04 - -
-		chaser 0 144 150 0 1 alien 5
+		chaser 32 144 150 0 1 alien 5
 		bouncer 176 80 224 120 1 ball 6
 	room luna_04 luna_03 luna_05 - -
-		random 8 144 120 0 1 alien 5
+		random 32 144 120 0 1 alien 5
 		linear 200 40 64 40 2 bat 3
 	room luna_05 luna_04 luna_06 - -
 		hopper 120 152 172 24 1 blob 4
 		drop 140 64 0 144 0 drop 5
 	room luna_06 luna_05 - - luna_07
-		random 8 144 120 0 1 alien 5
+		random 32 144 120 0 1 alien 5
 		chaser 176 144 224 0 1 alien 3
 	room luna_07 - - luna_06 luna_08
 		linear 16 144 184 144 1 alien 2
-		drop 136 8 40 144 0 drop 5
-		bouncer 24 16 220 120 1 bat 6
+		drop 88 8 40 144 0 drop 5
+		bouncer 24 64 112 120 1 bat 6
 	room luna_08 - luna_09 luna_07 -
-		chaser 16 144 220 0 1 alien 2
+		chaser 16 144 208 0 1 alien 2
 		bouncer 24 16 160 100 2 bat 6
 	room luna_09 luna_08 luna_10 - -
 		item 192 64 0 0 0 rocket 7
-		random 8 144 100 0 1 alien 5
+		random 32 144 100 0 1 alien 5
 	room luna_10 luna_09 luna_11 - - fly
-		bouncer 0 8 240 160 2 ball 6
+		bouncer 32 8 208 160 2 ball 6
 		bouncer 60 40 200 120 1 ball 2
-		linear 240 80 0 80 2 bat 3
+		linear 208 80 32 80 2 bat 3
 	room luna_11 luna_10 luna_12 - -
-		random 0 144 110 0 1 astronaut 6
+		random 32 144 110 0 1 astronaut 6
 		bouncer 0 8 180 80 1 ball 2
 	room luna_12 luna_11 luna_13 - -
-		random 0 80 64 0 1 astronaut 6
-		bouncer 100 8 240 80 2 ball 6
+		random 32 80 64 0 1 astronaut 6
+		bouncer 100 8 208 80 2 ball 6
 	room luna_13 luna_12 luna_14 - -
 		chaser 32 144 208 0 1 alien 2
 		linear 40 24 200 24 2 astronaut 6
 	room luna_14 luna_13 - - -
 		goal 176 56 0 1 0 computer 5
-		random 24 144 220 0 1 astronaut 6
+		random 32 144 220 0 1 astronaut 6
 		linear 24 88 216 88 2 bat 3
 end
 
@@ -151,33 +151,33 @@ game cinco1
 		linear 0 32 240 32 2 bat 2
 		drop 96 96 30 152 0 drop 5
 	room v1_04 v1_03 v1_05 - -
-		linear 120 144 216 144 1 cop 5
-		linear 216 144 120 144 1 cop 3
+		linear 120 144 208 144 1 cop 5
+		linear 208 144 120 144 1 cop 3
 	room v1_05 v1_04 - - v1_06
 		bouncer 80 40 200 120 1 bat 2
 	room v1_06 v1_07 - v1_05 -
-		linear 0 64 200 64 2 cop 3
+		linear 32 64 200 64 2 cop 3
 		linear 216 120 64 120 1 cop 5
 	room v1_07 v1_08 v1_06 - -
-		linear 16 144 224 144 2 ball 2
+		linear 32 144 208 144 2 ball 2
 		drop 184 8 30 144 0 drop 5
 	room v1_08 v1_09 v1_07 - -
-		bouncer 16 24 224 120 2 bat 3
+		bouncer 16 24 208 120 2 bat 3
 	room v1_09 v1_10 v1_08 - -
-		chaser 0 144 240 0 2 cop 7
+		chaser 32 144 208 0 2 cop 7
 	room v1_10 v1_11 v1_09 - -
-		random 16 144 220 0 1 cop 2
-		random 16 144 220 0 2 cop 4
+		random 32 144 208 0 1 cop 2
+		random 32 144 208 0 2 cop 4
 	room v1_11 v1_12 v1_10 - -
-		chaser 0 144 100 0 1 cop 5
+		chaser 32 144 100 0 1 cop 5
 		chaser 80 144 180 0 1 cop 3
-		chaser 140 144 240 0 2 cop 7
+		chaser 140 144 208 0 2 cop 7
 	room v1_12 v1_13 v1_11 - -
 		drop 200 24 20 136 0 drop 5
 		linear 40 40 200 40 2 bat 3
 	room v1_13 v1_14 v1_12 - -
-		bouncer 16 24 224 140 2 bat 3
-		ghost 16 144 220 0 4 cop 7
+		bouncer 32 24 208 140 2 bat 3
+		ghost 32 144 208 0 4 cop 7
 	room v1_14 - v1_13 - -
 		goal 40 144 0 0 0 bird 7
 end
@@ -192,7 +192,7 @@ game cinco2
 	ending "HA! HA! HAAA... POR FIN HAS ENCONTRADO EL PAJARO... PUEDES DESCANSAR... POR EL MOMENTO. EN TU PROXIMA AVENTURA... TENDRAS QUE ESCAPAR DEL PLANETA! NOS VEMOS EN PHANTOMAS EN LA LUNA!!"
 	room v2_01 - v2_02 - -
 		drop 144 112 50 144 0 drop 5
-		hopper 120 144 230 16 1 hopper 4
+		hopper 120 144 208 16 1 hopper 4
 	room v2_02 v2_01 v2_03 - -
 		hopper 48 144 200 24 2 hopper 4
 		drop 200 96 30 152 0 drop 5
@@ -200,31 +200,31 @@ game cinco2
 		linear 0 32 240 32 2 bat 3
 		hopper 120 144 200 24 1 hopper 4
 	room v2_04 v2_03 v2_05 - -
-		linear 120 144 216 144 1 cop 5
-		linear 216 144 120 144 1 cop 1
+		linear 120 144 208 144 1 cop 5
+		linear 208 144 120 144 1 cop 1
 		bouncer 40 24 200 96 1 ball 2
 	room v2_05 v2_04 - - v2_06
 		bouncer 80 40 200 120 2 ball 2
 	room v2_06 v2_07 - v2_05 -
-		hopper 16 144 200 24 2 hopper 4
-		random 140 64 220 0 1 cop 3
+		hopper 32 144 200 24 2 hopper 4
+		random 40 144 200 0 1 cop 3
 	room v2_07 v2_08 v2_06 - -
-		random 32 144 220 0 1 cop 5
+		random 32 144 208 0 1 cop 5
 		drop 112 88 40 144 0 drop 5
 	room v2_08 v2_09 v2_07 - -
 		drop 120 120 20 144 0 drop 5
-		chaser 0 144 150 0 1 cop 3
+		chaser 32 144 150 0 1 cop 3
 	room v2_09 v2_10 v2_08 - -
-		hopper 16 144 220 24 2 hopper 4
+		hopper 32 144 208 24 2 hopper 4
 		linear 0 120 240 120 2 bat 3
 	room v2_10 v2_11 v2_09 - -
 		hopper 96 152 128 24 1 blob 5
 		bouncer 16 16 220 72 2 bat 3
 	room v2_11 v2_12 v2_10 - -
-		random 16 144 220 0 2 hopper 4
+		random 32 144 208 0 2 hopper 4
 		linear 24 56 200 56 2 bat 3
 	room v2_12 v2_13 v2_11 - -
-		item 80 32 0 0 0 key 6
+		item 88 32 0 0 0 key 6
 		ghost 16 144 200 0 4 cop 7
 		bouncer 100 16 220 120 1 ball 2
 	room v2_13 - v2_12 - -
@@ -244,38 +244,38 @@ game infinito1
 	room i1_02 i1_01 i1_03 - -
 		linear 80 112 160 112 1 android 5
 	room i1_03 i1_02 i1_04 - -
-		ghost 32 112 216 0 3 android 6
+		ghost 32 112 208 0 3 android 6
 	room i1_04 i1_03 i1_05 - -
-		linear 16 112 200 112 1 android 4
-		linear 32 112 216 112 1 android 4
+		linear 40 112 184 112 1 android 4
+		linear 56 112 200 112 1 android 4
 	room i1_05 i1_04 i1_06 - -
-		linear 16 112 200 112 2 android 4
-		linear 32 112 216 112 2 android 4
+		linear 40 112 184 112 2 android 4
+		linear 56 112 200 112 2 android 4
 	room i1_06 i1_05 i1_07 - -
-		linear 200 112 16 112 2 android 4
-		linear 216 112 32 112 2 android 4
-		ghost 32 112 216 0 4 android 6
+		linear 184 112 40 112 2 android 4
+		linear 200 112 56 112 2 android 4
+		ghost 32 112 208 0 4 android 6
 	room i1_07 i1_06 - - i1_08
 		random 40 112 180 0 1 android 5
 	room i1_08 i1_09 - i1_07 -
-		linear 152 112 232 112 1 android 3
+		linear 136 112 176 112 1 android 3
 	room i1_09 i1_10 i1_08 - -
-		linear 16 112 136 112 1 android 6
-		linear 32 112 152 112 1 android 5
-		linear 48 112 168 112 1 android 4
-		linear 64 112 184 112 1 android 2
+		linear 40 112 136 112 1 android 6
+		linear 56 112 152 112 1 android 5
+		linear 72 112 168 112 1 android 4
+		linear 88 112 184 112 1 android 2
 	room i1_10 i1_11 i1_09 - -
 		linear 80 112 160 112 1 android 5
 		linear 160 112 80 112 1 android 3
 	room i1_11 i1_12 i1_10 - -
-		random 16 112 220 0 1 android 6
-		random 16 112 220 0 2 android 4
+		random 32 112 208 0 1 android 6
+		random 32 112 208 0 2 android 4
 	room i1_12 i1_13 i1_11 - -
-		faller 16 0 200 112 1 android 2
-		faller 40 0 220 112 1 android 6
+		faller 32 0 200 112 1 android 2
+		faller 40 0 208 112 1 android 6
 	room i1_13 - i1_12 - -
 		goal 72 112 0 0 0 computer 5
-		random 96 112 220 0 2 android 2
+		random 96 112 208 0 2 android 2
 end
 
 # ======================================================================
@@ -291,51 +291,51 @@ game infinito3
 		linear 80 112 176 112 1 android 5
 		linear 96 64 160 64 1 devil 2
 	room i3_03 i3_02 i3_04 - -
-		ghost 48 112 216 0 3 android 6
-		ghost 24 112 200 0 2 android 6
+		ghost 48 112 208 0 3 android 6
+		ghost 32 112 200 0 2 android 6
 	room i3_04 i3_03 i3_05 - -
-		linear 16 112 200 112 1 android 4
-		linear 32 112 216 112 1 android 4
+		linear 40 112 184 112 1 android 4
+		linear 56 112 200 112 1 android 4
 		linear 48 56 168 56 2 devil 2
 	room i3_05 i3_04 i3_06 - -
-		linear 16 112 200 112 2 android 4
-		linear 32 112 216 112 2 android 4
+		linear 40 112 184 112 2 android 4
+		linear 56 112 200 112 2 android 4
 		bouncer 16 8 224 56 1 devil 6
 	room i3_06 i3_05 i3_07 - -
-		linear 200 112 16 112 2 android 4
-		linear 216 112 32 112 2 android 4
+		linear 184 112 40 112 2 android 4
+		linear 200 112 56 112 2 android 4
 		linear 32 64 200 64 2 devil 2
 	room i3_07 i3_06 - - i3_08
 		random 72 112 180 0 1 android 5
-		ghost 16 112 200 0 3 android 6
+		ghost 32 112 200 0 3 android 6
 	room i3_08 i3_09 - i3_07 -
-		linear 152 112 232 112 1 android 3
+		linear 136 112 176 112 1 android 3
 		linear 16 64 64 64 1 devil 2
 	room i3_09 i3_10 i3_08 - -
-		linear 16 112 136 112 1 android 6
-		linear 32 112 152 112 1 android 5
-		linear 48 112 168 112 1 android 4
-		linear 64 112 184 112 1 android 2
+		linear 40 112 136 112 1 android 6
+		linear 56 112 152 112 1 android 5
+		linear 72 112 168 112 1 android 4
+		linear 88 112 184 112 1 android 2
 	room i3_10 i3_11 i3_09 - -
 		linear 80 112 160 112 1 android 5
 		linear 160 112 80 112 1 android 3
 		linear 80 72 160 72 1 devil 2
 	room i3_11 i3_12 i3_10 - -
-		random 16 112 220 0 1 android 6
-		random 16 112 220 0 2 android 4
+		random 32 112 208 0 1 android 6
+		random 32 112 208 0 2 android 4
 	room i3_12 i3_13 i3_11 - -
-		random 16 112 220 0 2 android 6
+		random 32 112 208 0 2 android 6
 		faller 40 0 200 112 1 android 2
 		linear 100 64 200 64 2 devil 6
 	room i3_13 i3_14 i3_12 - -
-		faller 16 0 200 112 1 android 2
-		faller 40 0 220 112 2 android 6
+		faller 32 0 200 112 1 android 2
+		faller 40 0 208 112 2 android 6
 	room i3_14 i3_15 i3_13 - -
-		faller 16 0 120 112 1 android 2
-		faller 100 0 220 112 1 android 4
-		faller 40 0 220 112 2 android 6
+		faller 32 0 120 112 1 android 2
+		faller 100 0 208 112 1 android 4
+		faller 40 0 208 112 2 android 6
 	room i3_15 - i3_14 - -
 		goal 72 112 0 0 0 computer 5
-		random 96 112 220 0 2 android 2
+		random 96 112 208 0 2 android 2
 		linear 120 24 220 24 2 devil 2
 end

@@ -1,0 +1,4 @@
+wait 30
+tap 1
+wait 40
+shot b

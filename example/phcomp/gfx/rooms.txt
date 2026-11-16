@@ -47,7 +47,7 @@ bg_params 9 1
 room bg brujas
 header 0 0
 rect 0 0 0 45 31 1
-rect 0 2 67 29 31 2
+pattern 0 2 69 43 31 2 2 1
 rect 0 3 0 28 31 21
 char 23 3 68 28
 char 5 4 68 28
@@ -105,8 +105,9 @@ header 1 0
 rect 0 3 64 80 1 4
 pattern 15 13 69 30 16 14 2 2
 rect 15 15 64 80 16 21
+rect 10 17 64 80 11 21
 rect 17 17 64 80 31 21
-rect 9 19 64 80 10 21
+rect 5 19 64 80 6 21
 rect 0 20 64 80 1 21
 end
 
@@ -123,16 +124,17 @@ end
 room bru_07
 header 1 0
 rect 27 0 64 80 31 1
-rect 11 2 64 80 14 2
+rect 7 2 64 80 10 2
 rect 30 2 64 80 31 19
-rect 6 5 64 80 9 5
-pattern 10 7 69 30 11 8 2 2
-pattern 10 9 73 25 11 17 2 1
-rect 2 10 64 80 4 10
-char 8 15 64 80
+rect 2 5 64 80 4 5
+pattern 12 7 69 30 13 8 2 2
+rect 7 8 64 80 9 8
+pattern 12 9 73 25 13 17 2 1
+rect 2 12 64 80 4 12
 pattern 22 15 69 30 23 16 2 2
+rect 7 16 64 80 8 16
 rect 22 17 64 80 23 19
-pattern 10 18 75 25 11 19 2 2
+pattern 12 18 75 25 13 19 2 2
 pattern 0 20 65 96 31 21 1 2
 end
 
@@ -147,21 +149,22 @@ rect 30 11 64 80 31 21
 rect 9 12 64 80 12 12
 rect 2 14 64 80 5 14
 rect 27 14 64 80 29 21
-rect 19 16 64 80 21 16
-rect 9 17 64 80 16 17
+rect 21 16 64 80 23 16
+rect 9 18 64 80 16 18
 end
 
 room bru_07c
 header 1 0
 pattern 5 8 125 31 6 8 2 1
 pattern 24 8 125 31 25 8 2 1
-rect 0 11 64 80 4 21
+rect 0 11 64 80 6 21
 rect 10 12 64 80 15 12
 rect 10 13 64 80 10 21
 rect 15 13 64 80 15 21
 rect 26 13 64 80 31 21
 pattern 12 14 69 30 13 15 2 2
 rect 11 16 64 80 14 21
+rect 17 16 64 80 18 21
 rect 21 16 64 80 22 21
 end
 
@@ -214,13 +217,13 @@ end
 
 room bru_09
 header 1 0
-pattern 5 13 69 30 6 14 2 2
-pattern 26 13 69 30 27 14 2 2
+pattern 5 14 69 30 6 15 2 2
+pattern 26 14 69 30 27 15 2 2
 pattern 0 15 69 30 1 16 2 2
-rect 5 15 64 80 6 19
 pattern 16 15 69 30 17 16 2 2
-rect 26 15 64 80 27 19
+rect 5 16 64 80 6 19
 pattern 11 16 69 30 12 17 2 2
+rect 26 16 64 80 27 19
 rect 0 17 64 80 1 19
 rect 16 17 64 80 17 19
 pattern 21 17 69 30 22 18 2 2
@@ -252,12 +255,12 @@ end
 
 room bru_11
 header 1 0
-pattern 14 15 69 30 15 16 2 2
+pattern 16 15 69 30 17 16 2 2
 rect 30 16 64 80 31 21
 rect 0 17 64 80 1 21
 rect 8 17 64 80 9 21
 rect 16 17 64 80 17 21
-rect 24 17 64 80 25 21
+rect 26 17 64 80 27 21
 end
 
 room bru_12
@@ -704,10 +707,10 @@ end
 room v1_12
 header 5 0
 pattern 0 0 127 4 31 1 2 2
-rect 21 11 64 87 23 11
-rect 16 14 64 87 18 14
-rect 19 14 64 150 21 14
-rect 22 14 64 87 24 14
+rect 27 11 64 87 29 11
+rect 18 14 64 87 20 14
+rect 21 14 64 150 23 14
+rect 24 14 64 87 26 14
 rect 3 15 64 87 8 15
 rect 9 15 64 150 11 15
 rect 12 15 64 87 14 15
@@ -826,8 +829,9 @@ pattern 18 13 92 104 19 14 2 2
 pattern 26 13 92 112 29 14 2 2
 pattern 2 14 92 112 3 15 2 2
 pattern 0 15 92 104 1 16 2 2
-rect 10 15 104 87 13 15
+rect 6 15 104 87 9 15
 pattern 0 17 92 112 1 18 2 2
+rect 12 17 104 87 15 17
 rect 22 17 104 87 25 17
 pattern 0 20 92 112 31 21 2 2
 end
@@ -882,12 +886,13 @@ end
 
 room v2_12
 header 7 13
-rect 9 6 118 198 12 6
+rect 10 6 118 198 13 6
 rect 16 9 118 198 21 9
-rect 5 12 118 198 10 12
+rect 10 12 118 198 15 12
 rect 17 15 118 198 22 15
 rect 0 16 120 112 1 19
 pattern 2 18 127 4 3 19 2 2
+rect 10 18 118 198 14 18
 pattern 26 18 127 4 29 19 2 2
 rect 0 20 112 84 31 20
 rect 0 21 113 84 31 21
@@ -937,16 +942,19 @@ end
 
 room i1_04
 header 8 16
+zigzag 14 12 176 77 17 12
 zigzag 0 16 176 77 31 21
 end
 
 room i1_05
 header 8 17
+zigzag 14 12 176 77 17 12
 zigzag 0 16 176 77 31 21
 end
 
 room i1_06
 header 8 18
+zigzag 14 12 176 77 17 12
 zigzag 0 16 176 77 31 21
 end
 
@@ -961,8 +969,8 @@ room i1_08
 header 8 0
 zigzag 0 0 176 87 25 1
 zigzag 30 0 176 87 31 1
-zigzag 0 16 176 87 9 21
-zigzag 18 16 176 87 31 21
+zigzag 0 16 176 87 11 21
+zigzag 16 16 176 87 31 21
 end
 
 room i1_09
@@ -1018,8 +1026,8 @@ end
 
 room i3_04
 header 8 16
-zigzag 7 11 176 77 10 11
-zigzag 21 11 176 77 24 11
+zigzag 6 12 176 77 9 12
+zigzag 22 12 176 77 25 12
 zigzag 0 16 176 77 31 21
 end
 
@@ -1052,9 +1060,8 @@ zigzag 0 0 176 87 25 1
 zigzag 30 0 176 87 31 1
 zigzag 2 12 176 87 5 12
 zigzag 20 12 176 87 23 12
-rect 10 15 116 135 17 15
-zigzag 0 16 176 87 9 21
-zigzag 18 16 176 87 31 21
+zigzag 0 16 176 87 11 21
+zigzag 16 16 176 87 31 21
 end
 
 room i3_09

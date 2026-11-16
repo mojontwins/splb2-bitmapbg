@@ -16,14 +16,17 @@ compiler), remade on one engine and loaded in one go:
 ![luna](shots/luna.png) ![cinco1](shots/cinco1.png)
 ![cinco2](shots/cinco2.png) ![infinito3](shots/infinito3.png)
 
-**Controls:** O P walk, Q or SPACE high jump, A long jump. Also Sinclair
+**Controls:** O P walk (the other direction first turns round), Q or
+SPACE high jump, A long jump, both forwards. Also Sinclair
 (6 7 9 8 0, the originals' keys) and Kempston. In the flying rooms Q and A
 go up and down.
 
 ## pheng2
 
 A revamp of pheng (the Phantomas Engine, Mojon Twins 2013), whose player
-and baddies it keeps: the two jumps (high and long), falling, flip-screen
+and baddies it keeps: the two jumps (high and long, now fixed arcs as in
+Dinamic's Phantomas: the high one climbs 4 characters and goes 16 pixels
+across, the long one 2 characters up and 64 across), falling, flip-screen
 rooms with four exits, and coming back where you entered the room after
 dying.
 What changed:

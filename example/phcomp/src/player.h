@@ -14,19 +14,30 @@
  *   0 free, C_SOLID 1, C_DEADLY 2, C_PLATFORM 3 (solid from above only).
  */
 
-/* The jumps: pixels up on each frame of the rise; 0 ends it and the fall
-   starts (fall_tab). pheng had two jumps, and so do these games:
-     high (Q, 9, SPACE, 0): 44 px up, 2 px a frame across
-     long (A, 8):           20 px up, 4 px a frame across
+/* The jumps, as in Phantomas (Dinamic): a fixed arc, frame by frame, a
+   pair each: pixels down (negative: up), pixels across (in the direction
+   of the jump). 128 ends the arc: from there it falls (fall_tab), still
+   drifting a pixel a frame. Landing anywhere ends it before.
+     high (Q, 9, SPACE, 0): 34 px up (onto a platform 4 characters
+                            higher), 16 px across back at the same height
+     long (A, 8):           16 px up, 64 px across (32 up, 32 down)
+   Both go the way the player faces: there is no jumping straight up.
    (pheng: 8 frames up at 4 or 2 px, 8 down; the BASIC originals jumped 5
-   or 6 characters straight up.) */
-unsigned char jump_hi [] = { 6, 6, 5, 5, 5, 4, 4, 3, 3, 2, 1, 0 };
-unsigned char jump_lo [] = { 4, 4, 3, 3, 2, 2, 1, 1, 0 };
-#define JUMP_HI_VX      2
-#define JUMP_LO_VX      4
+   or 6 characters straight up.) tools/reach.py reads these tables. */
+unsigned char jump_hi [] = {
+	-6, 0, -5, 0, -5, 1, -4, 1, -4, 1, -3, 1, -3, 1, -2, 1, -1, 1, -1, 1,
+	1, 1, 1, 1, 2, 1, 3, 1, 3, 1, 4, 1, 5, 1, 5, 1, 5, 0, 5, 0,
+	128
+};
+unsigned char jump_lo [] = {
+	-4, 4, -3, 4, -3, 6, -2, 4, -2, 4, -1, 6, -1, 4,
+	1, 4, 1, 6, 2, 4, 2, 4, 3, 6, 3, 4, 4, 4,
+	128
+};
 /* falling: pixels down a frame, frame after frame; the last one repeats */
 unsigned char fall_tab [] = { 1, 2, 2, 3, 3, 4, 4, 5, 6 };
 #define FALL_LAST       8
+#define FALL_AFTER_JUMP 6               /* where a jump's fall goes on   */
 #define WALK_SPEED      2
 #define FLY_SPEED       2
 
@@ -310,12 +321,18 @@ void player_move (void) {
 			jp  z, pm_fall
 
 		; ---------------------------------------------------- on the ground
+		; left: walks if facing left, else only turns; the same right
 		.pm_ground
 			ld  a, (_k_left)
 			or  a
 			jr  z, pm_noleft
-			xor a
+			ld  a, (_pfacing)
+			or  a
+			jr  z, pm_goleft
+			xor a                       ; facing right: turn
 			ld  (_pfacing), a
+			jr  pm_still
+		.pm_goleft
 			ld  b, WALK_SPEED
 		.pm_wl
 			push bc
@@ -328,8 +345,13 @@ void player_move (void) {
 			ld  a, (_k_right)
 			or  a
 			jr  z, pm_still
-			ld  a, 4
+			ld  a, (_pfacing)
+			or  a
+			jr  nz, pm_goright
+			ld  a, 4                    ; facing left: turn
 			ld  (_pfacing), a
+			jr  pm_still
+		.pm_goright
 			ld  b, WALK_SPEED
 		.pm_wr
 			push bc
@@ -360,31 +382,19 @@ void player_move (void) {
 			jr  nz, pm_nojump
 			or  a
 			jr  z, pm_nojump
-			ld  a, (_k_hi)              ; high jump: across only if a
-			or  a                       ; direction is held
-			jr  z, pm_long
-			ld  hl, _jump_hi
-			ld  c, JUMP_HI_VX
-			ld  a, (_k_left)
+			ld  hl, _jump_hi            ; both jumps go the way you face
+			ld  a, (_k_hi)
 			or  a
-			jr  nz, pm_jl
-			ld  a, (_k_right)
-			or  a
-			jr  nz, pm_jr
-			ld  c, 0
-			jr  pm_jr
-		.pm_long                        ; long jump: always across
+			jr  nz, pm_jface
 			ld  hl, _jump_lo
-			ld  c, JUMP_LO_VX
+		.pm_jface
+			ld  c, 1
 			ld  a, (_pfacing)
 			or  a
-			jr  nz, pm_jr
-		.pm_jl
-			xor a
-			sub c
-			ld  c, a
-		.pm_jr
-			ld  a, c
+			jr  nz, pm_jdir
+			ld  c, 255
+		.pm_jdir
+			ld  a, c                    ; pvx: the direction, 1 / -1 / 0
 			ld  (_pvx), a
 			ld  (_ptab), hl
 			xor a
@@ -405,18 +415,26 @@ void player_move (void) {
 			ld  (_pstate), a
 			jp  pm_frame
 
-		; -------------------------------------------------------- rising
+		; ----------------------------------------------- the arc of the jump
 		.pm_rise
-			ld  hl, (_ptab)
+			ld  hl, (_ptab)             ; HL = ptab + pjt * 2
 			ld  a, (_pjt)
 			ld  e, a
 			ld  d, 0
 			add hl, de
-			ld  a, (hl)
-			or  a
-			jr  z, pm_tofall
+			add hl, de
+			ld  a, (hl)                 ; A = down, C = across
+			inc hl
+			ld  c, (hl)
+			cp  128
+			jr  z, pm_arcend
 			ld  hl, _pjt
 			inc (hl)
+			or  a
+			jr  z, pm_arcx
+			bit 7, a
+			jr  z, pm_arcdown
+			neg                         ; up A pixels
 			ld  b, a
 		.pm_up
 			push bc
@@ -424,19 +442,34 @@ void player_move (void) {
 			pop bc
 			jr  c, pm_bump
 			djnz pm_up
+		.pm_arcx
+			ld  b, c
 			call pm_across
 			jp  pm_frame
+		.pm_arcdown                     ; down A pixels: may land
+			ld  b, a
+		.pm_adown
+			push bc
+			call step_down
+			pop bc
+			jp  c, pm_landed
+			djnz pm_adown
+			jr  pm_arcx
 		.pm_bump                        ; head against the ceiling (or
-			ld  a, (_exit_dir)          ; out of the room)
+			ld  a, (_exit_dir)          ; out of the room): falls
 			or  a
 			jp  nz, pm_frame
-		.pm_tofall
 			xor a
+			ld  (_pvx), a
 			ld  (_pfi), a
+			jr  pm_tofall
+		.pm_arcend                      ; the arc is over: falls on
+			ld  a, FALL_AFTER_JUMP
+			ld  (_pfi), a
+		.pm_tofall
 			ld  a, P_FALL
 			ld  (_pstate), a
-			call pm_across
-			jp  pm_frame
+			jp  pm_fall
 
 		; ------------------------------------------------------- falling
 		.pm_fall
@@ -457,6 +490,7 @@ void player_move (void) {
 			pop bc
 			jr  c, pm_landed
 			djnz pm_down
+			ld  b, 1                    ; drifting a pixel a frame
 			call pm_across
 			jp  pm_frame
 		.pm_landed
@@ -472,8 +506,11 @@ void player_move (void) {
 			ld  (_sfx_n), a
 			jp  pm_frame
 
-		; across in the air: pvx pixels (signed)
+		; across in the air: B pixels in the direction pvx (1, -1, 0)
 		.pm_across
+			ld  a, b
+			or  a
+			ret z
 			ld  a, (_exit_dir)
 			or  a
 			ret nz
@@ -481,8 +518,7 @@ void player_move (void) {
 			or  a
 			ret z
 			bit 7, a
-			jr  nz, pma_left
-			ld  b, a
+			jr  nz, pma_l
 		.pma_r
 			push bc
 			call step_right
@@ -490,9 +526,6 @@ void player_move (void) {
 			ret c
 			djnz pma_r
 			ret
-		.pma_left
-			neg
-			ld  b, a
 		.pma_l
 			push bc
 			call step_left

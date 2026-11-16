@@ -1,0 +1,16 @@
+wait 30
+tap 1
+wait 60
+print
+key o 2
+wait 10
+print
+key o 20
+wait 10
+print
+key p 2
+wait 10
+print
+key q 4
+wait 60
+print

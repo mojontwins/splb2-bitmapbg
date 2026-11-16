@@ -1,0 +1,18 @@
+wait 30
+tap 1
+wait 30
+poke flicker 0 250
+poke ex_r 0 6
+poke py 0 144
+poke exit_dir 0 2
+wait 30
+poke px 0 34
+wait 4
+key p,q 6
+print
+wait 4
+print
+wait 4
+print
+wait 30
+print
